@@ -206,33 +206,20 @@ document.addEventListener('keydown',e=>{
 });
 
 // ---------- BUILDING CALCULATOR ----------
-const buildingNames=[
-  'Furnace','Infantry Camp','Lancer Camp','Marksman Camp','Embassy','Command Center',
-  'Research Center','War Academy','Infirmary','Storehouse',"Hunter's Hut",'Sawmill','Coal Mine','Iron Mine','Barricade'
-];
-const buildingBase={
-  'Furnace':{meat:90000,wood:90000,coal:45000,iron:22000,h:8},
-  'Infantry Camp':{meat:65000,wood:65000,coal:32000,iron:16000,h:5},
-  'Lancer Camp':{meat:65000,wood:65000,coal:32000,iron:16000,h:5},
-  'Marksman Camp':{meat:65000,wood:65000,coal:32000,iron:16000,h:5},
-  'Embassy':{meat:70000,wood:70000,coal:35000,iron:17000,h:6},
-  'Command Center':{meat:70000,wood:70000,coal:35000,iron:17000,h:6},
-  'Research Center':{meat:80000,wood:80000,coal:40000,iron:20000,h:7},
-  'War Academy':{meat:85000,wood:85000,coal:42000,iron:21000,h:7},
-  'Infirmary':{meat:60000,wood:60000,coal:30000,iron:15000,h:5},
-  'Storehouse':{meat:45000,wood:45000,coal:22000,iron:11000,h:4},
-  "Hunter's Hut":{meat:35000,wood:35000,coal:17000,iron:8000,h:3},
-  'Sawmill':{meat:30000,wood:30000,coal:15000,iron:7000,h:3},
-  'Coal Mine':{meat:30000,wood:30000,coal:15000,iron:7000,h:3},
-  'Iron Mine':{meat:30000,wood:30000,coal:15000,iron:7000,h:3},
-  'Barricade':{meat:25000,wood:25000,coal:12000,iron:6000,h:2}
-};
+// Building names + per-level costs now come from WOS_DB.buildings (database.js),
+// which is transcribed from wostools.net's published per-level tables instead
+// of an estimated growth curve.
+const buildingNames = WOS_DB.buildings.names;
 let buildingPlans=[], buildingPlanId=0;
 
-function levelOptions(max=30){
+function levelOptions(building){
+  const info = WOS_DB.buildings.getSteps(building) || {maxLevel:30,hasFc:false};
+  const max = info.maxLevel || 30;
   let s='';
   for(let i=1;i<=max;i++) s+=`<option value="${i}">${i}</option>`;
-  for(let i=1;i<=10;i++) s+=`<option value="FC${i}">FC ${i}</option>`;
+  if (info.hasFc){ // only buildings that actually reach Fire Crystal levels get FC options
+    for(let i=1;i<=10;i++) s+=`<option value="FC${i}">FC ${i}</option>`;
+  }
   return s;
 }
 function addBuildingPlan(){
@@ -247,7 +234,25 @@ function removeBuildingPlan(id){
 function updatePlan(id,key,val){
   const p=buildingPlans.find(x=>x.id===id);
   if(!p)return;
-  p[key]=key==='building'?val:(val.startsWith('FC')?val:parseInt(val,10));
+  if(key==='building'){
+    p.building=val;
+    // clamp from/to to the new building's max level (e.g. Barricade tops out at 10, no FC)
+    const info=WOS_DB.buildings.getSteps(val)||{maxLevel:30,hasFc:false};
+    const clamp=(v)=>{
+      if(typeof v==='string'){ // 'FCn'
+        return info.hasFc ? v : info.maxLevel;
+      }
+      return Math.min(v, info.maxLevel);
+    };
+    p.from=clamp(p.from);
+    p.to=clamp(p.to);
+    if(WOS_DB.buildings.levelToIndex(p.to) <= WOS_DB.buildings.levelToIndex(p.from)){
+      p.to = typeof p.from==='number' ? Math.min(p.from+1, info.maxLevel) : p.from;
+    }
+    renderBuildingPlans();
+  } else {
+    p[key]=val.startsWith('FC')?val:parseInt(val,10);
+  }
   calcBuilding();
 }
 function renderBuildingPlans(){
@@ -257,45 +262,43 @@ function renderBuildingPlans(){
     el.innerHTML='<div class="empty-plan">Belum ada building plan. Klik <b>+ Add Building Plan</b>.</div>';
     return;
   }
-  el.innerHTML=buildingPlans.map(p=>`
+  el.innerHTML=buildingPlans.map(p=>{
+    const opts=levelOptions(p.building);
+    return `
     <div class="building-plan">
       <div class="plan-selects">
         <label>Building<select onchange="updatePlan(${p.id},'building',this.value)">
           ${buildingNames.map(n=>`<option ${n===p.building?'selected':''}>${n}</option>`).join('')}
         </select></label>
-        <label>Current Level<select onchange="updatePlan(${p.id},'from',this.value)">${levelOptions().replace(`value="${p.from}"`,`value="${p.from}" selected`)}</select></label>
+        <label>Current Level<select onchange="updatePlan(${p.id},'from',this.value)">${opts.replace(`value="${p.from}"`,`value="${p.from}" selected`)}</select></label>
         <span class="arrow">→</span>
-        <label>Target Level<select onchange="updatePlan(${p.id},'to',this.value)">${levelOptions().replace(`value="${p.to}"`,`value="${p.to}" selected`)}</select></label>
+        <label>Target Level<select onchange="updatePlan(${p.id},'to',this.value)">${opts.replace(`value="${p.to}"`,`value="${p.to}" selected`)}</select></label>
         <button class="rm" onclick="removeBuildingPlan(${p.id})">Hapus</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function valNum(id){return Math.max(0,parseFloat(document.getElementById(id)?.value)||0);}
 function calcBuilding(){
-  let totals={meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,hours:0,levels:0};
+  let totals={meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,levels:0};
   buildingPlans.forEach(p=>{
-    const b=buildingBase[p.building]||buildingBase.Furnace;
-    let from=typeof p.from==='number'?p.from:30, to=typeof p.to==='number'?p.to:30;
-    if(typeof p.from==='string') from=30+parseInt(p.from.slice(2)||0);
-    if(typeof p.to==='string') to=30+parseInt(p.to.slice(2)||0);
-    const steps=Math.max(0,to-from);
-    const scale=1+Math.max(0,Math.min(50,(from+to)/2-1))*0.09;
-    totals.meat+=b.meat*steps*scale;
-    totals.wood+=b.wood*steps*scale;
-    totals.coal+=b.coal*steps*scale;
-    totals.iron+=b.iron*steps*scale;
-    if(to>30){
-      const fcSteps=Math.max(0,to-Math.max(30,from));
-      totals.fc+=fcSteps*1;
-      totals.rfc+=Math.max(0,fcSteps-4);
-    }
-    totals.hours+=b.h*steps*scale;
-    totals.levels+=steps;
+    const cost=WOS_DB.buildings.costBetween(p.building,p.from,p.to);
+    totals.meat+=cost.meat; totals.wood+=cost.wood; totals.coal+=cost.coal; totals.iron+=cost.iron;
+    totals.fc+=cost.fc; totals.rfc+=cost.rfc; totals.seconds+=cost.seconds;
+    const fi=WOS_DB.buildings.levelToIndex(p.from), ti=WOS_DB.buildings.levelToIndex(p.to);
+    totals.levels+=Math.max(0,ti-fi);
   });
+
+  // Construction speed bonuses stack additively and reduce time as
+  // time / (1 + totalBonus%/100) — matching WoSTools' documented formula
+  // (e.g. 10h at +50% bonus => 10/1.5 = 6.67h), not a flat percentage cut.
   const bonus=valNum('vipBonus')+valNum('researchBonus')+valNum('allianceBonus')+valNum('islandBonus')+valNum('facilityBonus')+valNum('zinmanBonus')+valNum('hyenaBonus')+valNum('vpBonus')+(document.getElementById('mercantilism')?.checked?10:0);
-  const speed=Math.max(0,1-bonus/100);
-  totals.hours=Math.max(0,totals.hours*speed-valNum('agnesBonus'));
-  if(document.getElementById('doubleTime')?.checked) totals.hours*=0.8;
+  let totalHours=totals.seconds/3600;
+  totalHours = totalHours/(1+bonus/100);
+  // Agnes Project Management shaves a flat number of hours off EACH building
+  // upgrade step (not once off the grand total).
+  totalHours = Math.max(0, totalHours - valNum('agnesBonus')*totals.levels);
+  if(document.getElementById('doubleTime')?.checked) totalHours*=0.8;
 
   const available={meat:valNum('resMeat'),wood:valNum('resWood'),coal:valNum('resCoal'),iron:valNum('resIron'),fc:valNum('resFC'),rfc:valNum('resRFC')};
   const names={meat:'🥩 Meat',wood:'🪵 Wood',coal:'🪨 Coal',iron:'⛓️ Iron',fc:'🔥 Fire Crystals',rfc:'💠 Refined FC'};
@@ -304,7 +307,7 @@ function calcBuilding(){
     const ok=available[k]>=need;
     return `<div class="stat ${ok?'ok':'warn'}"><div class="n">${need.toLocaleString('id-ID')}</div><div class="l">${names[k]} ${available[k]?'· tersedia '+available[k].toLocaleString('id-ID'):''}</div></div>`;
   }).join('');
-  const days=Math.floor(totals.hours/24), remH=totals.hours%24, h=Math.floor(remH), min=Math.round((remH-h)*60);
+  const days=Math.floor(totalHours/24), remH=totalHours%24, h=Math.floor(remH), min=Math.round((remH-h)*60);
   cards+=`<div class="stat"><div class="n">${days}d ${h}h ${min}m</div><div class="l">Total Time · ${bonus.toFixed(1)}% speed bonus</div></div>`;
   cards+=`<div class="stat"><div class="n">${totals.levels}</div><div class="l">Upgrade Steps</div></div>`;
   document.getElementById('buildingResult').innerHTML=cards;
