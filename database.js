@@ -16,7 +16,12 @@ const WOS_DB = {
     T9:{meat:1394,wood:1046,coal:244,iron:51,seconds:131,power:50,hoc:1485,svs:45,koi:30,as:18},
     T10:{meat:2788,wood:2091,coal:488,iron:102,seconds:152,power:66,hoc:1960,svs:60,koi:39,as:24},
     T11:{meat:6970,wood:5228,coal:1220,iron:253,seconds:180,power:80,hoc:2520,svs:75,koi:49,as:30},
-    T12:{meat:9143,wood:8451,coal:1755,iron:418,seconds:480,power:178,hoc:2957,svs:94,koi:57,as:35, promotion:{meat:2173,wood:3223,coal:535,iron:165,seconds:8}}
+    /* promotion = verified T11→T12 promotion delta (Target − From). The Troop
+       Training Calculator now derives this same delta generically for every
+       tier pair, so this object is kept only as a cross-check reference and
+       is not read directly by script.js. seconds here is the T12-T11 time
+       difference (480-180), consistent with the meat/wood/coal/iron deltas. */
+    T12:{meat:9143,wood:8451,coal:1755,iron:418,seconds:480,power:178,hoc:2957,svs:94,koi:57,as:35, promotion:{meat:2173,wood:3223,coal:535,iron:165,seconds:300}}
   },
   troopTypes:['Infantry','Lancer','Marksman'],
   chiefGearPieces:[
