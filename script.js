@@ -615,3 +615,69 @@ function calcGearDB(){
  const el=document.getElementById('cgResult');if(el)el.innerHTML=cards.map(x=>`<div class="stat"><div class="n">${fmt(x[1])}</div><div class="l">${x[0]}</div></div>`).join('');
 }
 window.openModal=function(id){_openModalLegacy(id);if(id==='troopsModal')renderTroopDB();if(id==='warAcademyModal')renderWarAcademyDB();if(id==='charmModal')renderCharmDB();if(id==='chiefGearModal')renderGearDB();};
+
+
+// ---------- SvS PREP PHASE CALCULATOR ----------
+const SVS_DAYS=[
+ {name:'Day 1',theme:'City Construction',items:[
+  ['Chief Charm Score',70,'score'],['Fire Crystal for Building',2000,'count'],['Construction Speedup (1m)',30,'minutes'],['Building Upgrade Start',0,'custom']
+ ]},
+ {name:'Day 2',theme:'Research Day',items:[
+  ['Research Speedup (1m)',30,'minutes'],['Fire Crystal Shard for Research',300,'count'],['Gathering (1m)',10,'minutes'],['Hero Shard',100,'count'],['Expert Sigil',6000,'count'],['Book of Knowledge',60,'count']
+ ]},
+ {name:'Day 3',theme:'Beast Slay',items:[
+  ['Chief Charm Score',70,'score'],['Polar Terror Rally Kill',30000,'count'],['Pet Advancement Score',50,'score'],['Chief Stamina',20,'count']
+ ]},
+ {name:'Day 4',theme:'Hero Development',items:[
+  ['Troop Training',1,'troop'],['Troop Promotion',1,'troop'],['Mithril',144000,'count'],['Hero Gear Essence Stone',10,'count'],['Hero Gear Widget',500,'count'],['Chief Charm Score',70,'score']
+ ]},
+ {name:'Day 5',theme:'Power Boost',items:[
+  ['Chief Gear Score',1,'score'],['Chief Charm Score',70,'score'],['Fire Crystal',2000,'count'],['Fire Crystal Shard',300,'count'],['Mithril',144000,'count'],['Hero Gear Essence Stone',10,'count'],['Hero Gear Widget',500,'count'],['Speedup (1m)',30,'minutes'],['Pet Advancement Score',50,'score']
+ ]}
+];
+let svsDay=0;
+let svsValues=SVS_DAYS.map(d=>d.items.map(()=>0));
+function renderSVS(){
+ const tabs=document.getElementById('svsTabs'), head=document.getElementById('svsDayHead'), list=document.getElementById('svsActivities');
+ if(!tabs||!head||!list)return;
+ tabs.innerHTML=SVS_DAYS.map((d,i)=>`<button class="svs-tab ${i===svsDay?'active':''}" onclick="setSVSDay(${i})"><b>${d.name}</b><small>${d.theme}</small><em>${fmt(svsDayTotal(i))} pts</em></button>`).join('');
+ const d=SVS_DAYS[svsDay]; head.innerHTML=`<div><b>${d.name}: ${d.theme}</b><small>Masukkan jumlah yang direncanakan. Total tersimpan otomatis di browser.</small></div><button class="mini-btn" onclick="resetSVSDay()">Reset Day</button>`;
+ list.innerHTML=d.items.map((it,i)=>{const val=svsValues[svsDay][i]||0;return `<div class="svs-card"><div><b>${it[0]}</b><small>${fmt(it[1])} pts ${it[2]==='minutes'?'per minute':it[2]==='score'?'per score point':it[2]==='troop'?'per applicable troop':''}</small></div><div class="stepper"><button onclick="changeSVS(${i},-1)">−</button><input type="number" min="0" value="${val}" oninput="setSVS(${i},this.value)"><button onclick="changeSVS(${i},1)">+</button></div><strong>${fmt(val*it[1])}</strong></div>`}).join('');
+ calcSVS();
+}
+function setSVSDay(i){svsDay=i;renderSVS();}
+function changeSVS(i,delta){svsValues[svsDay][i]=Math.max(0,(svsValues[svsDay][i]||0)+delta);saveSVS();renderSVS();}
+function setSVS(i,v){svsValues[svsDay][i]=Math.max(0,Number(v)||0);saveSVS();calcSVS();}
+function resetSVSDay(){svsValues[svsDay]=SVS_DAYS[svsDay].items.map(()=>0);saveSVS();renderSVS();}
+function svsDayTotal(i){return SVS_DAYS[i].items.reduce((sum,it,j)=>sum+(svsValues[i][j]||0)*it[1],0);}
+function calcSVS(){
+ const total=SVS_DAYS.reduce((s,_,i)=>s+svsDayTotal(i),0), target=Math.max(0,Number(document.getElementById('svsTarget')?.value)||0), pct=target?Math.min(100,total/target*100):0;
+ const gt=document.getElementById('svsGrandTotal');if(gt)gt.textContent=fmt(total)+' pts';
+ const bar=document.getElementById('svsProgressBar');if(bar)bar.style.width=pct+'%';
+ const rem=document.getElementById('svsRemaining');if(rem)rem.textContent=total>=target?'Target reached!':fmt(target-total)+' pts remaining';
+ const bd=document.getElementById('svsBreakdown');if(bd)bd.innerHTML=SVS_DAYS.map((d,i)=>`<div class="svs-bar-row"><div><b>${d.name}</b><small>${d.theme}</small></div><div class="svs-bar"><span style="width:${total?svsDayTotal(i)/total*100:0}%"></span></div><strong>${fmt(svsDayTotal(i))}</strong></div>`).join('');
+}
+function saveSVS(){try{localStorage.setItem('calc_svs_values',JSON.stringify(svsValues));localStorage.setItem('calc_svs_target',document.getElementById('svsTarget')?.value||1000000)}catch(e){}}
+function loadSVS(){try{const v=JSON.parse(localStorage.getItem('calc_svs_values'));if(Array.isArray(v))svsValues=v;const t=localStorage.getItem('calc_svs_target');if(t&&document.getElementById('svsTarget'))document.getElementById('svsTarget').value=t}catch(e){}}
+function svsImport(type){
+ let added=0;
+ if(type==='troops'||type==='all'){
+   const q=Number(document.getElementById('dbTroopQty')?.value)||0; const t=document.getElementById('dbTroopTier')?.value||'T1'; const v=WOS_DB.troops[t]; const pts=q*(v?.svs||0); const idx=SVS_DAYS[3].items.findIndex(x=>x[0]==='Troop Training'); if(idx>=0)svsValues[3][idx]+=q; added+=pts;
+ }
+ if(type==='charm'||type==='all'){
+   const cur=Number(document.getElementById('chCur')?.value||1),tar=Number(document.getElementById('chTar')?.value||1),count=Number(document.getElementById('chCount')?.value)||0; const pts=Math.max(0,tar-cur)*count*70; const idx=SVS_DAYS[3].items.findIndex(x=>x[0]==='Chief Charm Score');if(idx>=0)svsValues[3][idx]+=Math.max(0,tar-cur)*count;added+=pts;
+ }
+ if(type==='gear'||type==='all'){
+   const pieces=Number(document.getElementById('cgPieces')?.value)||0; const cur=Number(document.getElementById('cgCur')?.value||0),tar=Number(document.getElementById('cgTar')?.value||0); const score=Math.max(0,tar-cur)*pieces;const idx=SVS_DAYS[4].items.findIndex(x=>x[0]==='Chief Gear Score');if(idx>=0)svsValues[4][idx]+=score;added+=score;
+ }
+ if(type==='war'||type==='all'){
+   const shards=Number(document.getElementById('waShardInv')?.value)||0; const idx=SVS_DAYS[1].items.findIndex(x=>x[0].includes('Fire Crystal Shard'));if(idx>=0)svsValues[1][idx]+=shards;added+=shards*300;
+ }
+ if(type==='building'||type==='all'){
+   const plans=document.querySelectorAll('#buildingPlans .building-plan').length; const idx=SVS_DAYS[0].items.findIndex(x=>x[0].includes('Fire Crystal'));if(idx>=0)svsValues[0][idx]+=plans;added+=plans*2000;
+ }
+ if(type==='hero'||type==='all'){ const idx=SVS_DAYS[4].items.findIndex(x=>x[0].includes('Essence'));if(idx>=0)svsValues[4][idx]+=0; }
+ saveSVS(); renderSVS(); alert((type==='all'?'Import All':'Import '+type)+' selesai. '+fmt(added)+' pts berhasil ditambahkan.');
+}
+const _oldOpenModal=window.openModal;
+window.openModal=function(id){_oldOpenModal(id);if(id==='svsModal'){loadSVS();renderSVS();}};
