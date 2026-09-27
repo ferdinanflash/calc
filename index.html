@@ -3,37 +3,239 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hero Gear Calculator - Whiteout Survival</title>
+<title>Whiteout Survival Calculator</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
-  <h1>⚙️ Hero Gear Calculator</h1>
-  <div class="sub">Rencanakan upgrade Mastery Forging, Enhance/Mithril, dan Widget untuk gear hero Whiteout Survival.</div>
-  <div class="notice">⚠️ <strong>Perkiraan, bukan data resmi.</strong> Biaya Mastery Forging &amp; Mithril milestone diambil dari beberapa panduan komunitas dan cukup konsisten. Kurva XP Enhance (level 0–200) adalah <em>estimasi/interpolasi</em> karena angka pasti per level tidak tersedia publik — anggap sebagai perkiraan kasar, bukan angka final in-game.</div>
+  <header class="top">
+    <div>
+      <h1>❄️ Whiteout Survival Calculator</h1>
+      <div class="sub">Semua kalkulator dalam satu menu.</div>
+    </div>
+  </header>
 
-  <div class="panel">
-    <h2>🧩 Gear Pieces</h2>
-    <div id="pieces"></div>
-    <button class="add" onclick="addPiece()">+ Tambah Gear</button>
+  <section class="main-menu">
+    <h2>🧮 Main Menu</h2>
+    <div class="menu-grid">
+      <button class="menu-card building" onclick="openModal('buildingModal')">
+        <span class="menu-icon">🏗️</span><span>Building Calculator</span><small>Resource, waktu & upgrade</small>
+      </button>
+      <button class="menu-card" onclick="openModal('troopsModal')">
+        <span class="menu-icon">⚔️</span><span>Training Troops Calculator</span><small>Training & promotion</small>
+      </button>
+      <button class="menu-card" onclick="openModal('warAcademyModal')">
+        <span class="menu-icon">🎓</span><span>War Academy</span><small>Helios research</small>
+      </button>
+      <button class="menu-card" onclick="openModal('charmModal')">
+        <span class="menu-icon">💎</span><span>Chief Charm</span><small>Charm upgrade</small>
+      </button>
+      <button class="menu-card" onclick="openModal('chiefGearModal')">
+        <span class="menu-icon">🛡️</span><span>Chief Gear</span><small>Gear upgrade</small>
+      </button>
+      <button class="menu-card hero" onclick="openModal('heroGearModal')">
+        <span class="menu-icon">🏆</span><span>Hero Gear</span><small>Open existing Hero Gear Calculator</small>
+      </button>
+    </div>
+  </section>
+
+  <!-- BUILDING MODAL -->
+  <div class="modal" id="buildingModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('buildingModal')">×</button>
+      <div class="modal-title">🏗️ Building Calculator</div>
+      <div class="modal-sub">Terinspirasi dari struktur Building Calculator WoSTools: building plan, prerequisite, bonus speed, resource dan hasil upgrade.</div>
+
+      <div class="bc-toolbar">
+        <label class="check"><input type="checkbox" id="autoPrereq" checked> Auto-add Prerequisites</label>
+        <button class="mini-btn" onclick="addBuildingPlan()">+ Add Building Plan</button>
+      </div>
+      <div id="buildingPlans"></div>
+
+      <div class="bc-section">
+        <h3>⚡ Bonuses & Skills</h3>
+        <div class="bc-grid">
+          <label>VIP Bonus
+            <select id="vipBonus" onchange="calcBuilding()">
+              <option value="0">0%</option><option value="10">10%</option><option value="20">20%</option>
+            </select>
+          </label>
+          <label>Research Tech (%)
+            <input id="researchBonus" type="number" min="0" value="0" oninput="calcBuilding()">
+          </label>
+          <label>Alliance Tech (%)
+            <input id="allianceBonus" type="number" min="0" value="0" oninput="calcBuilding()">
+          </label>
+          <label>Island Bonus (%)
+            <input id="islandBonus" type="number" min="0" value="0" oninput="calcBuilding()">
+          </label>
+          <label>Facility Bonus
+            <select id="facilityBonus" onchange="calcBuilding()">
+              <option value="0">None (0%)</option><option value="5">5%</option><option value="8">8%</option><option value="13">13%</option>
+            </select>
+          </label>
+          <label>Zinman Skill
+            <select id="zinmanBonus" onchange="calcBuilding()">
+              <option value="0">Lv 0 (0%)</option><option value="3">Lv 1 (3%)</option><option value="6">Lv 2 (6%)</option><option value="9">Lv 3 (9%)</option><option value="12">Lv 4 (12%)</option><option value="15">Lv 5 (15%)</option>
+            </select>
+          </label>
+          <label>Agnes Project Mgmt
+            <select id="agnesBonus" onchange="calcBuilding()">
+              <option value="0">Lv 0 (-0h)</option><option value="2">Lv 1 (-2h)</option><option value="3">Lv 2 (-3h)</option><option value="4">Lv 3 (-4h)</option><option value="6">Lv 4 (-6h)</option><option value="8">Lv 5 (-8h)</option>
+            </select>
+          </label>
+          <label>Hyena Skill
+            <select id="hyenaBonus" onchange="calcBuilding()">
+              <option value="0">Lv 0 (0%)</option><option value="5">Lv 1 (5%)</option><option value="7">Lv 2 (7%)</option><option value="9">Lv 3 (9%)</option><option value="12">Lv 4 (12%)</option><option value="15">Lv 5 (15%)</option>
+            </select>
+          </label>
+          <label>Vice President
+            <select id="vpBonus" onchange="calcBuilding()">
+              <option value="0">None</option><option value="10">+10%</option><option value="15">+15% (Supreme)</option>
+            </select>
+          </label>
+          <label class="checkline"><input id="mercantilism" type="checkbox" onchange="calcBuilding()"> Mercantilism (+10%)</label>
+          <label class="checkline"><input id="doubleTime" type="checkbox" onchange="calcBuilding()"> Double Time (-20% time)</label>
+        </div>
+      </div>
+
+      <div class="bc-section">
+        <h3>🎒 Available Resources</h3>
+        <div class="bc-grid resources">
+          <label>🥩 Meat<input id="resMeat" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label>🪵 Wood<input id="resWood" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label>🪨 Coal<input id="resCoal" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label>⛓️ Iron<input id="resIron" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label>🔥 Fire Crystals<input id="resFC" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label>💠 Refined FC<input id="resRFC" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+        </div>
+      </div>
+
+      <div class="bc-section result">
+        <h3>📊 Results</h3>
+        <div id="buildingResult" class="result-grid"></div>
+      </div>
+      <div class="source-note">Referensi fitur: WoSTools Building Calculator. Data angka di sini adalah kalkulator lokal dasar dan bukan salinan database proprietary.</div>
+    </div>
   </div>
 
-  <div class="panel">
-    <h2>🔧 Widget Calculator</h2>
-    <div id="widgets"></div>
-    <button class="add secondary" onclick="addWidget()">+ Tambah Widget Calculator</button>
+  <!-- OTHER MODALS -->
+  <div class="modal" id="troopsModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('troopsModal')">×</button>
+      <div class="modal-title">⚔️ Training Troops Calculator</div>
+      <div class="modal-sub">Training & promotion untuk Infantry, Lancer, dan Marksman. Mendukung T1–T12, speed bonus, resource gap dan event points.</div>
+      <div class="calc-toolbar">
+        <label>Troop Type<select id="ttType" onchange="calcTroops()"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
+        <label>Mode<select id="ttMode" onchange="calcTroops()"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
+        <label>Tier<select id="ttTier" onchange="calcTroops()"></select></label>
+        <label>Quantity<input id="ttQty" type="number" min="0" value="1000" oninput="calcTroops()"></label>
+      </div>
+      <div class="bc-section">
+        <h3>⚡ Training Speed</h3>
+        <div class="bc-grid">
+          <label>Total Speed Bonus (%)<input id="ttSpeed" type="number" value="0" min="0" oninput="calcTroops()"></label>
+          <label>Training Queues<input id="ttQueues" type="number" value="1" min="1" oninput="calcTroops()"></label>
+          <label>Ministry / Extra Capacity<input id="ttCapacity" type="number" value="0" min="0" oninput="calcTroops()"></label>
+        </div>
+      </div>
+      <div class="bc-section">
+        <h3>🎒 Available Resources</h3>
+        <div class="bc-grid">
+          <label>🥩 Meat<input id="ttMeat" type="number" value="0" min="0" oninput="calcTroops()"></label>
+          <label>🪵 Wood<input id="ttWood" type="number" value="0" min="0" oninput="calcTroops()"></label>
+          <label>🪨 Coal<input id="ttCoal" type="number" value="0" min="0" oninput="calcTroops()"></label>
+          <label>⛓️ Iron<input id="ttIron" type="number" value="0" min="0" oninput="calcTroops()"></label>
+        </div>
+      </div>
+      <div class="bc-section result"><h3>📊 Summary</h3><div id="troopResult" class="result-grid"></div></div>
+    </div>
   </div>
 
-  <div class="panel">
-    <h2>📊 Ringkasan Kebutuhan Total</h2>
-    <div class="summary-grid" id="summary"></div>
+  <div class="modal" id="warAcademyModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('warAcademyModal')">×</button>
+      <div class="modal-title">🎓 War Academy</div>
+      <div class="modal-sub">Helios research untuk ketiga troop type. Struktur mengikuti kalkulator WoSTools: current → target, prerequisite, speed bonus dan resource summary.</div>
+      <div class="bc-toolbar">
+        <label class="check"><input id="waPrereq" type="checkbox" checked onchange="calcWarAcademy()"> Auto-add Prerequisites</label>
+        <button class="mini-btn" onclick="waSetAll(5)">Set All Helios Lv.5</button>
+      </div>
+      <div class="bc-grid">
+        <label>Research Speed (%)<input id="waSpeed" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+        <label>State Buff (%)<input id="waState" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+        <label>VP Buff<select id="waVP" onchange="calcWarAcademy()"><option value="0">None</option><option value="10">VP +10%</option><option value="15">SVP +15%</option></select></label>
+      </div>
+      <div id="warBranches"></div>
+      <div class="bc-section">
+        <h3>🎒 Available Resources</h3>
+        <div class="bc-grid">
+          <label>🔥 FC Shards<input id="waShards" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label>⚙️ Steel<input id="waSteel" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label>🥩 Meat<input id="waMeat" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label>🪵 Wood<input id="waWood" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label>🪨 Coal<input id="waCoal" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label>⛓️ Iron<input id="waIron" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+        </div>
+      </div>
+      <div class="bc-section result"><h3>📊 Research Summary</h3><div id="waResult" class="result-grid"></div></div>
+    </div>
   </div>
 
-  <footer>
-    Sumber estimasi: panduan komunitas Whiteout Survival (Mastery Forging: 10 Essence Stone × level, Mythic mulai level 11; Mithril milestone +20/+40/+60/+80/+100: 10/20/30/40/50 Mithril &amp; 3/5/5/10/10 Mythic; Widget: +5 per level naik +5). Tidak berafiliasi dengan Century Games. Untuk estimasi saja.
-  </footer>
+  <div class="modal" id="charmModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('charmModal')">×</button>
+      <div class="modal-title">💎 Chief Charm</div>
+      <div class="modal-sub">18 charm slots: 3 charm per gear piece, grouped by Lancer, Infantry dan Marksman. Level 4+ menggunakan sub-level seperti referensi.</div>
+      <div class="bc-toolbar"><button class="mini-btn" onclick="charmSetAll(16)">Set All Desired 16</button><button class="mini-btn" onclick="charmReset()">Reset All</button></div>
+      <div id="charmGroups"></div>
+      <div class="bc-section">
+        <h3>🎒 Available Materials</h3>
+        <div class="bc-grid">
+          <label>📘 Charm Guides<input id="chGuides" type="number" value="0" min="0" oninput="calcCharms()"></label>
+          <label>📗 Charm Designs<input id="chDesigns" type="number" value="0" min="0" oninput="calcCharms()"></label>
+          <label>💎 Jewel Secrets<input id="chSecrets" type="number" value="0" min="0" oninput="calcCharms()"></label>
+        </div>
+      </div>
+      <div class="bc-section result"><h3>📊 Total Summary</h3><div id="charmResult" class="result-grid"></div></div>
+    </div>
+  </div>
+
+  <div class="modal" id="chiefGearModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('chiefGearModal')">×</button>
+      <div class="modal-title">🛡️ Chief Gear</div>
+      <div class="modal-sub">6 Chief Gear pieces dengan jalur Green → Blue → Purple → Gold → Red. Hitung material, power dan SvS points.</div>
+      <div class="bc-toolbar"><button class="mini-btn" onclick="gearSetAll('red3')">Set All Target Red T3</button><button class="mini-btn" onclick="gearReset()">Reset All</button></div>
+      <div id="gearRows"></div>
+      <div class="bc-section">
+        <h3>🎒 Available Resources</h3>
+        <div class="bc-grid">
+          <label>⚙️ Hardened Alloy<input id="cgAlloy" type="number" value="0" min="0" oninput="calcGear()"></label>
+          <label>🧪 Polishing Solution<input id="cgPolish" type="number" value="0" min="0" oninput="calcGear()"></label>
+          <label>📜 Design Plans<input id="cgPlans" type="number" value="0" min="0" oninput="calcGear()"></label>
+          <label>🌙 Lunar Amber<input id="cgAmber" type="number" value="0" min="0" oninput="calcGear()"></label>
+        </div>
+      </div>
+      <div class="bc-section result"><h3>📊 Total Summary</h3><div id="gearResult" class="result-grid"></div></div>
+    </div>
+  </div>
+
+  <!-- EXISTING HERO GEAR -->  <!-- EXISTING HERO GEAR -->
+  <div class="modal" id="heroGearModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('heroGearModal')">×</button>
+      <div class="modal-title">🏆 Hero Gear Calculator</div>
+      <div class="modal-sub">Calculator Hero Gear yang sudah ada tetap dipakai di sini.</div>
+      <div class="notice">⚠️ <strong>Perkiraan, bukan data resmi.</strong> Biaya Mastery Forging, Mithril milestone, Enhance XP dan Widget mengikuti data yang sudah ada pada calculator Anda.</div>
+      <div class="panel inner-panel"><h2>🧩 Gear Pieces</h2><div id="pieces"></div><button class="add" onclick="addPiece()">+ Tambah Gear</button></div>
+      <div class="panel inner-panel"><h2>🔧 Widget Calculator</h2><div id="widgets"></div><button class="add secondary" onclick="addWidget()">+ Tambah Widget Calculator</button></div>
+      <div class="panel inner-panel"><h2>📊 Ringkasan Kebutuhan Total</h2><div class="summary-grid" id="summary"></div></div>
+    </div>
+  </div>
 </div>
 
+<script src="database.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
