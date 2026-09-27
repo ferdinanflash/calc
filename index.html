@@ -230,6 +230,7 @@
       <button class="modal-close" onclick="closeModal('svsModal')">×</button>
       <div class="modal-title">🏆 SvS Calculator</div>
       <div class="modal-sub">5-day SvS Prep Phase: City Construction, Research, Beast Slay, Hero Development, dan Power Boost.</div>
+      <div class="svs-legend"><span class="svs-tier high">Nilai Tinggi</span><span class="svs-tier medium">Nilai Sedang</span><span class="svs-tier low">Nilai Rendah</span></div>
 
       <div class="svs-import">
         <strong>🔄 Import dari Calculator</strong>
@@ -257,44 +258,7 @@
         <h3>📊 All Days Breakdown</h3>
         <div class="svs-breakdown" id="svsBreakdown"></div>
       </div>
-      <div class="source-note">Point values and 5-day structure mengikuti kalkulator SvS WoSTools.</div>
-    </div>
-  </div>
-
-  <!-- EXISTING HERO GEAR -->  <!-- SVS MODAL -->
-  <div class="modal" id="svsModal" aria-hidden="true">
-    <div class="modal-box modal-xl">
-      <button class="modal-close" onclick="closeModal('svsModal')">×</button>
-      <div class="modal-title">🏆 SvS Calculator</div>
-      <div class="modal-sub">5-day SvS Prep Phase: City Construction, Research, Beast Slay, Hero Development, dan Power Boost.</div>
-
-      <div class="svs-import">
-        <strong>🔄 Import dari Calculator</strong>
-        <button class="mini-btn" onclick="svsImport('building')">🏗️ Building</button>
-        <button class="mini-btn" onclick="svsImport('troops')">⚔️ Troops</button>
-        <button class="mini-btn" onclick="svsImport('war')">🎓 War Academy</button>
-        <button class="mini-btn" onclick="svsImport('charm')">💎 Charms</button>
-        <button class="mini-btn" onclick="svsImport('gear')">🛡️ Chief Gear</button>
-        <button class="mini-btn" onclick="svsImport('hero')">🏆 Hero Gear</button>
-        <button class="mini-btn" onclick="svsImport('all')">⭐ Import All</button>
-      </div>
-
-      <div class="svs-target bc-section">
-        <label>🎯 Target Score <input id="svsTarget" type="number" min="0" value="1000000" oninput="calcSVS()"></label>
-        <div class="svs-total" id="svsGrandTotal">0 pts</div>
-        <div class="svs-progress"><span id="svsProgressBar"></span></div>
-        <div class="svs-remaining" id="svsRemaining">1,000,000 pts remaining</div>
-      </div>
-
-      <div class="svs-tabs" id="svsTabs"></div>
-      <div class="svs-day-head" id="svsDayHead"></div>
-      <div class="svs-activities" id="svsActivities"></div>
-
-      <div class="bc-section">
-        <h3>📊 All Days Breakdown</h3>
-        <div class="svs-breakdown" id="svsBreakdown"></div>
-      </div>
-      <div class="source-note">Point values and 5-day structure mengikuti kalkulator SvS WoSTools.</div>
+      <div class="source-note">Point values &amp; struktur 5 hari diverifikasi dari wostools.net/svs-prep-phase-guide (data per Oktober 2025, dicek 2026-09-28). Nilai dapat berubah bila Century Games mengubah aturan event.</div>
     </div>
   </div>
 
