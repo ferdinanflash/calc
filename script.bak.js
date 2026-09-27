@@ -394,6 +394,7 @@ function resetCharms(){renderCharms();calcCharms();}
 function charmSuggestion(type){document.getElementById('charmSuggestion').textContent=type==='stats'?'Saran akan memprioritaskan upgrade dengan gain statistik paling efisien berdasarkan resource yang tersedia.':'Saran akan memprioritaskan upgrade yang menghasilkan poin event paling tinggi.';}
 
 // ---------- CHIEF GEAR ----------
+const gearPieces=['Helmet','Watch','Jacket','Pants','Ring','Cane'];
 const gearRanks=['Green 0★','Green 1★','Green 2★','Green 3★','Blue 0★','Blue 1★','Blue 2★','Blue 3★','Purple 0★','Purple 1★','Purple 2★','Purple 3★','Gold 0★','Gold 1★','Gold 2★','Gold 3★','Gold T1 0★','Gold T1 1★','Gold T1 2★','Gold T1 3★','Gold T2 0★','Gold T2 1★','Gold T2 2★','Gold T2 3★','Red T1 0★','Red T1 1★','Red T1 2★','Red T1 3★','Red T2 0★','Red T2 1★','Red T2 2★','Red T2 3★','Red T3 0★','Red T3 1★','Red T3 2★','Red T3 3★','Red T4 0★','Red T4 1★','Red T4 2★','Red T4 3★'];
 function gearOptions(sel){return gearRanks.map(x=>`<option ${x===sel?'selected':''}>${x}</option>`).join('');}
 function renderChiefGear(){
@@ -526,9 +527,9 @@ function calcGear(){
 }
 
 // Initialize modal calculators when opened
-const openModalBase=openModal;
+const _openModal=openModal;
 openModal=function(id){
- openModalBase(id);
+ _openModal(id);
  if(id==='troopsModal') initTroops();
  if(id==='warAcademyModal') initWarAcademy();
  if(id==='charmModal') initCharms();
