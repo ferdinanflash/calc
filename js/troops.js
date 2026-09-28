@@ -1,5 +1,14 @@
 // Training / Promotion Troops Calculator
 
+// Event points / power per troop. Training = full target-tier value. Promotion = difference
+// between target and source tier (wostools.net/wiki/troops: "Promotion awards the difference
+// between tiers", e.g. T10->T11 SvS = 75 - 60 = 15). Power for promotion uses the same difference
+// (the source troop's power is already counted).
+function troopPointsPer(mode,fromKey,targetKey){
+ const t=WOS_DB.troops[targetKey], f=WOS_DB.troops[fromKey];
+ const d=(k)=>mode==='promote'&&f?Math.max(0,t[k]-f[k]):t[k];
+ return {svs:d('svs'),hoc:d('hoc'),koi:d('koi'),power:d('power'),as:d('as')};
+}
 function tierOpts(selected){return Object.keys(WOS_DB.troops).map(t=>`<option value="${t}" ${t===selected?'selected':''}>${t}</option>`).join('');}
 function renderTroopDB(){
  const m=document.getElementById('troopsModal'); if(!m)return;
@@ -30,7 +39,7 @@ function renderTroopDB(){
  </div>
  <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Calculation</h3><div id="dbTroopResult" class="result-grid"></div></div>
  <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Time</th><th>Power</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
- <div class="source-note">Training memakai biaya penuh tier target. Promotion memakai selisih biaya (Target − From) per referensi wostools.net/troop-training-calculator, tapi tetap mendapat poin event (SvS/HoC/KoI/Power) senilai tier target penuh. Data dasar per tier diverifikasi 2026-09-28; selisih Promotion di luar T11→T12 adalah estimasi dari selisih tabel biaya karena WoSTools belum mempublikasikan tabel promotion terpisah untuk setiap tier.</div>`;
+ <div class="source-note">Training memakai biaya dan poin penuh tier target. Promotion memakai selisih biaya, waktu, dan poin event (Target − From) sesuai wostools.net/wiki/troops. Data dasar per tier diverifikasi 2026-09-28; selisih Promotion di luar T11→T12 dihitung dari selisih tabel biaya.</div>`;
  const modeSel=document.getElementById('dbTroopMode');
  const toggleFrom=()=>{ document.getElementById('dbTroopFromWrap')?.classList.toggle('hidden', modeSel.value!=='promote'); };
  modeSel.addEventListener('change',()=>{toggleFrom();calcTroopDB();});
@@ -70,11 +79,9 @@ function calcTroopDB(){
  if(advanced) time*=0.8;
  time/=queues;
 
- // Event points always use the target tier's full value for both Training and
- // Promotion — matching wostools.net's own note that promotion "uses the same
- // resources [i.e. a smaller amount] but takes the target tier's point value".
- const zero = invalidPromote?0:1;
- const svsPts=target.svs*qty*zero, hocPts=target.hoc*qty*zero, koiPts=target.koi*qty*zero, powerPts=target.power*qty*zero;
+ // Event points: Training = full target-tier value; Promotion = target minus From tier.
+ const per=invalidPromote?{svs:0,hoc:0,koi:0,power:0}:troopPointsPer(mode,fromKey,targetKey);
+ const svsPts=per.svs*qty, hocPts=per.hoc*qty, koiPts=per.koi*qty, powerPts=per.power*qty;
 
  const avail={meat:Math.max(0,Number(document.getElementById('dbTroopMeat')?.value)||0),wood:Math.max(0,Number(document.getElementById('dbTroopWood')?.value)||0),coal:Math.max(0,Number(document.getElementById('dbTroopCoal')?.value)||0),iron:Math.max(0,Number(document.getElementById('dbTroopIron')?.value)||0)};
  const need={meat,wood,coal,iron};
