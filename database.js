@@ -21,7 +21,14 @@ const WOS_DB = {
        tier pair, so this object is kept only as a cross-check reference and
        is not read directly by script.js. seconds here is the T12-T11 time
        difference (480-180), consistent with the meat/wood/coal/iron deltas. */
-    T12:{meat:9143,wood:8451,coal:1755,iron:418,seconds:480,power:178,hoc:2957,svs:94,koi:57,as:35, promotion:{meat:2173,wood:3223,coal:535,iron:165,seconds:300}}
+    T12:{meat:9143,wood:8451,coal:1755,iron:418,seconds:480,power:130,hoc:2957,svs:94,koi:57,as:35, promotion:{meat:2173,wood:3223,coal:535,iron:165,seconds:300}},
+  },
+  /* Unit power by FC level, used by Training Troops Calculator.
+     T10 uses Base + FC1..FC10; T11/T12 use FC0..FC10. */
+  troopPower:{
+    T10:[66,71,76,83,88,95,99,104,110,117,124],
+    T11:[80,86,92,100,106,114,120,126,135,141,148],
+    T12:[130,138,146,156,166,178,188,198,210,222,235]
   },
   troopTypes:['Infantry','Lancer','Marksman'],
   chiefGearPieces:[
