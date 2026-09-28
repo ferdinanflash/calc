@@ -4,24 +4,61 @@
 // between target and source tier (wostools.net/wiki/troops: "Promotion awards the difference
 // between tiers", e.g. T10->T11 SvS = 75 - 60 = 15). Power for promotion uses the same difference
 // (the source troop's power is already counted).
-function troopPointsPer(mode,fromKey,targetKey){
+function troopPowerPer(troopType,tierKey,fcLevel){
+ const base=WOS_DB.troops[tierKey]?.power||0;
+ const map=WOS_DB.troopPower?.[tierKey];
+ if(tierKey==='T3')return troopType==='Infantry'?6:5;
+ if(!map)return base;
+ const fc=Math.max(0,Math.min(10,Number(fcLevel)||0));
+ return map[fc]??map[0]??base;
+}
+function troopPointsPer(mode,fromKey,targetKey,troopType,fromFc,targetFc){
  const t=WOS_DB.troops[targetKey], f=WOS_DB.troops[fromKey];
  const d=(k)=>mode==='promote'&&f?Math.max(0,t[k]-f[k]):t[k];
- return {svs:d('svs'),hoc:d('hoc'),koi:d('koi'),power:d('power'),as:d('as')};
+ const targetPower=troopPowerPer(troopType,targetKey,targetFc);
+ const sourcePower=troopPowerPer(troopType,fromKey,fromFc);
+ return {
+   svs:d('svs'),hoc:d('hoc'),koi:d('koi'),
+   power:mode==='promote'&&f?Math.max(0,targetPower-sourcePower):targetPower,
+   as:d('as')
+ };
 }
 function tierOpts(selected){return Object.keys(WOS_DB.troops).map(t=>`<option value="${t}" ${t===selected?'selected':''}>${t}</option>`).join('');}
+function troopFcOptions(tierKey,selected=0){
+ const hasFc=WOS_DB.troopPower?.[tierKey];
+ if(!hasFc)return `<option value="0" selected>Base</option>`;
+ return hasFc.map((_,i)=>`<option value="${i}" ${i===selected?'selected':''}>${tierKey==='T10'&&i===0?'Base':`FC${i}`}</option>`).join('');
+}
+function syncTroopFcSelectors(){
+ const tier=document.getElementById('dbTroopTier')?.value;
+ const from=document.getElementById('dbTroopFrom')?.value;
+ const targetFc=document.getElementById('dbTroopTargetFc');
+ const fromFc=document.getElementById('dbTroopFromFc');
+ if(targetFc){
+   const old=Number(targetFc.value)||0;
+   targetFc.innerHTML=troopFcOptions(tier,old);
+   if([...targetFc.options].some(o=>+o.value===old))targetFc.value=String(old);
+ }
+ if(fromFc){
+   const old=Number(fromFc.value)||0;
+   fromFc.innerHTML=troopFcOptions(from,old);
+   if([...fromFc.options].some(o=>+o.value===old))fromFc.value=String(old);
+ }
+}
 function renderTroopDB(){
  const m=document.getElementById('troopsModal'); if(!m)return;
  const b=m.querySelector('.modal-box');
  if(b.dataset.built){calcTroopDB();return;} // already built: keep typed values, just recalculate
  const tiers=Object.keys(WOS_DB.troops), lastTier=tiers[tiers.length-1], prevTier=tiers[tiers.length-2]||tiers[0];
  b.innerHTML=`<button class="modal-close" onclick="closeModal('troopsModal')">×</button>
- <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion for Infantry, Lancer, and Marksman — T1–T12, speed bonuses, resource gaps, and event points.</div>
+ <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion for Infantry, Lancer, and Marksman — T1–T12, FC-adjusted troop power, speed bonuses, resource gaps, and event points.</div>
  <div class="bc-section"><div class="placeholder-grid">
  <label>Troop Type<select id="dbTroopType"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
  <label>Mode<select id="dbTroopMode"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
  <label id="dbTroopFromWrap" class="hidden">From Tier (Current)<select id="dbTroopFrom">${tierOpts(prevTier)}</select></label>
  <label>Target Tier<select id="dbTroopTier">${tierOpts(lastTier)}</select></label>
+ <label>Target FC Level<select id="dbTroopTargetFc"></select></label>
+ <label id="dbTroopFromFcWrap" class="hidden">From FC Level<select id="dbTroopFromFc"></select></label>
  <label>Quantity<input id="dbTroopQty" type="number" min="0" value="100000"></label>
  <label>Speed Bonus % <input id="dbTroopSpeed" type="number" min="0" value="0"></label>
  <label>Training Queues (parallel)<input id="dbTroopQueues" type="number" min="1" value="1"></label>
@@ -39,20 +76,32 @@ function renderTroopDB(){
    </div>
  </div>
  <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Calculation</h3><div id="dbTroopResult" class="result-grid"></div></div>
- <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Time</th><th>Power</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
- <div class="source-note">Training uses the full cost and points of the target tier. Promotion uses the difference in cost, time, and event points (Target − From) according to wostools.net/wiki/troops. Base tier data was verified on September 28, 2026; Promotion differences outside T11→T12 are calculated from the cost table differences.</div>`;
+ <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Time</th><th>Power / Unit</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
+ <div class="source-note">Training uses the full cost and event points of the target tier. Troop Power uses the verified per-unit FC table: T10 Base/FC0→FC10 = 66→124, T11 FC0→FC10 = 80→148, T12 FC0→FC10 = 130→235. Promotion uses the difference in cost, time, event points, and actual selected source/target troop power. Base tier data was verified on September 28, 2026; Promotion differences outside T11→T12 are calculated from the cost table differences.</div>`;
  const modeSel=document.getElementById('dbTroopMode');
- const toggleFrom=()=>{ document.getElementById('dbTroopFromWrap')?.classList.toggle('hidden', modeSel.value!=='promote'); };
- modeSel.addEventListener('change',()=>{toggleFrom();calcTroopDB();});
+ const typeSel=document.getElementById('dbTroopType');
+ const toggleFrom=()=>{
+   const promote=modeSel.value==='promote';
+   document.getElementById('dbTroopFromWrap')?.classList.toggle('hidden',!promote);
+   document.getElementById('dbTroopFromFcWrap')?.classList.toggle('hidden',!promote);
+ };
+ modeSel.addEventListener('change',()=>{toggleFrom();syncTroopFcSelectors();calcTroopDB();});
+ typeSel?.addEventListener('change',()=>{syncTroopFcSelectors();calcTroopDB();});
+ document.getElementById('dbTroopTier')?.addEventListener('change',()=>{syncTroopFcSelectors();calcTroopDB();});
+ document.getElementById('dbTroopFrom')?.addEventListener('change',()=>{syncTroopFcSelectors();calcTroopDB();});
  toggleFrom();
+ syncTroopFcSelectors();
  b.dataset.built='1';
- ['dbTroopTier','dbTroopFrom','dbTroopQty','dbTroopSpeed','dbTroopQueues','dbTroopAdvanced','dbTroopMeat','dbTroopWood','dbTroopCoal','dbTroopIron'].forEach(id=>document.getElementById(id)?.addEventListener('input',calcTroopDB));
+ ['dbTroopTargetFc','dbTroopFromFc','dbTroopQty','dbTroopSpeed','dbTroopQueues','dbTroopAdvanced','dbTroopMeat','dbTroopWood','dbTroopCoal','dbTroopIron'].forEach(id=>document.getElementById(id)?.addEventListener('input',calcTroopDB));
  calcTroopDB();
 }
 function calcTroopDB(){
  const tiers=Object.keys(WOS_DB.troops);
  const targetKey=document.getElementById('dbTroopTier')?.value||tiers[0];
  const fromKey=document.getElementById('dbTroopFrom')?.value||tiers[0];
+ const troopType=document.getElementById('dbTroopType')?.value||'Infantry';
+ const targetFc=Number(document.getElementById('dbTroopTargetFc')?.value)||0;
+ const fromFc=Number(document.getElementById('dbTroopFromFc')?.value)||0;
  const qty=valNum('dbTroopQty'), speed=valNum('dbTroopSpeed'), queues=Math.max(1,valNum('dbTroopQueues'));
  const advanced=document.getElementById('dbTroopAdvanced')?.checked;
  const mode=document.getElementById('dbTroopMode')?.value||'train';
@@ -80,7 +129,7 @@ function calcTroopDB(){
  time/=queues;
 
  // Event points: Training = full target-tier value; Promotion = target minus From tier.
- const per=invalidPromote?{svs:0,hoc:0,koi:0,power:0}:troopPointsPer(mode,fromKey,targetKey);
+ const per=invalidPromote?{svs:0,hoc:0,koi:0,power:0}:troopPointsPer(mode,fromKey,targetKey,troopType,fromFc,targetFc);
  const svsPts=per.svs*qty, hocPts=per.hoc*qty, koiPts=per.koi*qty, powerPts=per.power*qty;
 
  const avail={meat:valNum('dbTroopMeat'),wood:valNum('dbTroopWood'),coal:valNum('dbTroopCoal'),iron:valNum('dbTroopIron')};
