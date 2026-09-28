@@ -20,7 +20,7 @@ function levelOptions(building){
 function addBuildingPlan(){
   const id=buildingPlanId++;
   buildingPlans.push({id,building:'Furnace',from:1,to:2});
-  renderBuildingPlans();
+  renderBuildingPlans(); calcBuilding();
 }
 function removeBuildingPlan(id){
   buildingPlans=buildingPlans.filter(x=>x.id!==id);
@@ -68,7 +68,7 @@ function renderBuildingPlans(){
         <label>Current Level<select onchange="updatePlan(${p.id},'from',this.value)">${opts.replace(`value="${p.from}"`,`value="${p.from}" selected`)}</select></label>
         <span class="arrow">→</span>
         <label>Target Level<select onchange="updatePlan(${p.id},'to',this.value)">${opts.replace(`value="${p.to}"`,`value="${p.to}" selected`)}</select></label>
-        <button class="rm" onclick="removeBuildingPlan(${p.id})">Hapus</button>
+        <button class="rm" onclick="removeBuildingPlan(${p.id})">Remove</button>
       </div>
     </div>`;
   }).join('');
@@ -100,11 +100,10 @@ function calcBuilding(){
   let cards=Object.keys(names).map(k=>{
     const need=Math.ceil(totals[k]||0);
     const ok=available[k]>=need;
-    return `<div class="stat ${ok?'ok':'warn'}"><div class="n">${need.toLocaleString('id-ID')}</div><div class="l">${names[k]} ${available[k]?'· tersedia '+available[k].toLocaleString('id-ID'):''}</div></div>`;
+    return statCard(fmt(need),`${names[k]} ${available[k]?'· available '+fmt(available[k]):''}`,ok?'ok':'warn');
   }).join('');
-  const days=Math.floor(totalHours/24), remH=totalHours%24, h=Math.floor(remH), min=Math.round((remH-h)*60);
-  cards+=`<div class="stat"><div class="n">${days}d ${h}h ${min}m</div><div class="l">Total Time · ${bonus.toFixed(1)}% speed bonus</div></div>`;
-  cards+=`<div class="stat"><div class="n">${totals.levels}</div><div class="l">Upgrade Steps</div></div>`;
+  cards+=statCard(formatDuration(totalHours*3600),`Total Time · ${bonus.toFixed(1)}% speed bonus`);
+  cards+=statCard(fmt(totals.levels),'Upgrade Steps');
   document.getElementById('buildingResult').innerHTML=cards;
 }
 function initBuilding(){

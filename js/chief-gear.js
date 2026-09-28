@@ -29,10 +29,18 @@ function cgPrefix(){
  return cgPrefix.cache=p;
 }
 function cgCost(c,t){const p=cgPrefix(),o={};['alloy','solution','plans','amber','svs'].forEach(k=>o[k]=t>c?p[t][k]-p[c][k]:0);return o;}
-function cgNum(id){return Math.max(0,Number(document.getElementById(id)?.value)||0);}
+// Push cgState into the existing controls (no DOM rebuild).
+function syncGearControls(){
+ const G=WOS_DB.chiefGear;
+ for(let i=0;i<6;i++){const c=document.getElementById('cgCur'+i),t=document.getElementById('cgTar'+i);if(c)c.value=cgState.cur[i];if(t)t.value=cgState.tar[i];}
+ CG_MATS.forEach(([k])=>{const e=document.getElementById('cgRes_'+k);if(e)e.value=cgState.res[k]||0;});
+ G.exchange.forEach((_,i)=>{const e=document.getElementById('cgEx'+i);if(e)e.value=cgState.ex[i]||0;});
+ const v=document.getElementById('cgValeria');if(v)v.value=cgState.valeria;
+}
 function renderGearDB(){
  const m=document.getElementById('chiefGearModal');if(!m)return;
  const b=m.querySelector('.modal-box'),G=WOS_DB.chiefGear,L=G.levels;
+ if(b.dataset.built){syncGearControls();calcGearDB();return;} // already built: keep the DOM, just refresh
  const opts=(sel,ph)=>(ph?`<option value="">${ph}</option>`:'')+L.map((x,i)=>`<option value="${i}" ${i===sel?'selected':''}>${x.name}</option>`).join('');
  const maxRows=L.filter(x=>/^(Green 1★|Blue 3★|Purple 3★|Purple T1 3★|Gold 3★|Gold T1 3★|Gold T2 3★|Red 3★|Red T1 3★|Red T2 3★|Red T3 3★|Red T4 3★|Red T5 3★|Red T6 3★)$/.test(x.name));
  const exName={alloy:'Alloy',solution:'Solution',plans:'Plans',amber:'Amber'};
@@ -51,28 +59,32 @@ function renderGearDB(){
  <div class="bc-section"><h3><i class="bi bi-bag-fill"></i> Available Resources</h3><div class="bc-grid">${CG_MATS.map(([k,ic,nm])=>`<label>${ic} ${nm}<input id="cgRes_${k}" type="number" min="0" value="${cgState.res[k]||0}"></label>`).join('')}</div></div>
  <div class="bc-section"><h3><i class="bi bi-arrow-repeat"></i> Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${exName[e[0]]} » ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/week)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="amount of ${exName[e[0]]} to exchange"></label>`).join('')}</div>
   <div class="source-note">Enter the amount of source material to exchange; the result is added to Available Resources. The weekly limit is shown according to WoSTools but is not enforced here.</div></div>
- <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Summary</h3><div id="cgSummary"></div></div>
+ <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Summary</h3><div id="cgSummary"></div>
+  <h4>Total Gains</h4>
+  <div class="bc-grid"><label>Valeria — Well Prepared (+2%/lvl SvS pts)<select id="cgValeria">${Array.from({length:11},(_,i)=>`<option value="${i}" ${i===cgState.valeria?'selected':''}>Lv ${i}</option>`).join('')}</select></label></div>
+  <div id="cgGains" class="result-grid"></div></div>
  <div class="bc-section"><h3><i class="bi bi-bullseye"></i> Upgrade Efficiency Advisor</h3><div id="cgAdvisor"></div></div>
  <div class="bc-section"><h3><i class="bi bi-graph-up-arrow"></i> Tier Comparison (per piece, max stars)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Stat Bonus</th><th>Power</th><th>Deploy Cap.</th></tr></thead><tbody>${maxRows.map(x=>`<tr><td>${x.name}</td><td>+${x.stat.toFixed(2)}%</td><td>${fmt(x.power)}</td><td>${x.deploy?'+'+fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></div>
  <div class="bc-section"><details><summary><b><i class="bi bi-collection-fill"></i> Full Cost Database (150 steps per piece)</b></summary><div class="table-scroll"><table class="db-table"><thead><tr><th>Step</th><th>Alloy</th><th>Solution</th><th>Plans</th><th>Amber</th><th>Score</th><th>Power</th><th>Stat</th><th>Deploy</th></tr></thead><tbody>${L.slice(1).map(x=>`<tr><td>${x.name}</td><td>${fmt(x.alloy)}</td><td>${fmt(x.solution)}</td><td>${fmt(x.plans)}</td><td>${fmt(x.amber)}</td><td>${fmt(x.svs)}</td><td>${fmt(x.power)}</td><td>+${x.stat.toFixed(2)}%</td><td>${x.deploy?fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></details></div>
  <div class="notice"><i class="bi bi-lightbulb-fill"></i> Tips: keep all six pieces at the same tier for set bonuses (3 pieces = Defense, 6 pieces = Attack). Save upgrades for SvS Prep Day 5 / KoI to maximize points. Hardened Alloy comes from Polar Terror (Lv.3+) &amp; Beast (Lv.22+); Polishing Solution comes from Crazy Joe &amp; Alliance Championship Shop; Design Plans are required starting at Blue 2★; Lunar Amber is only used for Red tiers.</div>
  <div class="source-note">Cost, power, stat &amp; deployment data: wostools.net/wiki/gear/chief-gear (checked September 28, 2026). SvS points = Chief Gear Score × ${G.svsPerScore}. WoSTools features such as Upgrade Suggestions, Alliance Showdown &amp; CSV/Excel export are not included here.</div>`;
- const sync=()=>{for(let i=0;i<6;i++){document.getElementById('cgCur'+i).value=cgState.cur[i];document.getElementById('cgTar'+i).value=cgState.tar[i];}};
  for(let i=0;i<6;i++){
   document.getElementById('cgCur'+i).addEventListener('change',e=>{cgState.cur[i]=+e.target.value;calcGearDB();});
   document.getElementById('cgTar'+i).addEventListener('change',e=>{cgState.tar[i]=+e.target.value;calcGearDB();});
  }
- document.getElementById('cgQuickCur').addEventListener('change',e=>{if(e.target.value==='')return;cgState.cur.fill(+e.target.value);sync();e.target.value='';calcGearDB();});
- document.getElementById('cgQuickTar').addEventListener('change',e=>{if(e.target.value==='')return;cgState.tar.fill(+e.target.value);sync();e.target.value='';calcGearDB();});
- document.getElementById('cgResetAll').addEventListener('click',()=>{cgState.cur.fill(0);cgState.tar.fill(CG_DEFAULT_TARGET);cgState.res={alloy:0,solution:0,plans:0,amber:0};cgState.ex.fill(0);cgState.valeria=0;renderGearDB();});
+ document.getElementById('cgQuickCur').addEventListener('change',e=>{if(e.target.value==='')return;cgState.cur.fill(+e.target.value);syncGearControls();e.target.value='';calcGearDB();});
+ document.getElementById('cgQuickTar').addEventListener('change',e=>{if(e.target.value==='')return;cgState.tar.fill(+e.target.value);syncGearControls();e.target.value='';calcGearDB();});
+ document.getElementById('cgResetAll').addEventListener('click',()=>{cgState.cur.fill(0);cgState.tar.fill(CG_DEFAULT_TARGET);cgState.res={alloy:0,solution:0,plans:0,amber:0};cgState.ex.fill(0);cgState.valeria=0;syncGearControls();calcGearDB();});
  CG_MATS.forEach(([k])=>document.getElementById('cgRes_'+k).addEventListener('input',calcGearDB));
  G.exchange.forEach((_,i)=>document.getElementById('cgEx'+i).addEventListener('input',calcGearDB));
+ document.getElementById('cgValeria').addEventListener('change',e=>{cgState.valeria=+e.target.value;calcGearDB();});
+ b.dataset.built='1';
  calcGearDB();
 }
 function calcGearDB(){
  const G=WOS_DB.chiefGear,L=G.levels,pieces=G.pieces;
- CG_MATS.forEach(([k])=>cgState.res[k]=cgNum('cgRes_'+k));
- G.exchange.forEach((_,i)=>cgState.ex[i]=Math.floor(cgNum('cgEx'+i)));
+ CG_MATS.forEach(([k])=>cgState.res[k]=valNum('cgRes_'+k));
+ G.exchange.forEach((_,i)=>cgState.ex[i]=Math.floor(valNum('cgEx'+i)));
  const valeria=cgState.valeria,svsMult=1+0.02*valeria;
  const tot={alloy:0,solution:0,plans:0,amber:0,svs:0},byType={};let power=0,deploy=0,statFrom=0,statTo=0;
  pieces.forEach((p,i)=>{
@@ -91,21 +103,18 @@ function calcGearDB(){
  if(unlocked)G.exchange.forEach((e,i)=>{const spent=cgState.ex[i];if(!spent)return;avail[e[0]]-=spent;avail[e[1]]+=Math.floor(spent/e[2])*e[3];});
  const exNote=document.getElementById('cgExNote');
  if(exNote)exNote.innerHTML=unlocked?'<i class="bi bi-check-circle-fill"></i> Exchange unlocked (at least one piece is Gold T2 3★ or higher).':'<i class="bi bi-lock-fill"></i> Not unlocked yet — upgrade one piece to Gold T2 3★ (current) to unlock Enhancement Material Exchange. The exchange rates below are not yet applicable.';
- const card=(n,l,cls)=>`<div class="stat ${cls||''}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
- const need=CG_MATS.map(([k,ic,nm])=>card(fmt(tot[k]),`${ic} ${nm}`)).join('');
- const gap=CG_MATS.map(([k,ic,nm])=>{const left=Math.max(0,tot[k]-avail[k]);return card(fmt(left),`${ic} ${nm}${avail[k]>0?' · tersedia '+fmt(avail[k]):''}`,left===0?'ok':'warn');}).join('');
- const types=Object.entries(byType).map(([tp,v])=>`<h4>${tp}</h4><div class="result-grid">${CG_MATS.map(([k,ic,nm])=>card(fmt(v[k]),`${ic} ${nm}`)).join('')}${card(fmt(v.svs*G.svsPerScore*svsMult),'<i class="bi bi-trophy-fill"></i> SvS')}</div>`).join('');
+ const need=CG_MATS.map(([k,ic,nm])=>statCard(fmt(tot[k]),`${ic} ${nm}`)).join('');
+ const gap=CG_MATS.map(([k,ic,nm])=>{const left=Math.max(0,tot[k]-avail[k]);return statCard(fmt(left),`${ic} ${nm}${avail[k]>0?' · available '+fmt(avail[k]):''}`,left===0?'ok':'warn');}).join('');
+ const types=Object.entries(byType).map(([tp,v])=>`<h4>${tp}</h4><div class="result-grid">${CG_MATS.map(([k,ic,nm])=>statCard(fmt(v[k]),`${ic} ${nm}`)).join('')}${statCard(fmt(v.svs*G.svsPerScore*svsMult),'<i class="bi bi-trophy-fill"></i> SvS')}</div>`).join('');
  const svsPts=tot.svs*G.svsPerScore*svsMult;
  const el=document.getElementById('cgSummary');
  if(el)el.innerHTML=`<h4>Total Materials Required</h4><div class="result-grid">${need}</div>
   <h4>Still Needed (After Available Resources)</h4><div class="result-grid">${gap}</div>
-  <h4>By Troop Type</h4>${types}
-  <h4>Total Gains</h4>
-  <div class="bc-grid"><label>Valeria — Well Prepared (+2%/lvl SvS pts)<select id="cgValeria">${Array.from({length:11},(_,i)=>`<option value="${i}" ${i===valeria?'selected':''}>Lv ${i}</option>`).join('')}</select></label></div>
-  <div class="result-grid">${card('+'+fmt(power),'<i class="bi bi-lightning-charge-fill"></i> Power Gain')}${card(fmt(svsPts),'<i class="bi bi-trophy-fill"></i> SvS/KoI Points')}${card(`+${statFrom.toFixed(2)}% → +${statTo.toFixed(2)}%`,`<i class="bi bi-graph-up-arrow"></i> Stat Bonus (+${(statTo-statFrom).toFixed(2)}%)`)}${card('+'+fmt(deploy),'<i class="bi bi-people"></i> Deploy Capacity')}</div>`;
- document.getElementById('cgValeria')?.addEventListener('change',e=>{cgState.valeria=+e.target.value;calcGearDB();});
+  <h4>By Troop Type</h4>${types}`;
+ const gains=document.getElementById('cgGains');
+ if(gains)gains.innerHTML=statCard('+'+fmt(power),'<i class="bi bi-lightning-charge-fill"></i> Power Gain')+statCard(fmt(svsPts),'<i class="bi bi-trophy-fill"></i> SvS/KoI Points')+statCard(`+${statFrom.toFixed(2)}% → +${statTo.toFixed(2)}%`,`<i class="bi bi-graph-up-arrow"></i> Stat Bonus (+${(statTo-statFrom).toFixed(2)}%)`)+statCard('+'+fmt(deploy),'<i class="bi bi-people"></i> Deploy Capacity');
  // Efficiency advisor: power per material for each piece's next step
  const adv=pieces.map((p,i)=>{const c=cgState.cur[i];if(c>=cgState.tar[i]||c>=L.length-1)return null;const n=L[c+1],mats=n.alloy+n.solution+n.plans+n.amber,gain=n.power-L[c].power;return{p,next:n.name,gain,ratio:mats?gain/mats:0};}).filter(Boolean).sort((a,b)=>b.ratio-a.ratio);
  const ad=document.getElementById('cgAdvisor');
- if(ad)ad.innerHTML=adv.length?`<div class="notice">Pieces providing the most power per material for the next upgrade step:</div><div class="result-grid">${adv.map((a,i)=>card(`+${fmt(a.gain)} <i class="bi bi-lightning-charge-fill"></i>`,`#${i+1} ${a.p.name} (${a.p.type}) → ${a.next} · ${a.ratio.toFixed(1)} pwr/mat`)).join('')}</div>`:'<div class="notice">All pieces have reached their targets.</div>';
+ if(ad)ad.innerHTML=adv.length?`<div class="notice">Pieces providing the most power per material for the next upgrade step:</div><div class="result-grid">${adv.map((a,i)=>statCard(`+${fmt(a.gain)} <i class="bi bi-lightning-charge-fill"></i>`,`#${i+1} ${a.p.name} (${a.p.type}) → ${a.next} · ${a.ratio.toFixed(1)} pwr/mat`)).join('')}</div>`:'<div class="notice">All pieces have reached their targets.</div>';
 }

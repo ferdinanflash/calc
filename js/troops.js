@@ -13,6 +13,7 @@ function tierOpts(selected){return Object.keys(WOS_DB.troops).map(t=>`<option va
 function renderTroopDB(){
  const m=document.getElementById('troopsModal'); if(!m)return;
  const b=m.querySelector('.modal-box');
+ if(b.dataset.built){calcTroopDB();return;} // already built: keep typed values, just recalculate
  const tiers=Object.keys(WOS_DB.troops), lastTier=tiers[tiers.length-1], prevTier=tiers[tiers.length-2]||tiers[0];
  b.innerHTML=`<button class="modal-close" onclick="closeModal('troopsModal')">×</button>
  <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion for Infantry, Lancer, and Marksman — T1–T12, speed bonuses, resource gaps, and event points.</div>
@@ -23,7 +24,7 @@ function renderTroopDB(){
  <label>Target Tier<select id="dbTroopTier">${tierOpts(lastTier)}</select></label>
  <label>Quantity<input id="dbTroopQty" type="number" min="0" value="100000"></label>
  <label>Speed Bonus % <input id="dbTroopSpeed" type="number" min="0" value="0"></label>
- <label>Training Queues (paralel)<input id="dbTroopQueues" type="number" min="1" value="1"></label>
+ <label>Training Queues (parallel)<input id="dbTroopQueues" type="number" min="1" value="1"></label>
  <label class="checkline"><input id="dbTroopAdvanced" type="checkbox"> Advanced Training (-20% time, flat)</label>
  </div></div>
  <div class="notice"><i class="bi bi-info-circle-fill"></i> Meat/Wood/Coal/Iron costs are the same for Infantry, Lancer &amp; Marksman at the same tier (only combat statistics differ), so the Troop Type selector above does not change the cost values.</div>
@@ -44,6 +45,7 @@ function renderTroopDB(){
  const toggleFrom=()=>{ document.getElementById('dbTroopFromWrap')?.classList.toggle('hidden', modeSel.value!=='promote'); };
  modeSel.addEventListener('change',()=>{toggleFrom();calcTroopDB();});
  toggleFrom();
+ b.dataset.built='1';
  ['dbTroopTier','dbTroopFrom','dbTroopQty','dbTroopSpeed','dbTroopQueues','dbTroopAdvanced','dbTroopMeat','dbTroopWood','dbTroopCoal','dbTroopIron'].forEach(id=>document.getElementById(id)?.addEventListener('input',calcTroopDB));
  calcTroopDB();
 }
@@ -51,9 +53,7 @@ function calcTroopDB(){
  const tiers=Object.keys(WOS_DB.troops);
  const targetKey=document.getElementById('dbTroopTier')?.value||tiers[0];
  const fromKey=document.getElementById('dbTroopFrom')?.value||tiers[0];
- const qty=Math.max(0,Number(document.getElementById('dbTroopQty')?.value)||0);
- const speed=Math.max(0,Number(document.getElementById('dbTroopSpeed')?.value)||0);
- const queues=Math.max(1,Number(document.getElementById('dbTroopQueues')?.value)||1);
+ const qty=valNum('dbTroopQty'), speed=valNum('dbTroopSpeed'), queues=Math.max(1,valNum('dbTroopQueues'));
  const advanced=document.getElementById('dbTroopAdvanced')?.checked;
  const mode=document.getElementById('dbTroopMode')?.value||'train';
  const target=WOS_DB.troops[targetKey], from=WOS_DB.troops[fromKey];
@@ -83,15 +83,15 @@ function calcTroopDB(){
  const per=invalidPromote?{svs:0,hoc:0,koi:0,power:0}:troopPointsPer(mode,fromKey,targetKey);
  const svsPts=per.svs*qty, hocPts=per.hoc*qty, koiPts=per.koi*qty, powerPts=per.power*qty;
 
- const avail={meat:Math.max(0,Number(document.getElementById('dbTroopMeat')?.value)||0),wood:Math.max(0,Number(document.getElementById('dbTroopWood')?.value)||0),coal:Math.max(0,Number(document.getElementById('dbTroopCoal')?.value)||0),iron:Math.max(0,Number(document.getElementById('dbTroopIron')?.value)||0)};
+ const avail={meat:valNum('dbTroopMeat'),wood:valNum('dbTroopWood'),coal:valNum('dbTroopCoal'),iron:valNum('dbTroopIron')};
  const need={meat,wood,coal,iron};
  const icons={meat:'<i class="bi bi-egg-fried"></i> Meat',wood:'<i class="bi bi-tree-fill"></i> Wood',coal:'<i class="bi bi-hexagon-fill"></i> Coal',iron:'<i class="bi bi-link-45deg"></i> Iron'};
  const resCards=Object.keys(need).map(k=>{
    const ok=avail[k]>=need[k];
-   return `<div class="stat ${ok?'ok':'warn'}"><div class="n">${fmt(need[k])}</div><div class="l">${icons[k]}${avail[k]?' · tersedia '+fmt(avail[k]):''}</div></div>`;
+   return statCard(fmt(need[k]),`${icons[k]}${avail[k]?' · available '+fmt(avail[k]):''}`,ok?'ok':'warn');
  }).join('');
  const otherCards=[['<i class="bi bi-stopwatch-fill"></i> Time',secondsText(time)],['<i class="bi bi-lightning-charge-fill"></i> Power',fmt(powerPts)],['<i class="bi bi-trophy-fill"></i> SvS',fmt(svsPts)],['<i class="bi bi-bank"></i> HoC',fmt(hocPts)],['<i class="bi bi-snow"></i> KoI',fmt(koiPts)]]
-   .map(x=>`<div class="stat"><div class="n">${x[1]}</div><div class="l">${x[0]}</div></div>`).join('');
+   .map(x=>statCard(x[1],x[0])).join('');
 
  const el=document.getElementById('dbTroopResult'); if(el)el.innerHTML=resCards+otherCards;
 }

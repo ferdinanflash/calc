@@ -15,13 +15,31 @@ function ensureCharmVals(){
   const slots=charmSlotList();
   if(!Array.isArray(charmVals)||charmVals.length!==slots.length) charmVals=slots.map(()=>({c:0,t:0}));
 }
-function charmLevelOpts(sel){
-  return WOS_DB.charmSteps.map((s,i)=>`<option value="${i}" ${i===sel?'selected':''}>${s.label==='0'?'0 (None)':s.label}</option>`).join('');
+function charmLevelOpts(){
+  return WOS_DB.charmSteps.map((s,i)=>`<option value="${i}">${s.label==='0'?'0 (None)':s.label}</option>`).join('');
 }
 function charmMaxIdx(){return WOS_DB.charmSteps.length-1;}
-function charmSetAllTarget(idx){ensureCharmVals();charmVals.forEach(v=>{v.t=Math.min(idx,charmMaxIdx());if(v.t<v.c)v.t=v.c;});renderCharmDB();}
-function charmMatchCurrentToTarget(){ensureCharmVals();charmVals.forEach(v=>v.c=v.t);renderCharmDB();}
-function charmResetAll(){charmVals=charmSlotList().map(()=>({c:0,t:0}));renderCharmDB();}
+function syncCharmControls(){
+  ensureCharmVals();
+  charmVals.forEach((v,i)=>{
+    const c=document.getElementById('chCur'+i),t=document.getElementById('chTar'+i);
+    if(c)c.value=v.c; if(t)t.value=v.t;
+  });
+  calcCharmSummary();
+}
+function charmSetCur(i,val){
+  const v=charmVals[i]; v.c=+val;
+  if(v.t<v.c){v.t=v.c; const t=document.getElementById('chTar'+i); if(t)t.value=v.t;}
+  calcCharmSummary();
+}
+function charmSetTar(i,val){
+  const v=charmVals[i]; v.t=Math.max(+val,v.c);
+  const t=document.getElementById('chTar'+i); if(t)t.value=v.t;
+  calcCharmSummary();
+}
+function charmSetAllTarget(idx){ensureCharmVals();charmVals.forEach(v=>{v.t=Math.min(idx,charmMaxIdx());if(v.t<v.c)v.t=v.c;});syncCharmControls();}
+function charmMatchCurrentToTarget(){ensureCharmVals();charmVals.forEach(v=>v.c=v.t);syncCharmControls();}
+function charmResetAll(){charmVals=charmSlotList().map(()=>({c:0,t:0}));syncCharmControls();}
 
 function calcCharmTotals(){
   ensureCharmVals();
@@ -40,9 +58,7 @@ function calcCharmTotals(){
 function calcCharmSummary(){
   const {totals,byType}=calcCharmTotals();
   const points=totals.score*WOS_DB.charmRules.pointsPerScore;
-  const invG=Math.max(0,Number(document.getElementById('chAvailG')?.value)||0);
-  const invD=Math.max(0,Number(document.getElementById('chAvailD')?.value)||0);
-  const invS=Math.max(0,Number(document.getElementById('chAvailS')?.value)||0);
+  const invG=valNum('chAvailG'), invD=valNum('chAvailD'), invS=valNum('chAvailS');
   const needG=Math.max(0,totals.guides-invG), needD=Math.max(0,totals.designs-invD), needS=Math.max(0,totals.secrets-invS);
 
   const req=document.getElementById('chTotalResult');
@@ -52,13 +68,13 @@ function calcCharmSummary(){
     ['<i class="bi bi-gem"></i> Jewel Secrets',fmt(totals.secrets)],
     ['<i class="bi bi-arrow-up-circle-fill"></i> Upgrade Steps',fmt(totals.steps)],
     ['<i class="bi bi-trophy-fill"></i> SvS / KoI Points',fmt(points)]
-  ].map(x=>`<div class="stat"><div class="n">${x[1]}</div><div class="l">${x[0]}</div></div>`).join('');
+  ].map(x=>statCard(x[1],x[0])).join('');
 
   const need=document.getElementById('chNeedResult');
   const allCovered=needG===0&&needD===0&&needS===0;
   if(need) need.innerHTML=[
     ['<i class="bi bi-book-fill"></i> Guides',needG],['<i class="bi bi-journal-text"></i> Designs',needD],['<i class="bi bi-gem"></i> Secrets',needS]
-  ].map(x=>`<div class="stat ${x[1]===0?'ok':'warn'}"><div class="n">${fmt(x[1])}</div><div class="l">${x[0]}</div></div>`).join('')
+  ].map(x=>statCard(fmt(x[1]),x[0],x[1]===0?'ok':'warn')).join('')
    +`<div class="notice">${allCovered?'✅ The entered resources are sufficient for all upgrades.':'⚠️ More resources are required above to reach the target.'}</div>`;
 
   const byTypeEl=document.getElementById('chByType');
@@ -71,13 +87,14 @@ function calcCharmSummary(){
 function renderCharmDB(){
  const m=document.getElementById('charmModal'); if(!m)return; const b=m.querySelector('.modal-box');
  ensureCharmVals();
- const slots=charmSlotList();
+ if(b.dataset.built){syncCharmControls();return;} // already built: keep the DOM (and typed resources), just refresh
+ const slots=charmSlotList(), lvlOpts=charmLevelOpts();
  const rowsByType=WOS_DB.troopTypes.map(type=>{
    const rows=slots.map((s,i)=>({s,i})).filter(x=>x.s.piece.type===type).map(({s,i})=>
      `<div class="charm-row"><span>${s.piece.name} #${s.n}</span>
-      <select id="chCur${i}" onchange="charmVals[${i}].c=+this.value; if(charmVals[${i}].t<charmVals[${i}].c){charmVals[${i}].t=charmVals[${i}].c; document.getElementById('chTar${i}').value=charmVals[${i}].c;} calcCharmSummary();">${charmLevelOpts(charmVals[i].c)}</select>
+      <select id="chCur${i}" onchange="charmSetCur(${i},this.value)">${lvlOpts}</select>
       <span>→</span>
-      <select id="chTar${i}" onchange="let v=+this.value; if(v<charmVals[${i}].c){v=charmVals[${i}].c; this.value=v;} charmVals[${i}].t=v; calcCharmSummary();">${charmLevelOpts(charmVals[i].t)}</select>
+      <select id="chTar${i}" onchange="charmSetTar(${i},this.value)">${lvlOpts}</select>
       </div>`).join('');
    return `<div class="bc-section"><h3><i class="bi bi-gem"></i> ${type}</h3><div class="research-list">${rows}</div></div>`;
  }).join('');
@@ -106,5 +123,6 @@ function renderCharmDB(){
    <li><b>Material Sources:</b> Frostfire Mine, Sunfire Castle Battle, Castle Battle, and the Giant Elk pet (Mystical Finding skill).</li>
    <li><b>Material Exchange:</b> upgrade one charm to Lv.11 to unlock charm material exchange.</li>
  </ul></div>`;
- calcCharmSummary();
+ b.dataset.built='1';
+ syncCharmControls();
 }

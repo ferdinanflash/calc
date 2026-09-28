@@ -67,35 +67,14 @@ function lvlOptions(max,val){
   return o;
 }
 
-function addPiece(troop,gear){
-  const id=pieceId++;
-  pieces[id]={troop:troop||'infantry',gear:gear||'goggles',mCur:1,mDes:1,eCur:0,eDes:0,wCur:0,wDes:0};
-  render();
-}
-function removePiece(id){ delete pieces[id]; render(); }
-function addWidget(){
-  const id=widgetId++;
-  widgets[id]={cur:0,des:0};
-  render();
-}
-function removeWidget(id){ delete widgets[id]; render(); }
-
-function updatePiece(id,field,val){
-  pieces[id][field]= (field==='troop'||field==='gear')?val:(parseInt(val)||0);
-  render();
-}
-function updateWidget(id,field,val){
-  widgets[id][field]=parseInt(val)||0;
-  render();
-}
-
-function render(){
-  const pc=document.getElementById('pieces');
-  pc.innerHTML='';
-  Object.entries(pieces).forEach(([id,p])=>{
-    const div=document.createElement('div');
-    div.className='piece-row';
-    div.innerHTML=`
+// Rows are created/removed/replaced individually. Editing a level only recalculates the summary,
+// so the inputs the user is typing in are never destroyed and re-created.
+function buildPieceRow(id){
+  const p=pieces[id];
+  const div=document.createElement('div');
+  div.className='piece-row';
+  div.dataset.id=id;
+  div.innerHTML=`
       <div class="piece-head">
         <div class="icon-wrap">
           <div class="gear-icon">${ICONS[p.gear]}</div>
@@ -107,7 +86,7 @@ function render(){
         <select onchange="updatePiece(${id},'gear',this.value)">
           ${Object.keys(GEAR_LABEL).map(g=>`<option value="${g}" ${g===p.gear?'selected':''}>${GEAR_LABEL[g]}</option>`).join('')}
         </select>
-        <button class="rm" onclick="removePiece(${id})">Hapus</button>
+        <button class="rm" onclick="removePiece(${id})">Remove</button>
       </div>
       <div class="grid3">
         <div class="field"><label>Mastery Forging (1-20)</label>
@@ -132,21 +111,52 @@ function render(){
           </div>
         </div>
       </div>`;
-    pc.appendChild(div);
-  });
-
-  const wc=document.getElementById('widgets');
-  wc.innerHTML='';
-  Object.entries(widgets).forEach(([id,w])=>{
-    const div=document.createElement('div');
-    div.className='widget-row';
-    div.innerHTML=`
+  return div;
+}
+function buildWidgetRow(id){
+  const w=widgets[id];
+  const div=document.createElement('div');
+  div.className='widget-row';
+  div.dataset.id=id;
+  div.innerHTML=`
       <div class="field"><label>Current</label><select onchange="updateWidget(${id},'cur',this.value)">${lvlOptions(10,w.cur)}</select></div>
       <div class="field"><label>Desired</label><select onchange="updateWidget(${id},'des',this.value)">${lvlOptions(10,w.des)}</select></div>
-      <button class="rm" onclick="removeWidget(${id})">Hapus</button>`;
-    wc.appendChild(div);
-  });
+      <button class="rm" onclick="removeWidget(${id})">Remove</button>`;
+  return div;
+}
 
+function addPiece(troop,gear){
+  const id=pieceId++;
+  pieces[id]={troop:troop||'infantry',gear:gear||'goggles',mCur:1,mDes:1,eCur:0,eDes:0,wCur:0,wDes:0};
+  document.getElementById('pieces').appendChild(buildPieceRow(id));
+  renderSummary();
+}
+function removePiece(id){
+  delete pieces[id];
+  document.querySelector(`#pieces [data-id="${id}"]`)?.remove();
+  renderSummary();
+}
+function addWidget(){
+  const id=widgetId++;
+  widgets[id]={cur:0,des:0};
+  document.getElementById('widgets').appendChild(buildWidgetRow(id));
+  renderSummary();
+}
+function removeWidget(id){
+  delete widgets[id];
+  document.querySelector(`#widgets [data-id="${id}"]`)?.remove();
+  renderSummary();
+}
+
+function updatePiece(id,field,val){
+  const isLabel=(field==='troop'||field==='gear');
+  pieces[id][field]= isLabel?val:(parseInt(val)||0);
+  // Only the troop/gear pickers change what the row itself looks like (icon + badge).
+  if(isLabel) document.querySelector(`#pieces [data-id="${id}"]`)?.replaceWith(buildPieceRow(id));
+  renderSummary();
+}
+function updateWidget(id,field,val){
+  widgets[id][field]=parseInt(val)||0;
   renderSummary();
 }
 
@@ -172,14 +182,14 @@ function renderSummary(){
   const totalPoints = milePoints+widgetPoints+essencePoints;
 
   const stats=[
-    ['Essence Stones', essence.toLocaleString('id-ID')],
-    ['Mithril', mithril.toLocaleString('id-ID')],
-    ['Mythic Gear', totalMythic.toLocaleString('id-ID')],
-    ['Enhance XP (estimated)', Math.round(enhXP).toLocaleString('id-ID')],
-    ['Widget', widgetTotal.toLocaleString('id-ID')],
-    ['SvS/KOI Points (Mithril+Widget+Essence)', totalPoints.toLocaleString('id-ID')],
+    ['Essence Stones', fmt(essence)],
+    ['Mithril', fmt(mithril)],
+    ['Mythic Gear', fmt(totalMythic)],
+    ['Enhance XP (estimated)', fmt(enhXP)],
+    ['Widget', fmt(widgetTotal)],
+    ['SvS/KOI Points (Mithril+Widget+Essence)', fmt(totalPoints)],
   ];
-  document.getElementById('summary').innerHTML = stats.map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  document.getElementById('summary').innerHTML = stats.map(([l,n])=>statCard(n,l)).join('');
   // Exposed so the SvS Calculator's "Import Hero Gear" button can pull real planned totals.
   window._heroGearTotals = {essence, mithril, widgetTotal};
 }

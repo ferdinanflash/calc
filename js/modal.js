@@ -9,7 +9,7 @@ function openModal(id){
   document.body.classList.add('modal-open');
   if(id==='buildingModal') initBuilding();
   if(id==='troopsModal') renderTroopDB();
-  if(id==='warAcademyModal') renderWarAcademyDB();
+  if(id==='warAcademyModal') initWarAcademy();
   if(id==='charmModal') renderCharmDB();
   if(id==='chiefGearModal') renderGearDB();
   if(id==='svsModal'){ loadSVS(); renderSVS(); }

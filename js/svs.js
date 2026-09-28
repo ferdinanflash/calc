@@ -86,18 +86,27 @@ let svsValues=SVS_DAYS.map(d=>d.items.map(()=>0));
 function renderSVS(){
  const tabs=document.getElementById('svsTabs'), head=document.getElementById('svsDayHead'), list=document.getElementById('svsActivities');
  if(!tabs||!head||!list)return;
- tabs.innerHTML=SVS_DAYS.map((d,i)=>`<button class="svs-tab ${i===svsDay?'active':''}" onclick="setSVSDay(${i})"><b>${d.name}</b><small>${d.theme}</small><em>${fmt(svsDayTotal(i))} pts</em></button>`).join('');
+ tabs.innerHTML=SVS_DAYS.map((d,i)=>`<button class="svs-tab ${i===svsDay?'active':''}" data-svs-tab="${i}" onclick="setSVSDay(${i})"><b>${d.name}</b><small>${d.theme}</small><em>${fmt(svsDayTotal(i))} pts</em></button>`).join('');
  const d=SVS_DAYS[svsDay]; head.innerHTML=`<div><b>${d.name}: ${d.theme}</b><small>Enter the planned amount. Totals are saved automatically in your browser.</small></div><button class="mini-btn" onclick="resetSVSDay()">Reset Day</button>`;
- list.innerHTML=d.items.map((it,i)=>{const val=svsValues[svsDay][i]||0;const tier=it[3];const tierBadge=tier?`<span class="svs-tier ${tier}">${SVS_TIER_LABEL[tier]}</span>`:'';return `<div class="svs-card"><div><b>${it[0]}</b><small>${fmt(it[1])} pts ${it[2]==='minutes'?'per minute':it[2]==='score'?'per score point':it[2]==='troop'?'per applicable troop (use Import for tier-specific values)':''}</small>${tierBadge}</div><div class="stepper"><button onclick="changeSVS(${i},-1)">−</button><input type="number" min="0" value="${val}" oninput="setSVS(${i},this.value)"><button onclick="changeSVS(${i},1)">+</button></div><strong>${fmt(val*it[1])}</strong></div>`}).join('');
+ list.innerHTML=d.items.map((it,i)=>{const val=svsValues[svsDay][i]||0;const tier=it[3];const tierBadge=tier?`<span class="svs-tier ${tier}">${SVS_TIER_LABEL[tier]}</span>`:'';return `<div class="svs-card"><div><b>${it[0]}</b><small>${fmt(it[1])} pts ${it[2]==='minutes'?'per minute':it[2]==='score'?'per score point':it[2]==='troop'?'per applicable troop (use Import for tier-specific values)':''}</small>${tierBadge}</div><div class="stepper"><button onclick="changeSVS(${i},-1)">−</button><input type="number" min="0" value="${val}" data-svs-in="${i}" oninput="setSVS(${i},this.value)"><button onclick="changeSVS(${i},1)">+</button></div><strong data-svs-total="${i}">${fmt(val*it[1])}</strong></div>`}).join('');
  calcSVS();
 }
 function setSVSDay(i){svsDay=i;renderSVS();}
-function changeSVS(i,delta){svsValues[svsDay][i]=Math.max(0,(svsValues[svsDay][i]||0)+delta);saveSVS();renderSVS();}
-function setSVS(i,v){svsValues[svsDay][i]=Math.max(0,Number(v)||0);saveSVS();calcSVS();}
+// Update one activity's visible numbers in place (input, line total, day tab) instead of rebuilding
+// every tab and card - keeps focus in the number field and avoids re-rendering ~all cards per click.
+function refreshSVSItem(i){
+ const val=svsValues[svsDay][i]||0, it=SVS_DAYS[svsDay].items[i];
+ const inp=document.querySelector(`#svsActivities [data-svs-in="${i}"]`); if(inp&&Number(inp.value)!==val)inp.value=val;
+ const tot=document.querySelector(`#svsActivities [data-svs-total="${i}"]`); if(tot)tot.textContent=fmt(val*it[1]);
+ const tab=document.querySelector(`#svsTabs [data-svs-tab="${svsDay}"] em`); if(tab)tab.textContent=fmt(svsDayTotal(svsDay))+' pts';
+ calcSVS();
+}
+function changeSVS(i,delta){svsValues[svsDay][i]=Math.max(0,(svsValues[svsDay][i]||0)+delta);saveSVS();refreshSVSItem(i);}
+function setSVS(i,v){svsValues[svsDay][i]=Math.max(0,Number(v)||0);saveSVS();refreshSVSItem(i);}
 function resetSVSDay(){svsValues[svsDay]=SVS_DAYS[svsDay].items.map(()=>0);saveSVS();renderSVS();}
 function svsDayTotal(i){return SVS_DAYS[i].items.reduce((sum,it,j)=>sum+(svsValues[i][j]||0)*it[1],0);}
 function calcSVS(){
- const total=SVS_DAYS.reduce((s,_,i)=>s+svsDayTotal(i),0), target=Math.max(0,Number(document.getElementById('svsTarget')?.value)||0), pct=target?Math.min(100,total/target*100):0;
+ const total=SVS_DAYS.reduce((s,_,i)=>s+svsDayTotal(i),0), target=valNum('svsTarget'), pct=target?Math.min(100,total/target*100):0;
  const gt=document.getElementById('svsGrandTotal');if(gt)gt.textContent=fmt(total)+' pts';
  const bar=document.getElementById('svsProgressBar');if(bar)bar.style.width=pct+'%';
  const rem=document.getElementById('svsRemaining');if(rem)rem.textContent=total>=target?'Target reached!':fmt(target-total)+' pts remaining';
