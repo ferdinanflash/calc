@@ -127,31 +127,8 @@
     <div class="modal-box modal-xl">
       <button class="modal-close" onclick="closeModal('troopsModal')">×</button>
       <div class="modal-title">⚔️ Training Troops Calculator</div>
-      <div class="modal-sub">Training & promotion untuk Infantry, Lancer, dan Marksman. Mendukung T1–T12, speed bonus, resource gap dan event points.</div>
-      <div class="calc-toolbar">
-        <label>Troop Type<select id="ttType" onchange="calcTroops()"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
-        <label>Mode<select id="ttMode" onchange="calcTroops()"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
-        <label>Tier<select id="ttTier" onchange="calcTroops()"></select></label>
-        <label>Quantity<input id="ttQty" type="number" min="0" value="1000" oninput="calcTroops()"></label>
-      </div>
-      <div class="bc-section">
-        <h3>⚡ Training Speed</h3>
-        <div class="bc-grid">
-          <label>Total Speed Bonus (%)<input id="ttSpeed" type="number" value="0" min="0" oninput="calcTroops()"></label>
-          <label>Training Queues<input id="ttQueues" type="number" value="1" min="1" oninput="calcTroops()"></label>
-          <label>Ministry / Extra Capacity<input id="ttCapacity" type="number" value="0" min="0" oninput="calcTroops()"></label>
-        </div>
-      </div>
-      <div class="bc-section">
-        <h3>🎒 Available Resources</h3>
-        <div class="bc-grid">
-          <label>🥩 Meat<input id="ttMeat" type="number" value="0" min="0" oninput="calcTroops()"></label>
-          <label>🪵 Wood<input id="ttWood" type="number" value="0" min="0" oninput="calcTroops()"></label>
-          <label>🪨 Coal<input id="ttCoal" type="number" value="0" min="0" oninput="calcTroops()"></label>
-          <label>⛓️ Iron<input id="ttIron" type="number" value="0" min="0" oninput="calcTroops()"></label>
-        </div>
-      </div>
-      <div class="bc-section result"><h3>📊 Summary</h3><div id="troopResult" class="result-grid"></div></div>
+      <div class="modal-sub">Training &amp; promotion untuk Infantry, Lancer, dan Marksman. Mendukung T1–T12, speed bonus, resource gap dan event points.</div>
+      <div id="troopsModalBody"><p class="notice">Memuat kalkulator…</p></div>
     </div>
   </div>
 
