@@ -41,12 +41,16 @@ function blockRows(kind){
 ['Molten Shields III','Molten Plating III','Molten Guard III','Molten Blades III','Molten Vambrace III','Molten Helmets III','Molten Tactics III','Molten Lance III','Molten Grips III','Molten Scales III','Molten Sharpshooting III','Molten Shot III'].forEach(n=>WA_T12_COST[n]=blockRows('III'));
 function gatewayRows(){return [1,2,3].map(()=>waRes(15000000,15000000,750000,750000,200000,50,325,1728000));}
 ['Indomitable Wall','Meridian Phalanx','Starfire'].forEach(n=>WA_T12_COST[n]=gatewayRows());
-WA_T12_COST['Solar Supremacy']=Array.from({length:15},(_,i)=>{const meat=[500,520,550,600,650,700,750,800,850,900,950,1000,1000,1100,1200][i]*1000;const coal=[100,100,110,120,130,140,150,160,170,180,190,200,210,230,250][i]*1000;const iron=[25,26,27,30,32,35,37,40,42,45,47,50,52,57,62]*1000;const steel=[25,26.3,27.5,30,32.5,35,37.5,40,40,45,47.5,50,52.5,57.5,62.5][i]*1000;const rfc=[5,5,5,6,6,7,7,8,8,9,9,10,10,11,12][i];const sh=[75,78,82,90,97,105,112,120,127,135,142,150,157,172,187][i];const sec=[720,756,792,864,936,1008,1080,1152,1224,1296,1368,1440,1512,1656,1800][i];return waRes(meat,meat,coal,iron,steel,rfc,sh,sec);});
+WA_T12_COST['Solar Supremacy']=Array.from({length:15},(_,i)=>{const meat=[500,520,550,600,650,700,750,800,850,900,950,1000,1000,1100,1200][i]*1000;const coal=[100,100,110,120,130,140,150,160,170,180,190,200,210,230,250][i]*1000;const iron=[25,26,27,30,32,35,37,40,42,45,47,50,52,57,62][i]*1000;const steel=[25,26.3,27.5,30,32.5,35,37.5,40,40,45,47.5,50,52.5,57.5,62.5][i]*1000;const rfc=[5,5,5,6,6,7,7,8,8,9,9,10,10,11,12][i];const sh=[75,78,82,90,97,105,112,120,127,135,142,150,157,172,187][i];const sec=[720,756,792,864,936,1008,1080,1152,1224,1296,1368,1440,1512,1656,1800][i];return waRes(meat,meat,coal,iron,steel,rfc,sh,sec);});
 // ---------- STATE ----------
 // waLevels[type] = { h: Helios levels (one per track), t12: T12 levels (19 tracks) }.
-// Both the "current" and "target" selects of a row bind to the same value (see waSetLevel).
-let waLevels={};
-function resetWAState(){waLevels={};Object.keys(WA_HELIOS).forEach(t=>waLevels[t]={h:Array(WA_HELIOS[t].length).fill(0),t12:Array(19).fill(0)});}
+// waLevels = TARGET levels, waCur = CURRENT levels (same shape). Cost = levels between current and target.
+let waLevels={},waCur={};
+let waMissing=new Set(); // Helios levels that have no cost data (collected per calculation)
+function resetWAState(){waLevels={};waCur={};Object.keys(WA_HELIOS).forEach(t=>{
+ waLevels[t]={h:Array(WA_HELIOS[t].length).fill(0),t12:Array(19).fill(0)};
+ waCur[t]={h:Array(WA_HELIOS[t].length).fill(0),t12:Array(19).fill(0)};
+});}
 resetWAState();
 
 const waSum=a=>a.reduce((x,y)=>x+y,0);
@@ -57,19 +61,21 @@ function waAdd(a,b){Object.keys(a).forEach(k=>a[k]+=b[k]);}
 // Cost of raising Helios track #track of a troop type from level 0 up to level `to`.
 // (Previously the track index was used as the starting LEVEL and the level as an end index, which
 // walked past the last track and threw for any level above 10, e.g. the Lv.12 prerequisites.)
-function heliosCost(type,track,to){
+// Levels without verified data are NOT guessed: they cost 0 and are reported in the Requirements box.
+function heliosCost(type,track,from,to){
  const z=waRes(0,0,0,0,0,0,0,0),rows=WOS_DB?.warAcademy?.helios?.verifiedRows||[];
  const name=WA_HELIOS[type][track][0];
- for(let lv=1;lv<=to;lv++){
-  const q=rows.find(x=>x.track===name&&x.level===lv)||rows.find(x=>x.track===name);
+ for(let lv=from+1;lv<=to;lv++){
+  const q=rows.find(x=>x.track===name&&x.level===lv);
   if(q)waAdd(z,{meat:q.meat||0,wood:q.wood||0,coal:q.coal||0,iron:q.iron||0,steel:q.steel||0,rfc:q.refinedFC||0,shards:q.shards||0,seconds:q.seconds||0});
+  else waMissing.add(`${type} ${name}`);
  }
  return z;
 }
 // Returns true when it had to raise any level (so the UI can be re-synced).
 function autoPrereq(type){
  if(!document.getElementById('waPrereq')?.checked)return false;
- const h=waLevels[type].h;
+ const h=waLevels[type].h; // target levels
  if(!(h[6]>0))return false; // Helios -> Tomahawk/Blazing Lance/Crystal Arrow -> Strike/Charge/Vision -> Squad
  const min=[[3,12],[2,8],[1,5],[0,5]];
  let changed=false;
@@ -82,7 +88,7 @@ function t12UnlockCount(type){return waSum(waLevels[type].t12.slice(0,5));}
 function waOpts(max){let s='';for(let i=0;i<=max;i++)s+=`<option value="${i}">${i}</option>`;return s;}
 function renderSelect(name,idx,max,type,group){
  const key=`${type}|${group}|${idx}`,o=waOpts(max);
- return `<div class="research-row"><span>${name}<small>max ${max}</small></span><select data-wa="${key}" aria-label="${name} current" onchange="waSetLevel('${type}','${group}',${idx},'current',this.value)">${o}</select><span>→</span><select data-wa="${key}" aria-label="${name} target" onchange="waSetLevel('${type}','${group}',${idx},'target',this.value)">${o}</select></div>`;
+ return `<div class="research-row"><span>${name}<small>max ${max}</small></span><select data-wa="${key}" data-mode="current" aria-label="${name} current" onchange="waSetLevel('${type}','${group}',${idx},'current',this.value)">${o}</select><span>→</span><select data-wa="${key}" data-mode="target" aria-label="${name} target" onchange="waSetLevel('${type}','${group}',${idx},'target',this.value)">${o}</select></div>`;
 }
 function renderT12(type){
  const m=WA_T12[type];
@@ -105,42 +111,50 @@ function buildWAControls(){
 function syncWAControls(){
  document.querySelectorAll('#warBranches select[data-wa]').forEach(s=>{
   const [type,group,idx]=s.dataset.wa.split('|');
-  s.value=String(waLevels[type][group][idx]);
+  const cur=waCur[type][group][idx],isCur=s.dataset.mode==='current';
+  s.value=String((isCur?waCur:waLevels)[type][group][idx]);
+  if(!isCur)Array.from(s.options).forEach(o=>{o.disabled=+o.value<cur;}); // target can't be below current
  });
 }
 function initWarAcademy(){buildWAControls();syncWAControls();calcWarAcademy();}
 
 // ---------- ACTIONS ----------
 function waSetLevel(type,group,idx,mode,val){
- const arr=group==='h'?waLevels[type].h:waLevels[type].t12;val=+val;
- arr[idx]=mode==='target'?Math.max(arr[idx],val):val;
+ const cur=waCur[type][group],tgt=waLevels[type][group];val=+val;
+ if(mode==='current'){cur[idx]=val;if(tgt[idx]<val)tgt[idx]=val;} // raising current past target drags target along (0 upgrades)
+ else tgt[idx]=Math.max(val,cur[idx]);
  if(group==='h')autoPrereq(type);
  syncWAControls();calcWarAcademy();
 }
-function waSetBranch(type,v,group){
- if(group==='h'){waLevels[type].h=waLevels[type].h.map((_,i)=>Math.min(v,WA_HELIOS[type][i][1]));autoPrereq(type);}
+function waSetBranch(type,v,group){ // v=0: "Reset Current" (Helios + T12 current back to 0); v>0: "Max Helios" (targets)
+ if(v===0){
+  waCur[type].h=waCur[type].h.map(()=>0);waCur[type].t12=waCur[type].t12.map(()=>0);
+ }else{
+  waLevels[type].h=waLevels[type].h.map((x,i)=>Math.max(waCur[type].h[i],Math.min(v,WA_HELIOS[type][i][1])));
+ }
+ autoPrereq(type);
  syncWAControls();calcWarAcademy();
 }
-function waSetAll(v){ // "Set All Helios Lv.N" button in the modal header
- Object.keys(WA_HELIOS).forEach(type=>{waLevels[type].h=waLevels[type].h.map((_,i)=>Math.min(v,WA_HELIOS[type][i][1]));autoPrereq(type);});
+function waSetAll(v){ // "Set All Helios Lv.N": sets TARGETS, never below current
+ Object.keys(WA_HELIOS).forEach(type=>{waLevels[type].h=waLevels[type].h.map((x,i)=>Math.max(waCur[type].h[i],Math.min(v,WA_HELIOS[type][i][1])));autoPrereq(type);});
  syncWAControls();calcWarAcademy();
 }
-function waSetT12(type,v){
- const arr=waLevels[type].t12;
- if(v===5){for(let i=0;i<5;i++)arr[i]=5;}else{t12Meta(type).forEach((n,i)=>arr[i]=WA_T12_MAX(n));}
+function waSetT12(type,v){ // targets only
+ const arr=waLevels[type].t12,cur=waCur[type].t12;
+ if(v===5){for(let i=0;i<5;i++)arr[i]=Math.max(cur[i],5);}else{t12Meta(type).forEach((n,i)=>arr[i]=Math.max(cur[i],WA_T12_MAX(n)));}
  syncWAControls();calcWarAcademy();
 }
 
 // ---------- CALC ----------
 function calcWarAcademy(){
- let total=waRes(0,0,0,0,0,0,0,0),levels=0,changed=false;const per={};
+ let total=waRes(0,0,0,0,0,0,0,0),levels=0,changed=false;const per={};waMissing=new Set();
  Object.keys(WA_HELIOS).forEach(type=>{
   if(autoPrereq(type))changed=true;
-  const lv=waLevels[type],c=waRes(0,0,0,0,0,0,0,0);
-  lv.h.forEach((to,i)=>waAdd(c,heliosCost(type,i,to)));
-  t12Meta(type).forEach((n,i)=>waAdd(c,t12Cost(n,0,lv.t12[i])));
+  const lv=waLevels[type],cu=waCur[type],c=waRes(0,0,0,0,0,0,0,0);
+  lv.h.forEach((to,i)=>waAdd(c,heliosCost(type,i,cu.h[i],to)));
+  t12Meta(type).forEach((n,i)=>waAdd(c,t12Cost(n,cu.t12[i],lv.t12[i])));
   waAdd(total,c);
-  levels+=waSum(lv.h)+waSum(lv.t12);
+  levels+=waSum(lv.h)-waSum(cu.h)+waSum(lv.t12)-waSum(cu.t12); // level-ups still to do
   per[type]={c,unlock:t12UnlockCount(type),heliosUnlocked:lv.h[6]>0};
  });
  if(changed)syncWAControls(); // "Auto-add Prerequisites" was just ticked -> reflect it in the selects
@@ -157,7 +171,7 @@ function calcWarAcademy(){
   [fmt(total.coal),'<i class="bi bi-hexagon-fill"></i> Coal'],
   [fmt(total.iron),'<i class="bi bi-link-45deg"></i> Iron'],
   [formatDuration(total.seconds/speedFactor()),'<i class="bi bi-stopwatch-fill"></i> Research Time'],
-  [fmt(levels),'<i class="bi bi-graph-up-arrow"></i> Research Levels'],
+  [fmt(levels),'<i class="bi bi-graph-up-arrow"></i> Upgrades (levels)'],
   [fmt(gap.shards),'<i class="bi bi-exclamation-circle"></i> FC Shards Needed'],
   [fmt(gap.rfc),'<i class="bi bi-exclamation-circle"></i> Refined FC Needed']
  ].map(x=>statCard(x[0],x[1])).join('');
@@ -167,6 +181,7 @@ function calcWarAcademy(){
   if(p.unlock>0&&fc<5)warnings.push(`${type}: War Academy FC 5 is required for T12 Exalted research.`);
   if(p.c.rfc>0&&fc<10)warnings.push(`${type}: War Academy FC 10 is required for Molten research.`);
  });
+ if(waMissing.size){const m=[...waMissing];warnings.push(`No verified cost data for ${m.slice(0,5).join(', ')}${m.length>5?` +${m.length-5} more`:''}: those levels are not included in the totals.`);}
  let box=document.getElementById('waWarnings');
  if(!box){box=document.createElement('div');box.id='waWarnings';box.className='notice';result.parentElement.appendChild(box);}
  box.innerHTML=warnings.length?`<b>Requirements:</b> ${warnings.join(' ')}`:`<b>T12 requirements:</b> all selected prerequisites are satisfied.`;
