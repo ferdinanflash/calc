@@ -386,27 +386,6 @@ function calcCharms(){
  ].map(x=>`<div class="stat"><div class="n">${x[1]}</div><div class="l">${x[2]}</div></div>`).join('');
 }
 
-// ---------- CHIEF GEAR ----------
-const gearPieces=['Helmet','Watch','Jacket','Pants','Ring','Cane'];
-const gearLevels=[['Green 0★','Green 1★','Green 2★','Green 3★'],['Blue 0★','Blue 1★','Blue 2★','Blue 3★'],['Purple 0★','Purple 1★','Purple 2★','Purple 3★'],['Gold 0★','Gold 1★','Gold 2★','Gold 3★'],['Gold T1 0★','Gold T1 1★','Gold T1 2★','Gold T1 3★'],['Gold T2 0★','Gold T2 1★','Gold T2 2★','Gold T2 3★'],['Red 0★','Red 1★','Red 2★','Red 3★'],['Red T1 0★','Red T1 1★','Red T1 2★','Red T1 3★'],['Red T2 0★','Red T2 1★','Red T2 2★','Red T2 3★'],['Red T3 0★','Red T3 1★','Red T3 2★','Red T3 3★']];
-let gearVals=gearPieces.map(()=>({c:0,t:9}));
-function initGear(){
- const el=document.getElementById('gearRows');if(!el)return;
- el.innerHTML=gearPieces.map((name,i)=>`<div class="building-plan"><div class="plan-selects"><label>${name}<select onchange="gearVals[${i}].c=+this.value;calcGear()">${gearLevels.map((x,j)=>`<option value="${j}">${x}</option>`).join('')}</select></label><span class="arrow">→</span><label>Target<select onchange="gearVals[${i}].t=+this.value;calcGear()">${gearLevels.map((x,j)=>`<option value="${j}" ${j===9?'selected':''}>${x}</option>`).join('')}</select></label><span class="arrow">📈</span><span class="stat"><b>+${(gearVals[i].t-gearVals[i].c)*25}%</b></span></div></div>`).join('');
- calcGear();
-}
-function gearSetAll(v){gearVals.forEach(x=>x.t=9);initGear();}
-function gearReset(){gearVals=gearPieces.map(()=>({c:0,t:0}));initGear();}
-function calcGear(){
- let steps=0;gearVals.forEach(x=>steps+=Math.max(0,x.t-x.c));
- const alloy=steps*612000,polish=steps*6900,plans=steps*1350,amber=steps*112, power=steps*3672000/4,svs=steps*3323520;
- const fmt=n=>Math.round(n).toLocaleString('id-ID');
- document.getElementById('gearResult').innerHTML=[
- ['n',fmt(alloy),'⚙️ Hardened Alloy'],['n',fmt(polish),'🧪 Polishing Solution'],['n',fmt(plans),'📜 Design Plans'],['n',fmt(amber),'🌙 Lunar Amber'],
- ['n',fmt(power),'⚡ Power Gain'],['n',fmt(svs),'🏆 SvS / KoI Points'],['n',fmt(steps),'⬆️ Upgrade Steps']
- ].map(x=>`<div class="stat"><div class="n">${x[1]}</div><div class="l">${x[2]}</div></div>`).join('');
-}
-
 // ---------- VERIFIED DATABASE CALCULATORS ----------
 function fmt(n){return Number(n||0).toLocaleString('id-ID');}
 function secondsText(s){s=Math.max(0,Math.round(s||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);const sec=s%60;return (d?d+'d ':'')+(h?h+'h ':'')+(m?m+'m ':'')+(sec?sec+'s':'').trim()||'0s';}
@@ -523,24 +502,97 @@ function calcCharmDB(){
  const cards=[['📗 Guides',g],['📜 Designs',d],['💎 Secrets',s],['📗 Still needed',Math.max(0,g-invG)],['📜 Still needed',Math.max(0,d-invD)],['💎 Still needed',Math.max(0,s-invS)],['🏆 SvS',Math.max(0,tar-cur)*count*WOS_DB.charmRules.pointsPerLevel]];
  const el=document.getElementById('chResult');if(el)el.innerHTML=cards.map(x=>`<div class="stat"><div class="n">${fmt(x[1])}</div><div class="l">${x[0]}</div></div>`).join('');
 }
+// ---------- CHIEF GEAR ----------
+// Level table (150 steps, Green 0★ -> Red T6 3★) lives in database.js (WOS_DB.chiefGear),
+// mirroring https://wostools.net/chief-gear-calculator and /wiki/gear/chief-gear.
+const CG_DEFAULT_TARGET=90; // Red T3 3★ (same default as wostools)
+const CG_MATS=[['alloy','⚙️','Hardened Alloy'],['solution','✨','Polishing Sol.'],['plans','📐','Design Plans'],['amber','🟡','Lunar Amber']];
+const cgState={cur:[0,0,0,0,0,0],tar:Array(6).fill(CG_DEFAULT_TARGET),res:{alloy:0,solution:0,plans:0,amber:0},ex:Array(7).fill(0),valeria:0};
+function cgPrefix(){
+ if(cgPrefix.cache)return cgPrefix.cache;
+ const L=WOS_DB.chiefGear.levels,keys=['alloy','solution','plans','amber','svs'],p=[{alloy:0,solution:0,plans:0,amber:0,svs:0}];
+ for(let i=1;i<L.length;i++){const q={};keys.forEach(k=>q[k]=p[i-1][k]+L[i][k]);p.push(q);}
+ return cgPrefix.cache=p;
+}
+function cgCost(c,t){const p=cgPrefix(),o={};['alloy','solution','plans','amber','svs'].forEach(k=>o[k]=t>c?p[t][k]-p[c][k]:0);return o;}
+function cgNum(id){return Math.max(0,Number(document.getElementById(id)?.value)||0);}
 function renderGearDB(){
- const m=document.getElementById('chiefGearModal');if(!m)return;const b=m.querySelector('.modal-box');
- const steps=WOS_DB.chiefGearSteps;
- b.innerHTML=`<button class="modal-close" onclick="closeModal('chiefGearModal')">×</button><div class="modal-title">🛡️ Chief Gear</div><div class="modal-sub">6 gear pieces dengan database material per tahap. Semua 6 piece memakai jalur biaya yang sama.</div>
- <div class="bc-section"><div class="placeholder-grid"><label>Current Stage<select id="cgCur">${steps.map((x,i)=>`<option value="${i}">${x.stage}</option>`).join('')}<option value="999">Red T6 ★★★</option></select></label><label>Target Stage<select id="cgTar">${steps.map((x,i)=>`<option value="${i}">${x.stage}</option>`).join('')}<option value="999">Red T6 ★★★</option></select></label><label>Pieces<input id="cgPieces" type="number" min="1" max="6" value="6"></label><label>Alloy Available<input id="cgA" type="number" min="0" value="0"></label><label>Solution Available<input id="cgS" type="number" min="0" value="0"></label><label>Plans Available<input id="cgP" type="number" min="0" value="0"></label><label>Amber Available<input id="cgL" type="number" min="0" value="0"></label></div></div>
- <div class="bc-section"><h3>📊 Upgrade Summary</h3><div id="cgResult" class="result-grid"></div></div>
- <div class="bc-section"><h3>🛡️ 6 Pieces</h3><div class="charm-slots">${WOS_DB.chiefGearPieces.map(p=>`<div class="tree-item"><b>${p.name}</b><span>${p.type}</span></div>`).join('')}</div></div>
- <div class="bc-section"><h3>📚 Verified Cost Database</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Stage</th><th>Alloy</th><th>Solution</th><th>Plans</th><th>Amber</th><th>SvS</th></tr></thead><tbody>${steps.map(x=>`<tr><td>${x.stage}</td><td>${fmt(x.alloy)}</td><td>${fmt(x.solution)}</td><td>${fmt(x.plans)}</td><td>${fmt(x.amber)}</td><td>${fmt(x.svs)}</td></tr>`).join('')}</tbody></table></div><div class="notice">Current public WoSTools data also publishes the complete aggregate for all 6 pieces to Red T6 ★★★: 25,863,000 Alloy · 272,160 Solution · 48,240 Plans · 6,000 Amber.</div></div>`;
- ['cgCur','cgTar','cgPieces','cgA','cgS','cgP','cgL'].forEach(id=>document.getElementById(id)?.addEventListener('input',calcGearDB));calcGearDB();
+ const m=document.getElementById('chiefGearModal');if(!m)return;
+ const b=m.querySelector('.modal-box'),G=WOS_DB.chiefGear,L=G.levels;
+ const opts=(sel,ph)=>(ph?`<option value="">${ph}</option>`:'')+L.map((x,i)=>`<option value="${i}" ${i===sel?'selected':''}>${x.name}</option>`).join('');
+ const maxRows=L.filter(x=>/^(Green 1★|Blue 3★|Purple 3★|Purple T1 3★|Gold 3★|Gold T1 3★|Gold T2 3★|Red 3★|Red T1 3★|Red T2 3★|Red T3 3★|Red T4 3★|Red T5 3★|Red T6 3★)$/.test(x.name));
+ const exName={alloy:'Alloy',solution:'Solution',plans:'Plans',amber:'Amber'};
+ b.innerHTML=`<button class="modal-close" onclick="closeModal('chiefGearModal')">×</button>
+ <div class="modal-title">🛡️ Chief Gear Calculator</div>
+ <div class="modal-sub">Rencanakan upgrade dari Green sampai Red T6 ★★★: Hardened Alloy, Polishing Solution, Design Plans, Lunar Amber, power, deployment capacity dan SvS points.</div>
+ <div class="notice">ℹ️ Chief Gear terbuka di Furnace Level 22. Keenam piece memakai jalur biaya yang sama; atur current &amp; target tiap piece di bawah.</div>
+ <div class="bc-section"><h3>⚡ Quick Select</h3><div class="placeholder-grid">
+  <label>Set All Current<select id="cgQuickCur">${opts(-1,'Choose tier…')}</select></label>
+  <label>Set All Target<select id="cgQuickTar">${opts(-1,'Choose tier…')}</select></label>
+  <label>&nbsp;<button class="mini-btn" id="cgResetAll" type="button">Reset All</button></label>
+ </div></div>
+ <div class="bc-section"><h3>🛡️ Gear Pieces</h3>${G.pieces.map((p,i)=>`<div class="building-plan"><div class="plan-selects">
+  <label>${p.name} <small>(${p.type})</small><select id="cgCur${i}">${opts(cgState.cur[i])}</select></label><span class="arrow">→</span>
+  <label>Target<select id="cgTar${i}">${opts(cgState.tar[i])}</select></label></div><div id="cgRow${i}" class="notice"></div></div>`).join('')}</div>
+ <div class="bc-section"><h3>🎒 Available Resources</h3><div class="bc-grid">${CG_MATS.map(([k,ic,nm])=>`<label>${ic} ${nm}<input id="cgRes_${k}" type="number" min="0" value="${cgState.res[k]||0}"></label>`).join('')}</div></div>
+ <div class="bc-section"><h3>🔄 Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${exName[e[0]]} » ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/minggu)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="jumlah ${exName[e[0]]} yang ditukar"></label>`).join('')}</div>
+  <div class="source-note">Isi jumlah material sumber yang ditukar; hasilnya ditambahkan ke Available Resources. Limit mingguan ditampilkan sesuai WoSTools tetapi tidak dipaksakan di sini.</div></div>
+ <div class="bc-section result"><h3>📊 Total Summary</h3><div id="cgSummary"></div></div>
+ <div class="bc-section"><h3>🎯 Upgrade Efficiency Advisor</h3><div id="cgAdvisor"></div></div>
+ <div class="bc-section"><h3>📈 Tier Comparison (per piece, max stars)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Stat Bonus</th><th>Power</th><th>Deploy Cap.</th></tr></thead><tbody>${maxRows.map(x=>`<tr><td>${x.name}</td><td>+${x.stat.toFixed(2)}%</td><td>${fmt(x.power)}</td><td>${x.deploy?'+'+fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></div>
+ <div class="bc-section"><details><summary><b>📚 Full Cost Database (150 tahap per piece)</b></summary><div class="table-scroll"><table class="db-table"><thead><tr><th>Tahap</th><th>Alloy</th><th>Solution</th><th>Plans</th><th>Amber</th><th>Score</th><th>Power</th><th>Stat</th><th>Deploy</th></tr></thead><tbody>${L.slice(1).map(x=>`<tr><td>${x.name}</td><td>${fmt(x.alloy)}</td><td>${fmt(x.solution)}</td><td>${fmt(x.plans)}</td><td>${fmt(x.amber)}</td><td>${fmt(x.svs)}</td><td>${fmt(x.power)}</td><td>+${x.stat.toFixed(2)}%</td><td>${x.deploy?fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></details></div>
+ <div class="notice">💡 Tips: samakan tier keenam piece untuk set bonus (3 piece = Defense, 6 piece = Attack). Simpan upgrade untuk SvS Prep Day 5 / KoI agar poinnya maksimal. Hardened Alloy dari Polar Terror (Lv.3+) &amp; Beast (Lv.22+); Polishing Solution dari Crazy Joe &amp; Alliance Championship Shop; Design Plans dibutuhkan mulai Blue 2★; Lunar Amber hanya untuk tier Red.</div>
+ <div class="source-note">Data biaya, power, stat &amp; deployment: wostools.net/wiki/gear/chief-gear (dicek 2026-09-28). SvS points = Chief Gear Score × ${G.svsPerScore}. Fitur Upgrade Suggestions, Alliance Showdown &amp; export CSV/Excel milik WoSTools belum ada di sini.</div>`;
+ const sync=()=>{for(let i=0;i<6;i++){document.getElementById('cgCur'+i).value=cgState.cur[i];document.getElementById('cgTar'+i).value=cgState.tar[i];}};
+ for(let i=0;i<6;i++){
+  document.getElementById('cgCur'+i).addEventListener('change',e=>{cgState.cur[i]=+e.target.value;calcGearDB();});
+  document.getElementById('cgTar'+i).addEventListener('change',e=>{cgState.tar[i]=+e.target.value;calcGearDB();});
+ }
+ document.getElementById('cgQuickCur').addEventListener('change',e=>{if(e.target.value==='')return;cgState.cur.fill(+e.target.value);sync();e.target.value='';calcGearDB();});
+ document.getElementById('cgQuickTar').addEventListener('change',e=>{if(e.target.value==='')return;cgState.tar.fill(+e.target.value);sync();e.target.value='';calcGearDB();});
+ document.getElementById('cgResetAll').addEventListener('click',()=>{cgState.cur.fill(0);cgState.tar.fill(CG_DEFAULT_TARGET);cgState.res={alloy:0,solution:0,plans:0,amber:0};cgState.ex.fill(0);cgState.valeria=0;renderGearDB();});
+ CG_MATS.forEach(([k])=>document.getElementById('cgRes_'+k).addEventListener('input',calcGearDB));
+ G.exchange.forEach((_,i)=>document.getElementById('cgEx'+i).addEventListener('input',calcGearDB));
+ calcGearDB();
 }
 function calcGearDB(){
- const cur=Number(document.getElementById('cgCur')?.value||0),tar=Number(document.getElementById('cgTar')?.value||0),pieces=Math.max(1,Number(document.getElementById('cgPieces')?.value)||1);let a=0,s=0,p=0,l=0,svs=0;
- if(tar>cur){for(let i=cur+1;i<=Math.min(tar,WOS_DB.chiefGearSteps.length-1);i++){const v=WOS_DB.chiefGearSteps[i];a+=v.alloy;s+=v.solution;p+=v.plans;l+=v.amber;svs+=v.svs;} if(tar===999){const t=WOS_DB.chiefGearTotals.all6ToRedT6;a=Math.max(0,t.alloy-a*6);s=Math.max(0,t.solution-s*6);p=Math.max(0,t.plans-p*6);l=Math.max(0,t.amber-l*6);a+=t.alloy/6*0; /* aggregate endpoint */}}
- a*=pieces;s*=pieces;p*=pieces;l*=pieces;const inv=[Number(document.getElementById('cgA')?.value)||0,Number(document.getElementById('cgS')?.value)||0,Number(document.getElementById('cgP')?.value)||0,Number(document.getElementById('cgL')?.value)||0];
- const cards=[['⚙️ Alloy',a],['✨ Solution',s],['📐 Plans',p],['🟡 Amber',l],['⚙️ Still needed',Math.max(0,a-inv[0])],['✨ Still needed',Math.max(0,s-inv[1])],['📐 Still needed',Math.max(0,p-inv[2])],['🟡 Still needed',Math.max(0,l-inv[3])]];
- const el=document.getElementById('cgResult');if(el)el.innerHTML=cards.map(x=>`<div class="stat"><div class="n">${fmt(x[1])}</div><div class="l">${x[0]}</div></div>`).join('');
+ const G=WOS_DB.chiefGear,L=G.levels,pieces=G.pieces;
+ CG_MATS.forEach(([k])=>cgState.res[k]=cgNum('cgRes_'+k));
+ G.exchange.forEach((_,i)=>cgState.ex[i]=Math.floor(cgNum('cgEx'+i)));
+ const valeria=cgState.valeria,svsMult=1+0.02*valeria;
+ const tot={alloy:0,solution:0,plans:0,amber:0,svs:0},byType={};let power=0,deploy=0,statFrom=0,statTo=0;
+ pieces.forEach((p,i)=>{
+  const c=cgState.cur[i],t=cgState.tar[i],ok=t>=c,eff=ok?t:c,cost=cgCost(c,eff);
+  Object.keys(tot).forEach(k=>tot[k]+=cost[k]);
+  const bt=byType[p.type]||(byType[p.type]={alloy:0,solution:0,plans:0,amber:0,svs:0});Object.keys(bt).forEach(k=>bt[k]+=cost[k]);
+  power+=L[eff].power-L[c].power;deploy+=L[eff].deploy-L[c].deploy;statFrom+=L[c].stat;statTo+=L[eff].stat;
+  const row=document.getElementById('cgRow'+i);
+  if(row)row.innerHTML=ok?`📈 +${(L[eff].stat-L[c].stat).toFixed(2)}% · ⚡ +${fmt(L[eff].power-L[c].power)}${L[eff].deploy-L[c].deploy?' · 🪖 +'+fmt(L[eff].deploy-L[c].deploy):''}`:'⚠️ Target lebih rendah dari current — piece ini diabaikan.';
+ });
+ // Enhancement Material Exchange (unlocks once any piece is at Gold T2 3★ or higher)
+ const unlocked=cgState.cur.some(c=>c>=G.exchangeUnlockLevel);
+ const avail=Object.assign({},cgState.res);
+ if(unlocked)G.exchange.forEach((e,i)=>{const spent=cgState.ex[i];if(!spent)return;avail[e[0]]-=spent;avail[e[1]]+=Math.floor(spent/e[2])*e[3];});
+ const exNote=document.getElementById('cgExNote');
+ if(exNote)exNote.innerHTML=unlocked?'✅ Exchange terbuka (ada piece di Gold T2 3★ atau lebih tinggi).':'🔒 Belum terbuka — upgrade salah satu piece ke Gold T2 3★ (current) untuk membuka Enhancement Material Exchange. Angka tukar di bawah belum berlaku.';
+ const card=(n,l,cls)=>`<div class="stat ${cls||''}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+ const need=CG_MATS.map(([k,ic,nm])=>card(fmt(tot[k]),`${ic} ${nm}`)).join('');
+ const gap=CG_MATS.map(([k,ic,nm])=>{const left=Math.max(0,tot[k]-avail[k]);return card(fmt(left),`${ic} ${nm}${avail[k]>0?' · tersedia '+fmt(avail[k]):''}`,left===0?'ok':'warn');}).join('');
+ const types=Object.entries(byType).map(([tp,v])=>`<h4>${tp}</h4><div class="result-grid">${CG_MATS.map(([k,ic,nm])=>card(fmt(v[k]),`${ic} ${nm}`)).join('')}${card(fmt(v.svs*G.svsPerScore*svsMult),'🏆 SvS')}</div>`).join('');
+ const svsPts=tot.svs*G.svsPerScore*svsMult;
+ const el=document.getElementById('cgSummary');
+ if(el)el.innerHTML=`<h4>Total Materials Required</h4><div class="result-grid">${need}</div>
+  <h4>Still Needed (After Available Resources)</h4><div class="result-grid">${gap}</div>
+  <h4>By Troop Type</h4>${types}
+  <h4>Total Gains</h4>
+  <div class="bc-grid"><label>Valeria — Well Prepared (+2%/lvl SvS pts)<select id="cgValeria">${Array.from({length:11},(_,i)=>`<option value="${i}" ${i===valeria?'selected':''}>Lv ${i}</option>`).join('')}</select></label></div>
+  <div class="result-grid">${card('+'+fmt(power),'⚡ Power Gain')}${card(fmt(svsPts),'🏆 SvS/KoI Points')}${card(`+${statFrom.toFixed(2)}% → +${statTo.toFixed(2)}%`,`📈 Stat Bonus (+${(statTo-statFrom).toFixed(2)}%)`)}${card('+'+fmt(deploy),'🪖 Deploy Capacity')}</div>`;
+ document.getElementById('cgValeria')?.addEventListener('change',e=>{cgState.valeria=+e.target.value;calcGearDB();});
+ // Efficiency advisor: power per material for each piece's next step
+ const adv=pieces.map((p,i)=>{const c=cgState.cur[i];if(c>=cgState.tar[i]||c>=L.length-1)return null;const n=L[c+1],mats=n.alloy+n.solution+n.plans+n.amber,gain=n.power-L[c].power;return{p,next:n.name,gain,ratio:mats?gain/mats:0};}).filter(Boolean).sort((a,b)=>b.ratio-a.ratio);
+ const ad=document.getElementById('cgAdvisor');
+ if(ad)ad.innerHTML=adv.length?`<div class="notice">Piece mana yang memberi power terbanyak per material untuk langkah upgrade berikutnya:</div><div class="result-grid">${adv.map((a,i)=>card(`+${fmt(a.gain)} ⚡`,`#${i+1} ${a.p.name} (${a.p.type}) → ${a.next} · ${a.ratio.toFixed(1)} pwr/mat`)).join('')}</div>`:'<div class="notice">Semua piece sudah mencapai target.</div>';
 }
-
 
 
 // ---------- SvS PREP PHASE CALCULATOR ----------

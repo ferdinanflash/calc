@@ -31,20 +31,11 @@ const WOS_DB = {
   ],
   /* Verified per-step costs exposed by the current public gear guide.
      Later Red families are represented by their published aggregate totals as a consistency check. */
-  chiefGearSteps:[
-    ['Green 0★',1500,15,0,0,1125],['Green 1★',3800,40,0,0,1875],
-    ['Blue 0★',7000,70,0,0,3000],['Blue 1★',9700,95,0,0,4500],
-    ['Blue 2★',0,0,45,0,5100],['Blue 3★',0,0,50,0,5440],
-    ['Purple 0★',0,0,60,0,3230],['Purple 1★',0,0,70,0,3230],
-    ['Purple 2★',6500,65,40,0,3225],['Purple 3★',8000,80,50,0,3225],
-    ['Purple T1 0★',10000,95,60,0,3440],['Purple T1 1★',11000,110,70,0,3440],
-    ['Purple T1 2★',13000,130,85,0,4085],['Purple T1 3★',15000,160,100,0,4085],
-    ['Gold 0★',22000,220,40,0,6250],['Gold 1★',23000,230,40,0,6250],
-    ['Gold 2★',25000,250,45,0,6250],['Gold 3★',26000,260,45,0,6250],
-    ['Gold T1 0★',28000,280,45,0,6250],['Gold T1 1★',30000,300,55,0,6250],
-    ['Gold T1 2★',32000,320,55,0,6250]
-  ].map(x=>({stage:x[0],alloy:x[1],solution:x[2],plans:x[3],amber:x[4],svs:x[5]})),
-  chiefGearTotals:{all6ToRedT6:{alloy:25863000,solution:272160,plans:48240,amber:6000}},
+  /* Chief Gear: 150 upgrade levels per piece (Green 0★ -> Red T6 3★), all 6 pieces share the same path.
+     Costs/SvS, power and deployment capacity follow the public tables at
+     wostools.net/wiki/gear/chief-gear (checked 2026-09-28). Built by WOS_buildChiefGear() below.
+     Level 0 = "None (Not Started)". */
+  chiefGear:null,
   chiefCharmsPieces:[
     {id:'helmet',name:'Helmet',type:'Lancer'},{id:'watch',name:'Watch',type:'Lancer'},
     {id:'jacket',name:'Jacket',type:'Infantry'},{id:'pants',name:'Pants',type:'Infantry'},
@@ -413,4 +404,66 @@ const WOS_DB = {
       return out;
     }
   };
+})();
+
+
+/* ---- Chief Gear level table builder ---- */
+(function(){
+  const rows=[]; // {name, alloy, solution, plans, amber, svs}
+  const add=(name,c)=>rows.push({name,alloy:c[0],solution:c[1],plans:c[2],amber:c[3],svs:c[4]});
+  const early=[
+    ['Green 0★',1500,15,0,0,1125],['Green 1★',3800,40,0,0,1875],
+    ['Blue 0★',7000,70,0,0,3000],['Blue 1★',9700,95,0,0,4500],['Blue 2★',0,0,45,0,5100],['Blue 3★',0,0,50,0,5440],
+    ['Purple 0★',0,0,60,0,3230],['Purple 1★',0,0,70,0,3230],['Purple 2★',6500,65,40,0,3225],['Purple 3★',8000,80,50,0,3225],
+    ['Purple T1 0★',10000,95,60,0,3440],['Purple T1 1★',11000,110,70,0,3440],['Purple T1 2★',13000,130,85,0,4085],['Purple T1 3★',15000,160,100,0,4085],
+    ['Gold 0★',22000,220,40,0,6250],['Gold 1★',23000,230,40,0,6250],['Gold 2★',25000,250,45,0,6250],['Gold 3★',26000,260,45,0,6250],
+    ['Gold T1 0★',28000,280,45,0,6250],['Gold T1 1★',30000,300,55,0,6250],['Gold T1 2★',32000,320,55,0,6250],['Gold T1 3★',35000,340,55,0,6250],
+    ['Gold T2 0★',38000,390,55,0,6250],['Gold T2 1★',43000,430,75,0,6250],['Gold T2 2★',45000,460,80,0,6250],['Gold T2 3★',48000,500,85,0,6250]
+  ];
+  early.forEach(x=>add(x[0],x.slice(1)));
+  for(let i=1;i<=3;i++) add(`Gold T2 3★ (${i}/4)`,[12500,132,21,2,2390]);
+  // Red families 0-3★ (T1..T3 reuse the same shape): [base cost, sub-step cost]
+  const red={
+    'Red':[[[12500,134,22,4],[13000,140,22,2]],[[13000,140,24,4],[13500,147,23,2]],[[13500,149,26,4],[14000,155,25,2]],[[14000,155,25,4],[14750,167,27,3]]],
+    'Red T1':[[[14750,169,29,6],[15250,175,28,3]],[[15250,175,31,6],[15750,182,30,3]],[[15750,184,30,6],[16250,190,31,3]],[[16250,190,32,6],[17000,202,33,5]]],
+    'Red T2':[[[17000,204,36,5],[17500,210,35,5]],[[17500,210,35,5],[18000,217,36,5]],[[18000,219,37,5],[18500,225,37,5]],[[18500,225,39,5],[19250,237,40,6]]],
+    'Red T3':[[[19250,239,40,7],[20000,247,41,6]],[[20000,249,42,7],[20750,257,42,6]],[[20750,259,44,7],[21500,267,45,6]]]
+  };
+  Object.entries(red).forEach(([fam,stars])=>stars.forEach(([base,sub],s)=>{
+    add(`${fam} ${s}★`,base.concat(2390));
+    for(let i=1;i<=3;i++) add(`${fam} ${s}★ (${i}/4)`,sub.concat(2390));
+  }));
+  add('Red T3 3★',[21500,269,45,7,2390]);
+  for(let i=1;i<=4;i++) add(`Red T3 3★ (${i}/5)`,[24000,300,50,8,3112]);
+  // Red T4..T6: each star = base row + 4 sub-steps
+  const hi=[
+    ['Red T4',0,[24000,300,50,8,3112],[28000,330,55,8,3080]],['Red T4',1,[28000,330,55,8,3080],[32000,360,60,8,3080]],
+    ['Red T4',2,[32000,360,60,8,3080],[36000,390,65,8,3078]],['Red T4',3,[36000,390,65,8,3078],[40000,420,70,12,3080]],
+    ['Red T5',0,[40000,420,70,12,3080],[44000,450,75,12,3078]],['Red T5',1,[44000,450,75,12,3078],[48000,480,80,12,3080]],
+    ['Red T5',2,[48000,480,80,12,3080],[52000,510,85,12,3080]],['Red T5',3,[52000,510,85,12,3080],[56000,540,90,16,3078]],
+    ['Red T6',0,[56000,540,90,16,3078],[60000,570,95,16,3080]],['Red T6',1,[60000,570,95,16,3080],[64000,600,100,16,3080]],
+    ['Red T6',2,[64000,600,100,16,3080],[68000,630,105,16,3078]]
+  ];
+  hi.forEach(([fam,s,base,sub])=>{add(`${fam} ${s}★`,base);for(let i=1;i<=4;i++) add(`${fam} ${s}★ (${i}/5)`,sub);});
+  add('Red T6 3★',[68000,630,105,16,3078]);
+
+  // Power / stat % / deployment capacity (stat % = power / 24,000)
+  const threeStarBases=[42,58,74,90,110,130];
+  const levels=[{name:'None (Not Started)',alloy:0,solution:0,plans:0,amber:0,svs:0,power:0,stat:0,deploy:0}];
+  rows.forEach((r,idx)=>{
+    const L=idx+1; let p;
+    if(L<=2)p=224400+81600*(L-1); else if(L<=6)p=408000+102000*(L-3);
+    else if(L<=10)p=816000+69360*(L-7); else if(L<=14)p=1093440+69360*(L-11);
+    else if(L<=18)p=1362720+61200*(L-15); else if(L<=22)p=1607520+61200*(L-19);
+    else if(L<=25)p=1852320+61200*(L-23); else if(L===26)p=2040000;
+    else if(L<=90)p=2065500+25500*(L-27); else p=3672000+40800*(L-90);
+    let d=0; if(L>=27){d=10*(L-26)+90*threeStarBases.filter(b=>b<L).length;}
+    levels.push(Object.assign({},r,{power:p,stat:p/24000,deploy:d}));
+  });
+  WOS_DB.chiefGear={levels,pieces:WOS_DB.chiefGearPieces,
+    exchange:[['plans','amber',10,1,500],['plans','solution',1,3,500],['plans','alloy',1,300,500],['solution','plans',10,1,50],['solution','alloy',1,50,1000],['alloy','plans',1000,1,50],['alloy','solution',200,1,500]],
+    exchangeUnlockLevel:levels.findIndex(x=>x.name==='Gold T2 3★'),
+    svsPerScore:36, /* SvS points = chief gear score x 36 (per wostools wiki) */
+    perPieceToRedT3:{alloy:1550500,solution:17460,plans:3390,amber:280,svs:9970560},
+    allSixToRedT6:{alloy:25863000,solution:272160,plans:48240,amber:6000}};
 })();
