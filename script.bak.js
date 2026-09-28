@@ -105,7 +105,7 @@ function render(){
         <select onchange="updatePiece(${id},'gear',this.value)">
           ${Object.keys(GEAR_LABEL).map(g=>`<option value="${g}" ${g===p.gear?'selected':''}>${GEAR_LABEL[g]}</option>`).join('')}
         </select>
-        <button class="rm" onclick="removePiece(${id})">Hapus</button>
+        <button class="rm" onclick="removePiece(${id})">Remove</button>
       </div>
       <div class="grid3">
         <div class="field"><label>Mastery Forging (1-20)</label>
@@ -141,7 +141,7 @@ function render(){
     div.innerHTML=`
       <div class="field"><label>Current</label><select onchange="updateWidget(${id},'cur',this.value)">${lvlOptions(10,w.cur)}</select></div>
       <div class="field"><label>Desired</label><select onchange="updateWidget(${id},'des',this.value)">${lvlOptions(10,w.des)}</select></div>
-      <button class="rm" onclick="removeWidget(${id})">Hapus</button>`;
+      <button class="rm" onclick="removeWidget(${id})">Remove</button>`;
     wc.appendChild(div);
   });
 
@@ -169,12 +169,12 @@ function renderSummary(){
   const totalPoints = milePoints+widgetPoints;
 
   const stats=[
-    ['Essence Stones', essence.toLocaleString('id-ID')],
-    ['Mithril', mithril.toLocaleString('id-ID')],
-    ['Mythic Gear', totalMythic.toLocaleString('id-ID')],
-    ['Enhance XP (estimated)', Math.round(enhXP).toLocaleString('id-ID')],
-    ['Widget', widgetTotal.toLocaleString('id-ID')],
-    ['SvS/KOI Points (Mithril+Widget)', totalPoints.toLocaleString('id-ID')],
+    ['Essence Stones', essence.toLocaleString('en-US')],
+    ['Mithril', mithril.toLocaleString('en-US')],
+    ['Mythic Gear', totalMythic.toLocaleString('en-US')],
+    ['Enhance XP (estimated)', Math.round(enhXP).toLocaleString('en-US')],
+    ['Widget', widgetTotal.toLocaleString('en-US')],
+    ['SvS/KOI Points (Mithril+Widget)', totalPoints.toLocaleString('en-US')],
   ];
   document.getElementById('summary').innerHTML = stats.map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
 }
@@ -266,7 +266,7 @@ function renderBuildingPlans(){
         <label>Current Level<select onchange="updatePlan(${p.id},'from',this.value)">${levelOptions().replace(`value="${p.from}"`,`value="${p.from}" selected`)}</select></label>
         <span class="arrow">→</span>
         <label>Target Level<select onchange="updatePlan(${p.id},'to',this.value)">${levelOptions().replace(`value="${p.to}"`,`value="${p.to}" selected`)}</select></label>
-        <button class="rm" onclick="removeBuildingPlan(${p.id})">Hapus</button>
+        <button class="rm" onclick="removeBuildingPlan(${p.id})">Remove</button>
       </div>
     </div>`).join('');
 }
@@ -302,7 +302,7 @@ function calcBuilding(){
   let cards=Object.keys(names).map(k=>{
     const need=Math.ceil(totals[k]||0);
     const ok=available[k]>=need;
-    return `<div class="stat ${ok?'ok':'warn'}"><div class="n">${need.toLocaleString('id-ID')}</div><div class="l">${names[k]} ${available[k]?'· tersedia '+available[k].toLocaleString('id-ID'):''}</div></div>`;
+    return `<div class="stat ${ok?'ok':'warn'}"><div class="n">${need.toLocaleString('en-US')}</div><div class="l">${names[k]} ${available[k]?'· available '+available[k].toLocaleString('en-US'):''}</div></div>`;
   }).join('');
   const days=Math.floor(totals.hours/24), remH=totals.hours%24, h=Math.floor(remH), min=Math.round((remH-h)*60);
   cards+=`<div class="stat"><div class="n">${days}d ${h}h ${min}m</div><div class="l">Total Time · ${bonus.toFixed(1)}% speed bonus</div></div>`;
@@ -360,8 +360,8 @@ function calcTroops(){
   });
   const available={meat:+document.getElementById('trMeat')?.value||0,wood:+document.getElementById('trWood')?.value||0,coal:+document.getElementById('trCoal')?.value||0,iron:+document.getElementById('trIron')?.value||0};
   const vals={meat,wood,coal,iron};
-  let cards=Object.entries(vals).map(([k,v])=>`<div class="stat ${available[k]>=v?'ok':'warn'}"><div class="n">${Math.ceil(v).toLocaleString('id-ID')}</div><div class="l">${k[0].toUpperCase()+k.slice(1)}</div></div>`).join('');
-  cards+=`<div class="stat"><div class="n">${total.toLocaleString('id-ID')}</div><div class="l">Troops</div></div><div class="stat"><div class="n">${hours.toFixed(1)}h</div><div class="l">Training Time · ${speed.toFixed(1)}%</div></div><div class="stat"><div class="n">${Math.round(points).toLocaleString('id-ID')}</div><div class="l">Event Points</div></div>`;
+  let cards=Object.entries(vals).map(([k,v])=>`<div class="stat ${available[k]>=v?'ok':'warn'}"><div class="n">${Math.ceil(v).toLocaleString('en-US')}</div><div class="l">${k[0].toUpperCase()+k.slice(1)}</div></div>`).join('');
+  cards+=`<div class="stat"><div class="n">${total.toLocaleString('en-US')}</div><div class="l">Troops</div></div><div class="stat"><div class="n">${hours.toFixed(1)}h</div><div class="l">Training Time · ${speed.toFixed(1)}%</div></div><div class="stat"><div class="n">${Math.round(points).toLocaleString('en-US')}</div><div class="l">Event Points</div></div>`;
   document.getElementById('troopResult').innerHTML=cards;
 }
 
@@ -374,7 +374,7 @@ function calcAcademy(){
   let levels=0; Object.keys(academyBranches).forEach(t=>academyBranches[t].forEach((_,j)=>{levels+=Math.max(0,(+document.getElementById(`wa_${t}_${j}_t`)?.value||0)-(+document.getElementById(`wa_${t}_${j}_c`)?.value||0));}));
   const speed=(+document.getElementById('waSpeed')?.value||0)+(+document.getElementById('waState')?.value||0)+(+document.getElementById('waVP')?.value||0);
   const shards=levels*120, steel=levels*80, rfc=levels>25?Math.floor(levels/5):0, hours=levels*6/(1+speed/100);
-  const cards=`<div class="stat"><div class="n">${shards.toLocaleString('id-ID')}</div><div class="l">FC Shards</div></div><div class="stat"><div class="n">${steel.toLocaleString('id-ID')}</div><div class="l">Refined Steel</div></div><div class="stat"><div class="n">${rfc.toLocaleString('id-ID')}</div><div class="l">Refined FC</div></div><div class="stat"><div class="n">${hours.toFixed(1)}h</div><div class="l">Research Time · ${speed}%</div></div><div class="stat"><div class="n">${levels}</div><div class="l">Research Levels</div></div>`;
+  const cards=`<div class="stat"><div class="n">${shards.toLocaleString('en-US')}</div><div class="l">FC Shards</div></div><div class="stat"><div class="n">${steel.toLocaleString('en-US')}</div><div class="l">Refined Steel</div></div><div class="stat"><div class="n">${rfc.toLocaleString('en-US')}</div><div class="l">Refined FC</div></div><div class="stat"><div class="n">${hours.toFixed(1)}h</div><div class="l">Research Time · ${speed}%</div></div><div class="stat"><div class="n">${levels}</div><div class="l">Research Levels</div></div>`;
   document.getElementById('academyResult').innerHTML=cards;
 }
 
@@ -403,7 +403,7 @@ function renderChiefGear(){
 function calcChiefGear(){
   let steps=0; gearPieces.forEach((_,i)=>steps+=Math.max(0,gearRanks.indexOf(document.getElementById(`cg_${i}_t`)?.value||'Green 0★')-gearRanks.indexOf(document.getElementById(`cg_${i}_c`)?.value||'Green 0★')));
   const alloy=steps*25000, polish=steps*280, plans=steps*55, amber=steps>20?Math.floor(steps/20)*10:0;
-  document.getElementById('gearResult').innerHTML=`<div class="stat"><div class="n">${alloy.toLocaleString('id-ID')}</div><div class="l">Hardened Alloy</div></div><div class="stat"><div class="n">${polish.toLocaleString('id-ID')}</div><div class="l">Polishing Solution</div></div><div class="stat"><div class="n">${plans.toLocaleString('id-ID')}</div><div class="l">Design Plans</div></div><div class="stat"><div class="n">${amber.toLocaleString('id-ID')}</div><div class="l">Lunar Amber</div></div><div class="stat"><div class="n">${(steps*3000).toLocaleString('id-ID')}</div><div class="l">Estimated SvS Points</div></div>`;
+  document.getElementById('gearResult').innerHTML=`<div class="stat"><div class="n">${alloy.toLocaleString('en-US')}</div><div class="l">Hardened Alloy</div></div><div class="stat"><div class="n">${polish.toLocaleString('en-US')}</div><div class="l">Polishing Solution</div></div><div class="stat"><div class="n">${plans.toLocaleString('en-US')}</div><div class="l">Design Plans</div></div><div class="stat"><div class="n">${amber.toLocaleString('en-US')}</div><div class="l">Lunar Amber</div></div><div class="stat"><div class="n">${(steps*3000).toLocaleString('en-US')}</div><div class="l">Estimated SvS Points</div></div>`;
 }
 function setAllGear(current,target){gearPieces.forEach((_,i)=>{document.getElementById(`cg_${i}_c`).value=current;document.getElementById(`cg_${i}_t`).value=target;});calcChiefGear();}
 function resetChiefGear(){renderChiefGear();calcChiefGear();}
@@ -441,7 +441,7 @@ function calcTroops(){
   let d=troopTiers[t]||troopTiers[0], factor=1;
   if(mode==='promote') factor=.5;
   const vals={meat:d[0]*q*factor,wood:d[1]*q*factor,coal:d[2]*q*factor,iron:d[3]*q*factor,time:d[4]*q*factor/(1+speed/100)/queues,hog:d[5]*q*factor,svs:d[6]*q*factor,koi:d[7]*q*factor,power:d[8]*q*factor};
-  const fmt=n=>Math.round(n).toLocaleString('id-ID');
+  const fmt=n=>Math.round(n).toLocaleString('en-US');
   const gap=(id,n)=>Math.max(0,n-(+document.getElementById(id)?.value||0));
   const cards=[
     ['n',fmt(vals.meat),'🥩 Meat'],['n',fmt(vals.wood),'🪵 Wood'],['n',fmt(vals.coal),'🪨 Coal'],['n',fmt(vals.iron),'⛓️ Iron'],
@@ -469,7 +469,7 @@ function calcWarAcademy(){
   let lv=0;Object.values(waLevels).forEach(a=>a.forEach(v=>lv+=v));
   const speed=1+(+document.getElementById('waSpeed')?.value||0)/100+(+document.getElementById('waState')?.value||0)/100+(+document.getElementById('waVP')?.value||0)/100;
   const shards=lv*1250,steel=lv*250,meat=lv*100000,wood=lv*100000,coal=lv*50000,iron=lv*25000,time=lv*7200/speed;
-  const fmt=n=>Math.round(n).toLocaleString('id-ID');
+  const fmt=n=>Math.round(n).toLocaleString('en-US');
   document.getElementById('waResult').innerHTML=[
     ['n',fmt(shards),'🔥 FC Shards'],['n',fmt(steel),'⚙️ Steel'],['n',fmt(meat),'🥩 Meat'],['n',fmt(wood),'🪵 Wood'],
     ['n',fmt(coal),'🪨 Coal'],['n',fmt(iron),'⛓️ Iron'],['n',formatDuration(time),'⏱️ Research Time'],['n',fmt(lv),'📈 Research Levels']
@@ -498,7 +498,7 @@ function charmSetAll(v){charmVals.forEach(x=>x.t=v);initCharms();}
 function charmReset(){charmVals=charmVals.map(()=>({c:0,t:0}));initCharms();}
 function calcCharms(){
  let g=0,d=0,s=0,ups=0;charmVals.forEach(x=>{if(x.t<x.c)x.t=x.c;let z=charmCost(charmLevels[x.c]||0,charmLevels[x.t]||0);g+=z.guides;d+=z.designs;s+=z.secrets;ups+=Math.max(0,charmValue(charmLevels[x.t])-charmValue(charmLevels[x.c]));});
- const power=ups*70,fmt=n=>Math.round(n).toLocaleString('id-ID');
+ const power=ups*70,fmt=n=>Math.round(n).toLocaleString('en-US');
  document.getElementById('charmResult').innerHTML=[
  ['n',fmt(g),'📘 Charm Guides'],['n',fmt(d),'📗 Charm Designs'],['n',fmt(s),'💎 Jewel Secrets'],['n',fmt(ups),'⬆️ Charm Levels'],
  ['n',fmt(power),'⚡ Power / Event Units']
@@ -519,7 +519,7 @@ function gearReset(){gearVals=gearPieces.map(()=>({c:0,t:0}));initGear();}
 function calcGear(){
  let steps=0;gearVals.forEach(x=>steps+=Math.max(0,x.t-x.c));
  const alloy=steps*612000,polish=steps*6900,plans=steps*1350,amber=steps*112, power=steps*3672000/4,svs=steps*3323520;
- const fmt=n=>Math.round(n).toLocaleString('id-ID');
+ const fmt=n=>Math.round(n).toLocaleString('en-US');
  document.getElementById('gearResult').innerHTML=[
  ['n',fmt(alloy),'⚙️ Hardened Alloy'],['n',fmt(polish),'🧪 Polishing Solution'],['n',fmt(plans),'📜 Design Plans'],['n',fmt(amber),'🌙 Lunar Amber'],
  ['n',fmt(power),'⚡ Power Gain'],['n',fmt(svs),'🏆 SvS / KoI Points'],['n',fmt(steps),'⬆️ Upgrade Steps']
@@ -538,7 +538,7 @@ openModal=function(id){
 
 // ---------- VERIFIED DATABASE CALCULATORS ----------
 const _openModalLegacy = window.openModal;
-function fmt(n){return Number(n||0).toLocaleString('id-ID');}
+function fmt(n){return Number(n||0).toLocaleString('en-US');}
 function secondsText(s){s=Math.max(0,Math.round(s||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);const sec=s%60;return (d?d+'d ':'')+(h?h+'h ':'')+(m?m+'m ':'')+(sec?sec+'s':'').trim()||'0s';}
 function tierOpts(){return Object.keys(WOS_DB.troops).map(t=>`<option value="${t}">${t}</option>`).join('');}
 function renderTroopDB(){
