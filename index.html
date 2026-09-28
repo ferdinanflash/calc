@@ -4,40 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Whiteout Survival Calculator</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div>
-      <h1>❄️ Whiteout Survival Calculator</h1>
+      <h1><i class="bi bi-snow"></i> Whiteout Survival Calculator</h1>
       <div class="sub">Semua kalkulator dalam satu menu.</div>
     </div>
   </header>
 
   <section class="main-menu">
-    <h2>🧮 Main Menu</h2>
+    <h2><i class="bi bi-calculator"></i> Main Menu</h2>
     <div class="menu-grid">
       <button class="menu-card building" onclick="openModal('buildingModal')">
-        <span class="menu-icon">🏗️</span><span>Building Calculator</span><small>Resource, waktu & upgrade</small>
+        <span class="menu-icon"><i class="bi bi-building-gear"></i></span><span>Building Calculator</span><small>Resource, waktu & upgrade</small>
       </button>
       <button class="menu-card" onclick="openModal('troopsModal')">
-        <span class="menu-icon">⚔️</span><span>Training Troops Calculator</span><small>Training & promotion</small>
+        <span class="menu-icon"><i class="bi bi-people-fill"></i></span><span>Training Troops Calculator</span><small>Training & promotion</small>
       </button>
       <button class="menu-card" onclick="openModal('warAcademyModal')">
-        <span class="menu-icon">🎓</span><span>War Academy</span><small>Helios research</small>
+        <span class="menu-icon"><i class="bi bi-mortarboard-fill"></i></span><span>War Academy</span><small>Helios research</small>
       </button>
       <button class="menu-card" onclick="openModal('charmModal')">
-        <span class="menu-icon">💎</span><span>Chief Charm</span><small>Charm upgrade</small>
+        <span class="menu-icon"><i class="bi bi-gem"></i></span><span>Chief Charm</span><small>Charm upgrade</small>
       </button>
       <button class="menu-card" onclick="openModal('chiefGearModal')">
-        <span class="menu-icon">🛡️</span><span>Chief Gear</span><small>Gear upgrade</small>
+        <span class="menu-icon"><i class="bi bi-shield-fill"></i></span><span>Chief Gear</span><small>Gear upgrade</small>
       </button>
       <button class="menu-card hero" onclick="openModal('heroGearModal')">
-        <span class="menu-icon">🏆</span><span>Hero Gear</span><small>Open existing Hero Gear Calculator</small>
+        <span class="menu-icon"><i class="bi bi-award-fill"></i></span><span>Hero Gear</span><small>Open existing Hero Gear Calculator</small>
       </button>
       <button class="menu-card svs" onclick="openModal('svsModal')">
-        <span class="menu-icon">⚔️</span><span>SvS Calculator</span><small>5-day Prep Phase & points</small>
+        <span class="menu-icon"><i class="bi bi-trophy-fill"></i></span><span>SvS Calculator</span><small>5-day Prep Phase & points</small>
       </button>
     </div>
   </section>
@@ -46,7 +47,7 @@
   <div class="modal" id="buildingModal" aria-hidden="true">
     <div class="modal-box modal-xl">
       <button class="modal-close" onclick="closeModal('buildingModal')">×</button>
-      <div class="modal-title">🏗️ Building Calculator</div>
+      <div class="modal-title"><i class="bi bi-building-gear"></i> Building Calculator</div>
       <div class="modal-sub">Terinspirasi dari struktur Building Calculator WoSTools: building plan, prerequisite, bonus speed, resource dan hasil upgrade.</div>
 
       <div class="bc-toolbar">
@@ -56,7 +57,7 @@
       <div id="buildingPlans"></div>
 
       <div class="bc-section">
-        <h3>⚡ Bonuses & Skills</h3>
+        <h3><i class="bi bi-lightning-charge-fill"></i> Bonuses & Skills</h3>
         <div class="bc-grid">
           <label>VIP Bonus
             <select id="vipBonus" onchange="calcBuilding()">
@@ -103,19 +104,19 @@
       </div>
 
       <div class="bc-section">
-        <h3>🎒 Available Resources</h3>
+        <h3><i class="bi bi-bag-fill"></i> Available Resources</h3>
         <div class="bc-grid resources">
-          <label>🥩 Meat<input id="resMeat" type="number" min="0" value="0" oninput="calcBuilding()"></label>
-          <label>🪵 Wood<input id="resWood" type="number" min="0" value="0" oninput="calcBuilding()"></label>
-          <label>🪨 Coal<input id="resCoal" type="number" min="0" value="0" oninput="calcBuilding()"></label>
-          <label>⛓️ Iron<input id="resIron" type="number" min="0" value="0" oninput="calcBuilding()"></label>
-          <label>🔥 Fire Crystals<input id="resFC" type="number" min="0" value="0" oninput="calcBuilding()"></label>
-          <label>💠 Refined FC<input id="resRFC" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label><i class="bi bi-egg-fried"></i> Meat<input id="resMeat" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label><i class="bi bi-tree-fill"></i> Wood<input id="resWood" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label><i class="bi bi-hexagon-fill"></i> Coal<input id="resCoal" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label><i class="bi bi-link-45deg"></i> Iron<input id="resIron" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label><i class="bi bi-fire"></i> Fire Crystals<input id="resFC" type="number" min="0" value="0" oninput="calcBuilding()"></label>
+          <label><i class="bi bi-diamond-fill"></i> Refined FC<input id="resRFC" type="number" min="0" value="0" oninput="calcBuilding()"></label>
         </div>
       </div>
 
       <div class="bc-section result">
-        <h3>📊 Results</h3>
+        <h3><i class="bi bi-bar-chart-fill"></i> Results</h3>
         <div id="buildingResult" class="result-grid"></div>
       </div>
       <div class="source-note">Referensi fitur: WoSTools Building Calculator. Data angka di sini adalah kalkulator lokal dasar dan bukan salinan database proprietary.</div>
@@ -126,7 +127,7 @@
   <div class="modal" id="troopsModal" aria-hidden="true">
     <div class="modal-box modal-xl">
       <button class="modal-close" onclick="closeModal('troopsModal')">×</button>
-      <div class="modal-title">⚔️ Training Troops Calculator</div>
+      <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div>
       <div class="modal-sub">Training &amp; promotion untuk Infantry, Lancer, dan Marksman. Mendukung T1–T12, speed bonus, resource gap dan event points.</div>
       <div id="troopsModalBody"><p class="notice">Memuat kalkulator…</p></div>
     </div>
@@ -135,7 +136,7 @@
   <div class="modal" id="warAcademyModal" aria-hidden="true">
     <div class="modal-box modal-xl">
       <button class="modal-close" onclick="closeModal('warAcademyModal')">×</button>
-      <div class="modal-title">🎓 War Academy</div>
+      <div class="modal-title"><i class="bi bi-mortarboard-fill"></i> War Academy</div>
       <div class="modal-sub">Helios research untuk ketiga troop type. Struktur mengikuti kalkulator WoSTools: current → target, prerequisite, speed bonus dan resource summary.</div>
       <div class="bc-toolbar">
         <label class="check"><input id="waPrereq" type="checkbox" checked onchange="calcWarAcademy()"> Auto-add Prerequisites</label>
@@ -148,43 +149,43 @@
       </div>
       <div id="warBranches"></div>
       <div class="bc-section">
-        <h3>🎒 Available Resources</h3>
+        <h3><i class="bi bi-bag-fill"></i> Available Resources</h3>
         <div class="bc-grid">
-          <label>🔥 FC Shards<input id="waShards" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
-          <label>⚙️ Steel<input id="waSteel" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
-          <label>🥩 Meat<input id="waMeat" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
-          <label>🪵 Wood<input id="waWood" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
-          <label>🪨 Coal<input id="waCoal" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
-          <label>⛓️ Iron<input id="waIron" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label><i class="bi bi-fire"></i> FC Shards<input id="waShards" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label><i class="bi bi-gear-fill"></i> Steel<input id="waSteel" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label><i class="bi bi-egg-fried"></i> Meat<input id="waMeat" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label><i class="bi bi-tree-fill"></i> Wood<input id="waWood" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label><i class="bi bi-hexagon-fill"></i> Coal<input id="waCoal" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
+          <label><i class="bi bi-link-45deg"></i> Iron<input id="waIron" type="number" value="0" min="0" oninput="calcWarAcademy()"></label>
         </div>
       </div>
-      <div class="bc-section result"><h3>📊 Research Summary</h3><div id="waResult" class="result-grid"></div></div>
+      <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Research Summary</h3><div id="waResult" class="result-grid"></div></div>
     </div>
   </div>
 
   <div class="modal" id="charmModal" aria-hidden="true">
     <div class="modal-box modal-xl">
       <button class="modal-close" onclick="closeModal('charmModal')">×</button>
-      <div class="modal-title">💎 Chief Charm</div>
+      <div class="modal-title"><i class="bi bi-gem"></i> Chief Charm</div>
       <div class="modal-sub">18 charm slots: 3 charm per gear piece, grouped by Lancer, Infantry dan Marksman. Level 4+ menggunakan sub-level seperti referensi.</div>
       <div class="bc-toolbar"><button class="mini-btn" onclick="charmSetAll(16)">Set All Desired 16</button><button class="mini-btn" onclick="charmReset()">Reset All</button></div>
       <div id="charmGroups"></div>
       <div class="bc-section">
-        <h3>🎒 Available Materials</h3>
+        <h3><i class="bi bi-bag-fill"></i> Available Materials</h3>
         <div class="bc-grid">
-          <label>📘 Charm Guides<input id="chGuides" type="number" value="0" min="0" oninput="calcCharms()"></label>
-          <label>📗 Charm Designs<input id="chDesigns" type="number" value="0" min="0" oninput="calcCharms()"></label>
-          <label>💎 Jewel Secrets<input id="chSecrets" type="number" value="0" min="0" oninput="calcCharms()"></label>
+          <label><i class="bi bi-book-fill"></i> Charm Guides<input id="chGuides" type="number" value="0" min="0" oninput="calcCharms()"></label>
+          <label><i class="bi bi-journal-text"></i> Charm Designs<input id="chDesigns" type="number" value="0" min="0" oninput="calcCharms()"></label>
+          <label><i class="bi bi-gem"></i> Jewel Secrets<input id="chSecrets" type="number" value="0" min="0" oninput="calcCharms()"></label>
         </div>
       </div>
-      <div class="bc-section result"><h3>📊 Total Summary</h3><div id="charmResult" class="result-grid"></div></div>
+      <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Summary</h3><div id="charmResult" class="result-grid"></div></div>
     </div>
   </div>
 
   <div class="modal" id="chiefGearModal" aria-hidden="true">
     <div class="modal-box modal-xl">
       <button class="modal-close" onclick="closeModal('chiefGearModal')">×</button>
-      <div class="modal-title">🛡️ Chief Gear Calculator</div>
+      <div class="modal-title"><i class="bi bi-shield-fill"></i> Chief Gear Calculator</div>
       <p class="notice">Memuat kalkulator…</p>
     </div>
   </div>
@@ -193,23 +194,23 @@
   <div class="modal" id="svsModal" aria-hidden="true">
     <div class="modal-box modal-xl">
       <button class="modal-close" onclick="closeModal('svsModal')">×</button>
-      <div class="modal-title">🏆 SvS Calculator</div>
+      <div class="modal-title"><i class="bi bi-trophy-fill"></i> SvS Calculator</div>
       <div class="modal-sub">5-day SvS Prep Phase: City Construction, Research, Beast Slay, Hero Development, dan Power Boost.</div>
       <div class="svs-legend"><span class="svs-tier high">Nilai Tinggi</span><span class="svs-tier medium">Nilai Sedang</span><span class="svs-tier low">Nilai Rendah</span></div>
 
       <div class="svs-import">
-        <strong>🔄 Import dari Calculator</strong>
-        <button class="mini-btn" onclick="svsImport('building')">🏗️ Building</button>
-        <button class="mini-btn" onclick="svsImport('troops')">⚔️ Troops</button>
-        <button class="mini-btn" onclick="svsImport('war')">🎓 War Academy</button>
-        <button class="mini-btn" onclick="svsImport('charm')">💎 Charms</button>
-        <button class="mini-btn" onclick="svsImport('gear')">🛡️ Chief Gear</button>
-        <button class="mini-btn" onclick="svsImport('hero')">🏆 Hero Gear</button>
-        <button class="mini-btn" onclick="svsImport('all')">⭐ Import All</button>
+        <strong><i class="bi bi-arrow-repeat"></i> Import dari Calculator</strong>
+        <button class="mini-btn" onclick="svsImport('building')"><i class="bi bi-building-gear"></i> Building</button>
+        <button class="mini-btn" onclick="svsImport('troops')"><i class="bi bi-people-fill"></i> Troops</button>
+        <button class="mini-btn" onclick="svsImport('war')"><i class="bi bi-mortarboard-fill"></i> War Academy</button>
+        <button class="mini-btn" onclick="svsImport('charm')"><i class="bi bi-gem"></i> Charms</button>
+        <button class="mini-btn" onclick="svsImport('gear')"><i class="bi bi-shield-fill"></i> Chief Gear</button>
+        <button class="mini-btn" onclick="svsImport('hero')"><i class="bi bi-award-fill"></i> Hero Gear</button>
+        <button class="mini-btn" onclick="svsImport('all')"><i class="bi bi-star-fill"></i> Import All</button>
       </div>
 
       <div class="svs-target bc-section">
-        <label>🎯 Target Score <input id="svsTarget" type="number" min="0" value="1000000" oninput="calcSVS()"></label>
+        <label><i class="bi bi-bullseye"></i> Target Score <input id="svsTarget" type="number" min="0" value="1000000" oninput="calcSVS()"></label>
         <div class="svs-total" id="svsGrandTotal">0 pts</div>
         <div class="svs-progress"><span id="svsProgressBar"></span></div>
         <div class="svs-remaining" id="svsRemaining">1,000,000 pts remaining</div>
@@ -220,7 +221,7 @@
       <div class="svs-activities" id="svsActivities"></div>
 
       <div class="bc-section">
-        <h3>📊 All Days Breakdown</h3>
+        <h3><i class="bi bi-bar-chart-fill"></i> All Days Breakdown</h3>
         <div class="svs-breakdown" id="svsBreakdown"></div>
       </div>
       <div class="source-note">Point values &amp; struktur 5 hari diverifikasi dari wostools.net/svs-prep-phase-guide (data per Oktober 2025, dicek 2026-09-28). Nilai dapat berubah bila Century Games mengubah aturan event.</div>
@@ -231,12 +232,12 @@
   <div class="modal" id="heroGearModal" aria-hidden="true">
     <div class="modal-box modal-xl">
       <button class="modal-close" onclick="closeModal('heroGearModal')">×</button>
-      <div class="modal-title">🏆 Hero Gear Calculator</div>
+      <div class="modal-title"><i class="bi bi-award-fill"></i> Hero Gear Calculator</div>
       <div class="modal-sub">Calculator Hero Gear yang sudah ada tetap dipakai di sini.</div>
-      <div class="notice">⚠️ <strong>Perkiraan, bukan data resmi.</strong> Biaya Mastery Forging, Mithril milestone, Enhance XP dan Widget mengikuti data yang sudah ada pada calculator Anda.</div>
-      <div class="panel inner-panel"><h2>🧩 Gear Pieces</h2><div id="pieces"></div><button class="add" onclick="addPiece()">+ Tambah Gear</button></div>
-      <div class="panel inner-panel"><h2>🔧 Widget Calculator</h2><div id="widgets"></div><button class="add secondary" onclick="addWidget()">+ Tambah Widget Calculator</button></div>
-      <div class="panel inner-panel"><h2>📊 Ringkasan Kebutuhan Total</h2><div class="summary-grid" id="summary"></div></div>
+      <div class="notice"><i class="bi bi-exclamation-triangle-fill"></i> <strong>Perkiraan, bukan data resmi.</strong> Biaya Mastery Forging, Mithril milestone, Enhance XP dan Widget mengikuti data yang sudah ada pada calculator Anda.</div>
+      <div class="panel inner-panel"><h2><i class="bi bi-puzzle-fill"></i> Gear Pieces</h2><div id="pieces"></div><button class="add" onclick="addPiece()">+ Tambah Gear</button></div>
+      <div class="panel inner-panel"><h2><i class="bi bi-wrench-adjustable"></i> Widget Calculator</h2><div id="widgets"></div><button class="add secondary" onclick="addWidget()">+ Tambah Widget Calculator</button></div>
+      <div class="panel inner-panel"><h2><i class="bi bi-bar-chart-fill"></i> Ringkasan Kebutuhan Total</h2><div class="summary-grid" id="summary"></div></div>
     </div>
   </div>
 </div>

@@ -309,7 +309,7 @@ function calcBuilding(){
   if(document.getElementById('doubleTime')?.checked) totalHours*=0.8;
 
   const available={meat:valNum('resMeat'),wood:valNum('resWood'),coal:valNum('resCoal'),iron:valNum('resIron'),fc:valNum('resFC'),rfc:valNum('resRFC')};
-  const names={meat:'🥩 Meat',wood:'🪵 Wood',coal:'🪨 Coal',iron:'⛓️ Iron',fc:'🔥 Fire Crystals',rfc:'💠 Refined FC'};
+  const names={meat:'<i class="bi bi-egg-fried"></i> Meat',wood:'<i class="bi bi-tree-fill"></i> Wood',coal:'<i class="bi bi-hexagon-fill"></i> Coal',iron:'<i class="bi bi-link-45deg"></i> Iron',fc:'<i class="bi bi-fire"></i> Fire Crystals',rfc:'<i class="bi bi-diamond-fill"></i> Refined FC'};
   let cards=Object.keys(names).map(k=>{
     const need=Math.ceil(totals[k]||0);
     const ok=available[k]>=need;
@@ -342,7 +342,7 @@ const waBranches={
 let waLevels={Infantry:Array(10).fill(0),Lancer:Array(10).fill(0),Marksman:Array(10).fill(0)};
 function initWarAcademy(){
   const el=document.getElementById('warBranches'); if(!el)return;
-  el.innerHTML=Object.entries(waBranches).map(([type,items])=>`<div class="bc-section"><h3>🔥 ${type}</h3><div class="research-list">${items.map((n,i)=>`<div class="research-row"><span>${n}<small> max ${i<6?[5,8,8,12,12,12][i]:i===6?1:10}</small></span><select onchange="waLevels.${type}[${i}]=+this.value;calcWarAcademy()">${Array.from({length:(i<6?[5,8,8,12,12,12][i]:i===6?1:10)+1},(_,x)=>`<option value="${x}">${x}</option>`).join('')}</select><span>→</span><select onchange="waLevels.${type}[${i}]=Math.max(waLevels.${type}[${i}],+this.value);calcWarAcademy()">${Array.from({length:(i<6?[5,8,8,12,12,12][i]:i===6?1:10)+1},(_,x)=>`<option value="${x}">${x}</option>`).join('')}</select></div>`).join('')}</div></div>`).join('');
+  el.innerHTML=Object.entries(waBranches).map(([type,items])=>`<div class="bc-section"><h3><i class="bi bi-fire"></i> ${type}</h3><div class="research-list">${items.map((n,i)=>`<div class="research-row"><span>${n}<small> max ${i<6?[5,8,8,12,12,12][i]:i===6?1:10}</small></span><select onchange="waLevels.${type}[${i}]=+this.value;calcWarAcademy()">${Array.from({length:(i<6?[5,8,8,12,12,12][i]:i===6?1:10)+1},(_,x)=>`<option value="${x}">${x}</option>`).join('')}</select><span>→</span><select onchange="waLevels.${type}[${i}]=Math.max(waLevels.${type}[${i}],+this.value);calcWarAcademy()">${Array.from({length:(i<6?[5,8,8,12,12,12][i]:i===6?1:10)+1},(_,x)=>`<option value="${x}">${x}</option>`).join('')}</select></div>`).join('')}</div></div>`).join('');
   calcWarAcademy();
 }
 function waSetAll(v){Object.keys(waLevels).forEach(k=>waLevels[k]=waLevels[k].map((_,i)=>i===6?1:Math.min(v,i<6?[5,8,8,12,12,12][i]:10)));initWarAcademy();}
@@ -352,8 +352,8 @@ function calcWarAcademy(){
   const shards=lv*1250,steel=lv*250,meat=lv*100000,wood=lv*100000,coal=lv*50000,iron=lv*25000,time=lv*7200/speed;
   const fmt=n=>Math.round(n).toLocaleString('id-ID');
   document.getElementById('waResult').innerHTML=[
-    ['n',fmt(shards),'🔥 FC Shards'],['n',fmt(steel),'⚙️ Steel'],['n',fmt(meat),'🥩 Meat'],['n',fmt(wood),'🪵 Wood'],
-    ['n',fmt(coal),'🪨 Coal'],['n',fmt(iron),'⛓️ Iron'],['n',formatDuration(time),'⏱️ Research Time'],['n',fmt(lv),'📈 Research Levels']
+    ['n',fmt(shards),'<i class="bi bi-fire"></i> FC Shards'],['n',fmt(steel),'<i class="bi bi-gear-fill"></i> Steel'],['n',fmt(meat),'<i class="bi bi-egg-fried"></i> Meat'],['n',fmt(wood),'<i class="bi bi-tree-fill"></i> Wood'],
+    ['n',fmt(coal),'<i class="bi bi-hexagon-fill"></i> Coal'],['n',fmt(iron),'<i class="bi bi-link-45deg"></i> Iron'],['n',formatDuration(time),'<i class="bi bi-stopwatch-fill"></i> Research Time'],['n',fmt(lv),'<i class="bi bi-graph-up-arrow"></i> Research Levels']
   ].map(x=>`<div class="stat"><div class="n">${x[1]}</div><div class="l">${x[2]}</div></div>`).join('');
 }
 
@@ -381,8 +381,8 @@ function calcCharms(){
  let g=0,d=0,s=0,ups=0;charmVals.forEach(x=>{if(x.t<x.c)x.t=x.c;let z=charmCost(charmLevels[x.c]||0,charmLevels[x.t]||0);g+=z.guides;d+=z.designs;s+=z.secrets;ups+=Math.max(0,charmValue(charmLevels[x.t])-charmValue(charmLevels[x.c]));});
  const power=ups*70,fmt=n=>Math.round(n).toLocaleString('id-ID');
  document.getElementById('charmResult').innerHTML=[
- ['n',fmt(g),'📘 Charm Guides'],['n',fmt(d),'📗 Charm Designs'],['n',fmt(s),'💎 Jewel Secrets'],['n',fmt(ups),'⬆️ Charm Levels'],
- ['n',fmt(power),'⚡ Power / Event Units']
+ ['n',fmt(g),'<i class="bi bi-book-fill"></i> Charm Guides'],['n',fmt(d),'<i class="bi bi-journal-text"></i> Charm Designs'],['n',fmt(s),'<i class="bi bi-gem"></i> Jewel Secrets'],['n',fmt(ups),'<i class="bi bi-arrow-up-circle-fill"></i> Charm Levels'],
+ ['n',fmt(power),'<i class="bi bi-lightning-charge-fill"></i> Power / Event Units']
  ].map(x=>`<div class="stat"><div class="n">${x[1]}</div><div class="l">${x[2]}</div></div>`).join('');
 }
 
@@ -395,7 +395,7 @@ function renderTroopDB(){
  const b=m.querySelector('.modal-box');
  const tiers=Object.keys(WOS_DB.troops), lastTier=tiers[tiers.length-1], prevTier=tiers[tiers.length-2]||tiers[0];
  b.innerHTML=`<button class="modal-close" onclick="closeModal('troopsModal')">×</button>
- <div class="modal-title">⚔️ Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion untuk Infantry, Lancer, dan Marksman — T1–T12, speed bonus, resource gap dan event points.</div>
+ <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion untuk Infantry, Lancer, dan Marksman — T1–T12, speed bonus, resource gap dan event points.</div>
  <div class="bc-section"><div class="placeholder-grid">
  <label>Troop Type<select id="dbTroopType"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
  <label>Mode<select id="dbTroopMode"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
@@ -406,19 +406,19 @@ function renderTroopDB(){
  <label>Training Queues (paralel)<input id="dbTroopQueues" type="number" min="1" value="1"></label>
  <label class="checkline"><input id="dbTroopAdvanced" type="checkbox"> Advanced Training (-20% waktu, flat)</label>
  </div></div>
- <div class="notice">ℹ️ Biaya Meat/Wood/Coal/Iron sama untuk Infantry, Lancer &amp; Marksman pada tier yang sama (hanya statistik tempur yang berbeda), jadi selector Troop Type di atas tidak mengubah angka biaya.</div>
- <div id="dbTroopWarn" class="notice hidden">⚠️ Untuk mode Promotion, From Tier harus lebih rendah dari Target Tier. Perbaiki pilihan tier untuk melihat hasil.</div>
+ <div class="notice"><i class="bi bi-info-circle-fill"></i> Biaya Meat/Wood/Coal/Iron sama untuk Infantry, Lancer &amp; Marksman pada tier yang sama (hanya statistik tempur yang berbeda), jadi selector Troop Type di atas tidak mengubah angka biaya.</div>
+ <div id="dbTroopWarn" class="notice hidden"><i class="bi bi-exclamation-triangle-fill"></i> Untuk mode Promotion, From Tier harus lebih rendah dari Target Tier. Perbaiki pilihan tier untuk melihat hasil.</div>
  <div class="bc-section">
-   <h3>🎒 Available Resources</h3>
+   <h3><i class="bi bi-bag-fill"></i> Available Resources</h3>
    <div class="bc-grid">
-     <label>🥩 Meat<input id="dbTroopMeat" type="number" min="0" value="0"></label>
-     <label>🪵 Wood<input id="dbTroopWood" type="number" min="0" value="0"></label>
-     <label>🪨 Coal<input id="dbTroopCoal" type="number" min="0" value="0"></label>
-     <label>⛓️ Iron<input id="dbTroopIron" type="number" min="0" value="0"></label>
+     <label><i class="bi bi-egg-fried"></i> Meat<input id="dbTroopMeat" type="number" min="0" value="0"></label>
+     <label><i class="bi bi-tree-fill"></i> Wood<input id="dbTroopWood" type="number" min="0" value="0"></label>
+     <label><i class="bi bi-hexagon-fill"></i> Coal<input id="dbTroopCoal" type="number" min="0" value="0"></label>
+     <label><i class="bi bi-link-45deg"></i> Iron<input id="dbTroopIron" type="number" min="0" value="0"></label>
    </div>
  </div>
- <div class="bc-section result"><h3>📊 Calculation</h3><div id="dbTroopResult" class="result-grid"></div></div>
- <div class="bc-section"><h3>📚 Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Time</th><th>Power</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
+ <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Calculation</h3><div id="dbTroopResult" class="result-grid"></div></div>
+ <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Time</th><th>Power</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
  <div class="source-note">Training memakai biaya penuh tier target. Promotion memakai selisih biaya (Target − From) per referensi wostools.net/troop-training-calculator, tapi tetap mendapat poin event (SvS/HoC/KoI/Power) senilai tier target penuh. Data dasar per tier diverifikasi 2026-09-28; selisih Promotion di luar T11→T12 adalah estimasi dari selisih tabel biaya karena WoSTools belum mempublikasikan tabel promotion terpisah untuk setiap tier.</div>`;
  const modeSel=document.getElementById('dbTroopMode');
  const toggleFrom=()=>{ document.getElementById('dbTroopFromWrap')?.classList.toggle('hidden', modeSel.value!=='promote'); };
@@ -467,12 +467,12 @@ function calcTroopDB(){
 
  const avail={meat:Math.max(0,Number(document.getElementById('dbTroopMeat')?.value)||0),wood:Math.max(0,Number(document.getElementById('dbTroopWood')?.value)||0),coal:Math.max(0,Number(document.getElementById('dbTroopCoal')?.value)||0),iron:Math.max(0,Number(document.getElementById('dbTroopIron')?.value)||0)};
  const need={meat,wood,coal,iron};
- const icons={meat:'🥩 Meat',wood:'🪵 Wood',coal:'🪨 Coal',iron:'⛓️ Iron'};
+ const icons={meat:'<i class="bi bi-egg-fried"></i> Meat',wood:'<i class="bi bi-tree-fill"></i> Wood',coal:'<i class="bi bi-hexagon-fill"></i> Coal',iron:'<i class="bi bi-link-45deg"></i> Iron'};
  const resCards=Object.keys(need).map(k=>{
    const ok=avail[k]>=need[k];
    return `<div class="stat ${ok?'ok':'warn'}"><div class="n">${fmt(need[k])}</div><div class="l">${icons[k]}${avail[k]?' · tersedia '+fmt(avail[k]):''}</div></div>`;
  }).join('');
- const otherCards=[['⏱️ Time',secondsText(time)],['⚡ Power',fmt(powerPts)],['🏆 SvS',fmt(svsPts)],['🏛️ HoC',fmt(hocPts)],['❄️ KoI',fmt(koiPts)]]
+ const otherCards=[['<i class="bi bi-stopwatch-fill"></i> Time',secondsText(time)],['<i class="bi bi-lightning-charge-fill"></i> Power',fmt(powerPts)],['<i class="bi bi-trophy-fill"></i> SvS',fmt(svsPts)],['<i class="bi bi-bank"></i> HoC',fmt(hocPts)],['<i class="bi bi-snow"></i> KoI',fmt(koiPts)]]
    .map(x=>`<div class="stat"><div class="n">${x[1]}</div><div class="l">${x[0]}</div></div>`).join('');
 
  const el=document.getElementById('dbTroopResult'); if(el)el.innerHTML=resCards+otherCards;
@@ -480,34 +480,50 @@ function calcTroopDB(){
 function renderWarAcademyDB(){
  const m=document.getElementById('warAcademyModal'); if(!m)return; const b=m.querySelector('.modal-box');
  const rows=WOS_DB.warAcademy.helios.verifiedRows;
- b.innerHTML=`<button class="modal-close" onclick="closeModal('warAcademyModal')">×</button><div class="modal-title">🎓 War Academy</div><div class="modal-sub">Database Helios/T12 research. Semua 3 cabang troop menggunakan struktur research terpisah.</div>
+ b.innerHTML=`<button class="modal-close" onclick="closeModal('warAcademyModal')">×</button><div class="modal-title"><i class="bi bi-mortarboard-fill"></i> War Academy</div><div class="modal-sub">Database Helios/T12 research. Semua 3 cabang troop menggunakan struktur research terpisah.</div>
  <div class="bc-section"><div class="placeholder-grid"><label>Branch<select id="waBranch"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label><label>Research Speed %<input id="waSpeed" type="number" min="0" value="0"></label><label>FC Shards<input id="waShardInv" type="number" min="0" value="0"></label><label>Steel<input id="waSteelInv" type="number" min="0" value="0"></label><label>Refined FC<input id="waRfcInv" type="number" min="0" value="0"></label></div></div>
- <div class="bc-section"><h3>🔥 Research Structure</h3><div class="research-tree">${WOS_DB.warAcademy.helios.common.map(x=>`<div class="tree-item"><b>${x[0]}</b><span>max ${x[1]}</span></div>`).join('')}</div><div class="notice">T11 terbuka setelah jalur Helios selesai. T12 memakai 5 track Exalted + Molten I/II/III + Solar Supremacy + Training/Healing/First Aid.</div></div>
- <div class="bc-section"><h3>📋 Verified Cost Rows</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Track</th><th>Lv</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Steel</th><th>FC Shards</th><th>RFC</th><th>Time</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.track}</td><td>${r.level}</td><td>${fmt(r.meat)}</td><td>${fmt(r.wood)}</td><td>${fmt(r.coal)}</td><td>${fmt(r.iron)}</td><td>${fmt(r.steel)}</td><td>${fmt(r.shards)}</td><td>${fmt(r.refinedFC)}</td><td>${secondsText(r.seconds)}</td></tr>`).join('')}</tbody></table></div></div>
- <div class="bc-section"><h3>🔥 T12 Structure</h3><div class="result-grid"><div class="stat"><div class="n">5</div><div class="l">Exalted tracks</div></div><div class="stat"><div class="n">20</div><div class="l">Molten I / track</div></div><div class="stat"><div class="n">50</div><div class="l">Molten II / track</div></div><div class="stat"><div class="n">15</div><div class="l">Solar Supremacy</div></div><div class="stat"><div class="n">50</div><div class="l">Molten III / track</div></div></div></div>`;
+ <div class="bc-section"><h3><i class="bi bi-fire"></i> Research Structure</h3><div class="research-tree">${WOS_DB.warAcademy.helios.common.map(x=>`<div class="tree-item"><b>${x[0]}</b><span>max ${x[1]}</span></div>`).join('')}</div><div class="notice">T11 terbuka setelah jalur Helios selesai. T12 memakai 5 track Exalted + Molten I/II/III + Solar Supremacy + Training/Healing/First Aid.</div></div>
+ <div class="bc-section"><h3><i class="bi bi-clipboard-data-fill"></i> Verified Cost Rows</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Track</th><th>Lv</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Steel</th><th>FC Shards</th><th>RFC</th><th>Time</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.track}</td><td>${r.level}</td><td>${fmt(r.meat)}</td><td>${fmt(r.wood)}</td><td>${fmt(r.coal)}</td><td>${fmt(r.iron)}</td><td>${fmt(r.steel)}</td><td>${fmt(r.shards)}</td><td>${fmt(r.refinedFC)}</td><td>${secondsText(r.seconds)}</td></tr>`).join('')}</tbody></table></div></div>
+ <div class="bc-section"><h3><i class="bi bi-fire"></i> T12 Structure</h3><div class="result-grid"><div class="stat"><div class="n">5</div><div class="l">Exalted tracks</div></div><div class="stat"><div class="n">20</div><div class="l">Molten I / track</div></div><div class="stat"><div class="n">50</div><div class="l">Molten II / track</div></div><div class="stat"><div class="n">15</div><div class="l">Solar Supremacy</div></div><div class="stat"><div class="n">50</div><div class="l">Molten III / track</div></div></div></div>`;
 }
 function renderCharmDB(){
  const m=document.getElementById('charmModal'); if(!m)return; const b=m.querySelector('.modal-box');
- b.innerHTML=`<button class="modal-close" onclick="closeModal('charmModal')">×</button><div class="modal-title">💎 Chief Charm</div><div class="modal-sub">18 slot database — 3 charm per masing-masing dari 6 gear. Level 1–18.</div>
+ b.innerHTML=`<button class="modal-close" onclick="closeModal('charmModal')">×</button><div class="modal-title"><i class="bi bi-gem"></i> Chief Charm</div><div class="modal-sub">18 slot database — 3 charm per masing-masing dari 6 gear. Level 1–18.</div>
  <div class="bc-section"><div class="placeholder-grid"><label>Current Level<select id="chCur">${Object.keys(WOS_DB.charmLevels).map(x=>`<option>${x}</option>`).join('')}</select></label><label>Target Level<select id="chTar">${Object.keys(WOS_DB.charmLevels).map(x=>`<option>${x}</option>`).join('')}</select></label><label>Number of Charms<input id="chCount" type="number" min="1" max="18" value="18"></label><label>Guides Available<input id="chG" type="number" min="0" value="0"></label><label>Designs Available<input id="chD" type="number" min="0" value="0"></label><label>Secrets Available<input id="chS" type="number" min="0" value="0"></label></div></div>
- <div class="bc-section"><h3>📊 Upgrade Summary</h3><div id="chResult" class="result-grid"></div></div>
- <div class="bc-section"><h3>🧩 18 Slots</h3><div class="charm-slots">${WOS_DB.chiefCharmsPieces.flatMap(p=>[1,2,3].map(i=>`<div class="tree-item"><b>${p.name} #${i}</b><span>${p.type}</span></div>`)).join('')}</div></div>
- <div class="bc-section"><h3>📚 Cost Database</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>Guides</th><th>Designs</th><th>Secrets</th></tr></thead><tbody>${Object.entries(WOS_DB.charmLevels).map(([l,v])=>`<tr><td>${l}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Level 17/18 memakai data terbaru yang sudah tercantum pada sumber publik; sub-level mengikuti pembagian upgrade game.</div></div>`;
+ <div class="bc-section"><h3><i class="bi bi-bar-chart-fill"></i> Upgrade Summary</h3><div id="chResult" class="result-grid"></div></div>
+ <div class="bc-section"><h3><i class="bi bi-puzzle-fill"></i> 18 Slots</h3><div class="charm-slots">${WOS_DB.chiefCharmsPieces.flatMap(p=>[1,2,3].map(i=>`<div class="tree-item"><b>${p.name} #${i}</b><span>${p.type}</span></div>`)).join('')}</div></div>
+ <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Cost Database</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>Guides</th><th>Designs</th><th>Secrets</th></tr></thead><tbody>${Object.entries(WOS_DB.charmLevels).map(([l,v])=>`<tr><td>${l}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Level 17/18 memakai data terbaru yang sudah tercantum pada sumber publik; sub-level mengikuti pembagian upgrade game.</div></div>`;
  ['chCur','chTar','chCount','chG','chD','chS'].forEach(id=>document.getElementById(id)?.addEventListener('input',calcCharmDB)); calcCharmDB();
 }
 function calcCharmDB(){
  const cur=Number(document.getElementById('chCur')?.value||1), tar=Number(document.getElementById('chTar')?.value||1), count=Math.max(1,Number(document.getElementById('chCount')?.value)||1); let g=0,d=0,s=0;
  if(tar>cur)for(let l=cur+1;l<=tar;l++){const v=WOS_DB.charmLevels[l];g+=v.guides;d+=v.designs;s+=v.secrets;}
  g*=count;d*=count;s*=count;const invG=Number(document.getElementById('chG')?.value)||0,invD=Number(document.getElementById('chD')?.value)||0,invS=Number(document.getElementById('chS')?.value)||0;
- const cards=[['📗 Guides',g],['📜 Designs',d],['💎 Secrets',s],['📗 Still needed',Math.max(0,g-invG)],['📜 Still needed',Math.max(0,d-invD)],['💎 Still needed',Math.max(0,s-invS)],['🏆 SvS',Math.max(0,tar-cur)*count*WOS_DB.charmRules.pointsPerLevel]];
+ const cards=[['<i class="bi bi-book-fill"></i> Guides',g],['<i class="bi bi-journal-text"></i> Designs',d],['<i class="bi bi-gem"></i> Secrets',s],['<i class="bi bi-book-fill"></i> Still needed',Math.max(0,g-invG)],['<i class="bi bi-journal-text"></i> Still needed',Math.max(0,d-invD)],['<i class="bi bi-gem"></i> Still needed',Math.max(0,s-invS)],['<i class="bi bi-trophy-fill"></i> SvS',Math.max(0,tar-cur)*count*WOS_DB.charmRules.pointsPerLevel]];
  const el=document.getElementById('chResult');if(el)el.innerHTML=cards.map(x=>`<div class="stat"><div class="n">${fmt(x[1])}</div><div class="l">${x[0]}</div></div>`).join('');
 }
 // ---------- CHIEF GEAR ----------
 // Level table (150 steps, Green 0★ -> Red T6 3★) lives in database.js (WOS_DB.chiefGear),
 // mirroring https://wostools.net/chief-gear-calculator and /wiki/gear/chief-gear.
 const CG_DEFAULT_TARGET=90; // Red T3 3★ (same default as wostools)
-const CG_MATS=[['alloy','⚙️','Hardened Alloy'],['solution','✨','Polishing Sol.'],['plans','📐','Design Plans'],['amber','🟡','Lunar Amber']];
+const CG_MATS=[['alloy','<i class="bi bi-gear-fill"></i>','Hardened Alloy'],['solution','<i class="bi bi-stars"></i>','Polishing Sol.'],['plans','<i class="bi bi-rulers"></i>','Design Plans'],['amber','<i class="bi bi-circle-fill" style="color:#f5b301"></i>','Lunar Amber']];
 const cgState={cur:[0,0,0,0,0,0],tar:Array(6).fill(CG_DEFAULT_TARGET),res:{alloy:0,solution:0,plans:0,amber:0},ex:Array(7).fill(0),valeria:0};
+
+// Chief Gear piece artwork (inline SVG, tinted by quality tier)
+const CG_TIER_COLORS={none:['#9ca3af','#4b5563','#e5e7eb'],green:['#4ade80','#166534','#bbf7d0'],blue:['#60a5fa','#1e3a8a','#bfdbfe'],purple:['#c084fc','#581c87','#e9d5ff'],gold:['#fbbf24','#854d0e','#fef3c7'],red:['#f87171','#7f1d1d','#fecaca']};
+function cgTierKey(name){const m=/^(Green|Blue|Purple|Gold|Red)/.exec(name||'');return m?m[1].toLowerCase():'none';}
+function cgSvg(id,tier){
+ const [c,d,l]=CG_TIER_COLORS[tier]||CG_TIER_COLORS.none,s=`stroke="${d}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"`;
+ const art={
+  helmet:`<path d="M10 40C10 22 20 10 32 10s22 12 22 30v6H10z" fill="${c}" ${s}/><path d="M18 30h28v8H18z" fill="${d}" ${s}/><path d="M10 46l4 10h10l-3-10M54 46l-4 10H40l3-10" fill="${c}" ${s}/><path d="M32 10V4M27 6q5-6 10 0" fill="none" ${s}/><path d="M22 20q10-6 20 0" fill="none" stroke="${l}" stroke-width="2.5" stroke-linecap="round"/>`,
+  watch:`<rect x="23" y="3" width="18" height="16" rx="3" fill="${d}" ${s}/><rect x="23" y="45" width="18" height="16" rx="3" fill="${d}" ${s}/><circle cx="32" cy="32" r="17" fill="${c}" ${s}/><circle cx="32" cy="32" r="12" fill="${l}" ${s}/><path d="M32 32v-8M32 32l6 4" fill="none" ${s}/><circle cx="32" cy="32" r="1.8" fill="${d}"/>`,
+  jacket:`<path d="M22 8l10 7 10-7 16 8-4 16-8-4v30H18V28l-8 4-4-16z" fill="${c}" ${s}/><path d="M22 8l10 14 10-14" fill="${l}" ${s}/><path d="M32 22v36" fill="none" ${s}/><path d="M24 40h5M35 40h5" fill="none" ${s}/>`,
+  pants:`<path d="M15 6h34l2 52H35l-3-30-3 30H13z" fill="${c}" ${s}/><path d="M15 6h34v9H15z" fill="${l}" ${s}/><path d="M32 15v13" fill="none" ${s}/><path d="M20 28h6M38 28h6" fill="none" ${s}/>`,
+  ring:`<circle cx="32" cy="40" r="15" fill="none" stroke="${d}" stroke-width="10" stroke-linejoin="round"/><circle cx="32" cy="40" r="15" fill="none" stroke="${c}" stroke-width="6"/><path d="M24 16l8-11 8 11-8 9z" fill="${l}" ${s}/><path d="M24 16h16" fill="none" ${s}/>`,
+  cane:`<path d="M20 60L36 20c2-6 6-9 12-9 6 0 9 4 9 9" fill="none" stroke="${d}" stroke-width="10" stroke-linecap="round"/><path d="M20 60L36 20c2-6 6-9 12-9 6 0 9 4 9 9" fill="none" stroke="${c}" stroke-width="5.5" stroke-linecap="round"/><circle cx="21" cy="58" r="3.5" fill="${l}" ${s}/><path d="M31 32l9 4" fill="none" ${s}/>`
+ };
+ return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${id} ${tier}">${art[id]||''}</svg>`;
+}
 function cgPrefix(){
  if(cgPrefix.cache)return cgPrefix.cache;
  const L=WOS_DB.chiefGear.levels,keys=['alloy','solution','plans','amber','svs'],p=[{alloy:0,solution:0,plans:0,amber:0,svs:0}];
@@ -523,25 +539,25 @@ function renderGearDB(){
  const maxRows=L.filter(x=>/^(Green 1★|Blue 3★|Purple 3★|Purple T1 3★|Gold 3★|Gold T1 3★|Gold T2 3★|Red 3★|Red T1 3★|Red T2 3★|Red T3 3★|Red T4 3★|Red T5 3★|Red T6 3★)$/.test(x.name));
  const exName={alloy:'Alloy',solution:'Solution',plans:'Plans',amber:'Amber'};
  b.innerHTML=`<button class="modal-close" onclick="closeModal('chiefGearModal')">×</button>
- <div class="modal-title">🛡️ Chief Gear Calculator</div>
+ <div class="modal-title"><i class="bi bi-shield-fill"></i> Chief Gear Calculator</div>
  <div class="modal-sub">Rencanakan upgrade dari Green sampai Red T6 ★★★: Hardened Alloy, Polishing Solution, Design Plans, Lunar Amber, power, deployment capacity dan SvS points.</div>
- <div class="notice">ℹ️ Chief Gear terbuka di Furnace Level 22. Keenam piece memakai jalur biaya yang sama; atur current &amp; target tiap piece di bawah.</div>
- <div class="bc-section"><h3>⚡ Quick Select</h3><div class="placeholder-grid">
+ <div class="notice"><i class="bi bi-info-circle-fill"></i> Chief Gear terbuka di Furnace Level 22. Keenam piece memakai jalur biaya yang sama; atur current &amp; target tiap piece di bawah.</div>
+ <div class="bc-section"><h3><i class="bi bi-lightning-charge-fill"></i> Quick Select</h3><div class="placeholder-grid">
   <label>Set All Current<select id="cgQuickCur">${opts(-1,'Choose tier…')}</select></label>
   <label>Set All Target<select id="cgQuickTar">${opts(-1,'Choose tier…')}</select></label>
   <label>&nbsp;<button class="mini-btn" id="cgResetAll" type="button">Reset All</button></label>
  </div></div>
- <div class="bc-section"><h3>🛡️ Gear Pieces</h3>${G.pieces.map((p,i)=>`<div class="building-plan"><div class="plan-selects">
+ <div class="bc-section"><h3><i class="bi bi-shield-fill"></i> Gear Pieces</h3>${G.pieces.map((p,i)=>`<div class="building-plan cg-piece"><div class="cg-img" id="cgImg${i}" title="Current"></div><div><div class="plan-selects">
   <label>${p.name} <small>(${p.type})</small><select id="cgCur${i}">${opts(cgState.cur[i])}</select></label><span class="arrow">→</span>
-  <label>Target<select id="cgTar${i}">${opts(cgState.tar[i])}</select></label></div><div id="cgRow${i}" class="notice"></div></div>`).join('')}</div>
- <div class="bc-section"><h3>🎒 Available Resources</h3><div class="bc-grid">${CG_MATS.map(([k,ic,nm])=>`<label>${ic} ${nm}<input id="cgRes_${k}" type="number" min="0" value="${cgState.res[k]||0}"></label>`).join('')}</div></div>
- <div class="bc-section"><h3>🔄 Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${exName[e[0]]} » ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/minggu)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="jumlah ${exName[e[0]]} yang ditukar"></label>`).join('')}</div>
+  <label>Target<select id="cgTar${i}">${opts(cgState.tar[i])}</select></label></div><div id="cgRow${i}" class="notice"></div></div><div class="cg-img" id="cgImgT${i}" title="Target"></div></div>`).join('')}</div>
+ <div class="bc-section"><h3><i class="bi bi-bag-fill"></i> Available Resources</h3><div class="bc-grid">${CG_MATS.map(([k,ic,nm])=>`<label>${ic} ${nm}<input id="cgRes_${k}" type="number" min="0" value="${cgState.res[k]||0}"></label>`).join('')}</div></div>
+ <div class="bc-section"><h3><i class="bi bi-arrow-repeat"></i> Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${exName[e[0]]} » ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/minggu)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="jumlah ${exName[e[0]]} yang ditukar"></label>`).join('')}</div>
   <div class="source-note">Isi jumlah material sumber yang ditukar; hasilnya ditambahkan ke Available Resources. Limit mingguan ditampilkan sesuai WoSTools tetapi tidak dipaksakan di sini.</div></div>
- <div class="bc-section result"><h3>📊 Total Summary</h3><div id="cgSummary"></div></div>
- <div class="bc-section"><h3>🎯 Upgrade Efficiency Advisor</h3><div id="cgAdvisor"></div></div>
- <div class="bc-section"><h3>📈 Tier Comparison (per piece, max stars)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Stat Bonus</th><th>Power</th><th>Deploy Cap.</th></tr></thead><tbody>${maxRows.map(x=>`<tr><td>${x.name}</td><td>+${x.stat.toFixed(2)}%</td><td>${fmt(x.power)}</td><td>${x.deploy?'+'+fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></div>
- <div class="bc-section"><details><summary><b>📚 Full Cost Database (150 tahap per piece)</b></summary><div class="table-scroll"><table class="db-table"><thead><tr><th>Tahap</th><th>Alloy</th><th>Solution</th><th>Plans</th><th>Amber</th><th>Score</th><th>Power</th><th>Stat</th><th>Deploy</th></tr></thead><tbody>${L.slice(1).map(x=>`<tr><td>${x.name}</td><td>${fmt(x.alloy)}</td><td>${fmt(x.solution)}</td><td>${fmt(x.plans)}</td><td>${fmt(x.amber)}</td><td>${fmt(x.svs)}</td><td>${fmt(x.power)}</td><td>+${x.stat.toFixed(2)}%</td><td>${x.deploy?fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></details></div>
- <div class="notice">💡 Tips: samakan tier keenam piece untuk set bonus (3 piece = Defense, 6 piece = Attack). Simpan upgrade untuk SvS Prep Day 5 / KoI agar poinnya maksimal. Hardened Alloy dari Polar Terror (Lv.3+) &amp; Beast (Lv.22+); Polishing Solution dari Crazy Joe &amp; Alliance Championship Shop; Design Plans dibutuhkan mulai Blue 2★; Lunar Amber hanya untuk tier Red.</div>
+ <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Summary</h3><div id="cgSummary"></div></div>
+ <div class="bc-section"><h3><i class="bi bi-bullseye"></i> Upgrade Efficiency Advisor</h3><div id="cgAdvisor"></div></div>
+ <div class="bc-section"><h3><i class="bi bi-graph-up-arrow"></i> Tier Comparison (per piece, max stars)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Stat Bonus</th><th>Power</th><th>Deploy Cap.</th></tr></thead><tbody>${maxRows.map(x=>`<tr><td>${x.name}</td><td>+${x.stat.toFixed(2)}%</td><td>${fmt(x.power)}</td><td>${x.deploy?'+'+fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></div>
+ <div class="bc-section"><details><summary><b><i class="bi bi-collection-fill"></i> Full Cost Database (150 tahap per piece)</b></summary><div class="table-scroll"><table class="db-table"><thead><tr><th>Tahap</th><th>Alloy</th><th>Solution</th><th>Plans</th><th>Amber</th><th>Score</th><th>Power</th><th>Stat</th><th>Deploy</th></tr></thead><tbody>${L.slice(1).map(x=>`<tr><td>${x.name}</td><td>${fmt(x.alloy)}</td><td>${fmt(x.solution)}</td><td>${fmt(x.plans)}</td><td>${fmt(x.amber)}</td><td>${fmt(x.svs)}</td><td>${fmt(x.power)}</td><td>+${x.stat.toFixed(2)}%</td><td>${x.deploy?fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></details></div>
+ <div class="notice"><i class="bi bi-lightbulb-fill"></i> Tips: samakan tier keenam piece untuk set bonus (3 piece = Defense, 6 piece = Attack). Simpan upgrade untuk SvS Prep Day 5 / KoI agar poinnya maksimal. Hardened Alloy dari Polar Terror (Lv.3+) &amp; Beast (Lv.22+); Polishing Solution dari Crazy Joe &amp; Alliance Championship Shop; Design Plans dibutuhkan mulai Blue 2★; Lunar Amber hanya untuk tier Red.</div>
  <div class="source-note">Data biaya, power, stat &amp; deployment: wostools.net/wiki/gear/chief-gear (dicek 2026-09-28). SvS points = Chief Gear Score × ${G.svsPerScore}. Fitur Upgrade Suggestions, Alliance Showdown &amp; export CSV/Excel milik WoSTools belum ada di sini.</div>`;
  const sync=()=>{for(let i=0;i<6;i++){document.getElementById('cgCur'+i).value=cgState.cur[i];document.getElementById('cgTar'+i).value=cgState.tar[i];}};
  for(let i=0;i<6;i++){
@@ -566,19 +582,21 @@ function calcGearDB(){
   Object.keys(tot).forEach(k=>tot[k]+=cost[k]);
   const bt=byType[p.type]||(byType[p.type]={alloy:0,solution:0,plans:0,amber:0,svs:0});Object.keys(bt).forEach(k=>bt[k]+=cost[k]);
   power+=L[eff].power-L[c].power;deploy+=L[eff].deploy-L[c].deploy;statFrom+=L[c].stat;statTo+=L[eff].stat;
+  const im=document.getElementById('cgImg'+i),imT=document.getElementById('cgImgT'+i);
+  if(im)im.innerHTML=cgSvg(p.id,cgTierKey(L[c].name));if(imT)imT.innerHTML=cgSvg(p.id,cgTierKey(L[eff].name));
   const row=document.getElementById('cgRow'+i);
-  if(row)row.innerHTML=ok?`📈 +${(L[eff].stat-L[c].stat).toFixed(2)}% · ⚡ +${fmt(L[eff].power-L[c].power)}${L[eff].deploy-L[c].deploy?' · 🪖 +'+fmt(L[eff].deploy-L[c].deploy):''}`:'⚠️ Target lebih rendah dari current — piece ini diabaikan.';
+  if(row)row.innerHTML=ok?`<i class="bi bi-graph-up-arrow"></i> +${(L[eff].stat-L[c].stat).toFixed(2)}% · <i class="bi bi-lightning-charge-fill"></i> +${fmt(L[eff].power-L[c].power)}${L[eff].deploy-L[c].deploy?' · <i class="bi bi-people"></i> +'+fmt(L[eff].deploy-L[c].deploy):''}`:'<i class="bi bi-exclamation-triangle-fill"></i> Target lebih rendah dari current — piece ini diabaikan.';
  });
  // Enhancement Material Exchange (unlocks once any piece is at Gold T2 3★ or higher)
  const unlocked=cgState.cur.some(c=>c>=G.exchangeUnlockLevel);
  const avail=Object.assign({},cgState.res);
  if(unlocked)G.exchange.forEach((e,i)=>{const spent=cgState.ex[i];if(!spent)return;avail[e[0]]-=spent;avail[e[1]]+=Math.floor(spent/e[2])*e[3];});
  const exNote=document.getElementById('cgExNote');
- if(exNote)exNote.innerHTML=unlocked?'✅ Exchange terbuka (ada piece di Gold T2 3★ atau lebih tinggi).':'🔒 Belum terbuka — upgrade salah satu piece ke Gold T2 3★ (current) untuk membuka Enhancement Material Exchange. Angka tukar di bawah belum berlaku.';
+ if(exNote)exNote.innerHTML=unlocked?'<i class="bi bi-check-circle-fill"></i> Exchange terbuka (ada piece di Gold T2 3★ atau lebih tinggi).':'<i class="bi bi-lock-fill"></i> Belum terbuka — upgrade salah satu piece ke Gold T2 3★ (current) untuk membuka Enhancement Material Exchange. Angka tukar di bawah belum berlaku.';
  const card=(n,l,cls)=>`<div class="stat ${cls||''}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
  const need=CG_MATS.map(([k,ic,nm])=>card(fmt(tot[k]),`${ic} ${nm}`)).join('');
  const gap=CG_MATS.map(([k,ic,nm])=>{const left=Math.max(0,tot[k]-avail[k]);return card(fmt(left),`${ic} ${nm}${avail[k]>0?' · tersedia '+fmt(avail[k]):''}`,left===0?'ok':'warn');}).join('');
- const types=Object.entries(byType).map(([tp,v])=>`<h4>${tp}</h4><div class="result-grid">${CG_MATS.map(([k,ic,nm])=>card(fmt(v[k]),`${ic} ${nm}`)).join('')}${card(fmt(v.svs*G.svsPerScore*svsMult),'🏆 SvS')}</div>`).join('');
+ const types=Object.entries(byType).map(([tp,v])=>`<h4>${tp}</h4><div class="result-grid">${CG_MATS.map(([k,ic,nm])=>card(fmt(v[k]),`${ic} ${nm}`)).join('')}${card(fmt(v.svs*G.svsPerScore*svsMult),'<i class="bi bi-trophy-fill"></i> SvS')}</div>`).join('');
  const svsPts=tot.svs*G.svsPerScore*svsMult;
  const el=document.getElementById('cgSummary');
  if(el)el.innerHTML=`<h4>Total Materials Required</h4><div class="result-grid">${need}</div>
@@ -586,12 +604,12 @@ function calcGearDB(){
   <h4>By Troop Type</h4>${types}
   <h4>Total Gains</h4>
   <div class="bc-grid"><label>Valeria — Well Prepared (+2%/lvl SvS pts)<select id="cgValeria">${Array.from({length:11},(_,i)=>`<option value="${i}" ${i===valeria?'selected':''}>Lv ${i}</option>`).join('')}</select></label></div>
-  <div class="result-grid">${card('+'+fmt(power),'⚡ Power Gain')}${card(fmt(svsPts),'🏆 SvS/KoI Points')}${card(`+${statFrom.toFixed(2)}% → +${statTo.toFixed(2)}%`,`📈 Stat Bonus (+${(statTo-statFrom).toFixed(2)}%)`)}${card('+'+fmt(deploy),'🪖 Deploy Capacity')}</div>`;
+  <div class="result-grid">${card('+'+fmt(power),'<i class="bi bi-lightning-charge-fill"></i> Power Gain')}${card(fmt(svsPts),'<i class="bi bi-trophy-fill"></i> SvS/KoI Points')}${card(`+${statFrom.toFixed(2)}% → +${statTo.toFixed(2)}%`,`<i class="bi bi-graph-up-arrow"></i> Stat Bonus (+${(statTo-statFrom).toFixed(2)}%)`)}${card('+'+fmt(deploy),'<i class="bi bi-people"></i> Deploy Capacity')}</div>`;
  document.getElementById('cgValeria')?.addEventListener('change',e=>{cgState.valeria=+e.target.value;calcGearDB();});
  // Efficiency advisor: power per material for each piece's next step
  const adv=pieces.map((p,i)=>{const c=cgState.cur[i];if(c>=cgState.tar[i]||c>=L.length-1)return null;const n=L[c+1],mats=n.alloy+n.solution+n.plans+n.amber,gain=n.power-L[c].power;return{p,next:n.name,gain,ratio:mats?gain/mats:0};}).filter(Boolean).sort((a,b)=>b.ratio-a.ratio);
  const ad=document.getElementById('cgAdvisor');
- if(ad)ad.innerHTML=adv.length?`<div class="notice">Piece mana yang memberi power terbanyak per material untuk langkah upgrade berikutnya:</div><div class="result-grid">${adv.map((a,i)=>card(`+${fmt(a.gain)} ⚡`,`#${i+1} ${a.p.name} (${a.p.type}) → ${a.next} · ${a.ratio.toFixed(1)} pwr/mat`)).join('')}</div>`:'<div class="notice">Semua piece sudah mencapai target.</div>';
+ if(ad)ad.innerHTML=adv.length?`<div class="notice">Piece mana yang memberi power terbanyak per material untuk langkah upgrade berikutnya:</div><div class="result-grid">${adv.map((a,i)=>card(`+${fmt(a.gain)} <i class="bi bi-lightning-charge-fill"></i>`,`#${i+1} ${a.p.name} (${a.p.type}) → ${a.next} · ${a.ratio.toFixed(1)} pwr/mat`)).join('')}</div>`:'<div class="notice">Semua piece sudah mencapai target.</div>';
 }
 
 
