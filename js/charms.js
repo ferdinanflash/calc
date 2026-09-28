@@ -16,7 +16,7 @@ function ensureCharmVals(){
   if(!Array.isArray(charmVals)||charmVals.length!==slots.length) charmVals=slots.map(()=>({c:0,t:0}));
 }
 function charmLevelOpts(sel){
-  return WOS_DB.charmSteps.map((s,i)=>`<option value="${i}" ${i===sel?'selected':''}>${s.label==='0'?'0 (belum ada)':s.label}</option>`).join('');
+  return WOS_DB.charmSteps.map((s,i)=>`<option value="${i}" ${i===sel?'selected':''}>${s.label==='0'?'0 (None)':s.label}</option>`).join('');
 }
 function charmMaxIdx(){return WOS_DB.charmSteps.length-1;}
 function charmSetAllTarget(idx){ensureCharmVals();charmVals.forEach(v=>{v.t=Math.min(idx,charmMaxIdx());if(v.t<v.c)v.t=v.c;});renderCharmDB();}
@@ -59,7 +59,7 @@ function calcCharmSummary(){
   if(need) need.innerHTML=[
     ['<i class="bi bi-book-fill"></i> Guides',needG],['<i class="bi bi-journal-text"></i> Designs',needD],['<i class="bi bi-gem"></i> Secrets',needS]
   ].map(x=>`<div class="stat ${x[1]===0?'ok':'warn'}"><div class="n">${fmt(x[1])}</div><div class="l">${x[0]}</div></div>`).join('')
-   +`<div class="notice">${allCovered?'✅ Resource yang dimasukkan cukup untuk semua upgrade.':'⚠️ Masih kurang resource di atas untuk mencapai target.'}</div>`;
+   +`<div class="notice">${allCovered?'✅ The entered resources are sufficient for all upgrades.':'⚠️ More resources are required above to reach the target.'}</div>`;
 
   const byTypeEl=document.getElementById('chByType');
   if(byTypeEl) byTypeEl.innerHTML=WOS_DB.troopTypes.map(t=>{
@@ -82,12 +82,12 @@ function renderCharmDB(){
    return `<div class="bc-section"><h3><i class="bi bi-gem"></i> ${type}</h3><div class="research-list">${rows}</div></div>`;
  }).join('');
 
- b.innerHTML=`<button class="modal-close" onclick="closeModal('charmModal')">×</button><div class="modal-title"><i class="bi bi-gem"></i> Chief Charm</div><div class="modal-sub">18 slot charm independen — 3 charm per gear piece (Helmet+Watch = Lancer, Jacket+Pants = Infantry, Ring+Cane = Marksman). Level 1-18, sub-level mulai Lv.4. Chief Charm unlock di Furnace Lv.25; Lv.16 butuh state Gen 7.</div>
+ b.innerHTML=`<button class="modal-close" onclick="closeModal('charmModal')">×</button><div class="modal-title"><i class="bi bi-gem"></i> Chief Charm</div><div class="modal-sub">18 independent charm slots — 3 charms per gear piece (Helmet+Watch = Lancer, Jacket+Pants = Infantry, Ring+Cane = Marksman). Levels 1–18, with sub-levels starting at Lv.4. Chief Charm unlocks at Furnace Lv.25; Lv.16 requires Gen 7 state.</div>
  <div class="bc-toolbar">
    <button class="mini-btn" onclick="charmSetAllTarget(32)">Set All Desired Lv.11</button>
    <button class="mini-btn" onclick="charmSetAllTarget(57)">Set All Desired Lv.16</button>
    <button class="mini-btn" onclick="charmSetAllTarget(${charmMaxIdx()})">Set All Desired Lv.18</button>
-   <button class="mini-btn" onclick="charmMatchCurrentToTarget()">Tandai Semua Selesai</button>
+   <button class="mini-btn" onclick="charmMatchCurrentToTarget()">Mark All Complete</button>
    <button class="mini-btn" onclick="charmResetAll()">Reset All</button>
  </div>
  ${rowsByType}
@@ -99,12 +99,12 @@ function renderCharmDB(){
  <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Materials Required</h3><div id="chTotalResult" class="result-grid"></div></div>
  <div class="bc-section result"><h3><i class="bi bi-exclamation-triangle-fill"></i> Still Needed (After Available)</h3><div id="chNeedResult" class="result-grid"></div></div>
  <div class="bc-section"><h3><i class="bi bi-diagram-3-fill"></i> By Troop Type</h3><div id="chByType" class="charm-slots"></div></div>
- <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Cost Database (per charm, per level)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>Guides</th><th>Designs</th><th>Secrets</th><th>Score</th></tr></thead><tbody>${WOS_DB.charmSteps.slice(1).map(v=>`<tr><td>${v.label}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td><td>${fmt(v.score)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Biaya per langkah untuk 1 charm, dari wostools.net/chief-charms-calculator (dicek 2026-09-28). Score × 70 = poin SvS/KoI. Jewel Secrets hanya untuk Lv.12-18. Lv.11 membuka Material Exchange.</div></div>
+ <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Cost Database (per charm, per level)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>Guides</th><th>Designs</th><th>Secrets</th><th>Score</th></tr></thead><tbody>${WOS_DB.charmSteps.slice(1).map(v=>`<tr><td>${v.label}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td><td>${fmt(v.score)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Cost per charm and level step from wostools.net/chief-charms-calculator (checked September 28, 2026). Score × 70 = SvS/KoI points. Jewel Secrets are only required for Lv.12–18. Lv.11 unlocks Material Exchange.</div></div>
  <div class="bc-section"><h3><i class="bi bi-lightbulb-fill"></i> Tips</h3><ul class="tip-list">
-   <li><b>Save for events:</b> upgrade saat King of Icefield, Officer Project, Armament Competition, atau Alliance Mobilization.</li>
-   <li><b>Jewel Secrets:</b> hanya diperlukan untuk level 12-18, jumlah naik cepat (15 di Lv.12 sampai 180 di Lv.18 per charm).</li>
-   <li><b>Sumber material:</b> Frostfire Mine, Sunfire Castle Battle, Castle Battle, dan Giant Elk pet (skill Mystical Finding).</li>
-   <li><b>Material Exchange:</b> upgrade satu charm ke Lv.11 untuk membuka tukar-menukar material charm.</li>
+   <li><b>Save for events:</b> upgrade during King of Icefield, Officer Project, Armament Competition, or Alliance Mobilization.</li>
+   <li><b>Jewel Secrets:</b> are only required for levels 12–18, with costs increasing rapidly (15 at Lv.12 up to 180 at Lv.18 per charm).</li>
+   <li><b>Material Sources:</b> Frostfire Mine, Sunfire Castle Battle, Castle Battle, and the Giant Elk pet (Mystical Finding skill).</li>
+   <li><b>Material Exchange:</b> upgrade one charm to Lv.11 to unlock charm material exchange.</li>
  </ul></div>`;
  calcCharmSummary();
 }

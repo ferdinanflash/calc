@@ -15,19 +15,19 @@ function renderTroopDB(){
  const b=m.querySelector('.modal-box');
  const tiers=Object.keys(WOS_DB.troops), lastTier=tiers[tiers.length-1], prevTier=tiers[tiers.length-2]||tiers[0];
  b.innerHTML=`<button class="modal-close" onclick="closeModal('troopsModal')">×</button>
- <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion untuk Infantry, Lancer, dan Marksman — T1–T12, speed bonus, resource gap dan event points.</div>
+ <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion for Infantry, Lancer, and Marksman — T1–T12, speed bonuses, resource gaps, and event points.</div>
  <div class="bc-section"><div class="placeholder-grid">
  <label>Troop Type<select id="dbTroopType"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
  <label>Mode<select id="dbTroopMode"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
- <label id="dbTroopFromWrap" class="hidden">From Tier (saat ini)<select id="dbTroopFrom">${tierOpts(prevTier)}</select></label>
+ <label id="dbTroopFromWrap" class="hidden">From Tier (Current)<select id="dbTroopFrom">${tierOpts(prevTier)}</select></label>
  <label>Target Tier<select id="dbTroopTier">${tierOpts(lastTier)}</select></label>
  <label>Quantity<input id="dbTroopQty" type="number" min="0" value="100000"></label>
  <label>Speed Bonus % <input id="dbTroopSpeed" type="number" min="0" value="0"></label>
  <label>Training Queues (paralel)<input id="dbTroopQueues" type="number" min="1" value="1"></label>
- <label class="checkline"><input id="dbTroopAdvanced" type="checkbox"> Advanced Training (-20% waktu, flat)</label>
+ <label class="checkline"><input id="dbTroopAdvanced" type="checkbox"> Advanced Training (-20% time, flat)</label>
  </div></div>
- <div class="notice"><i class="bi bi-info-circle-fill"></i> Biaya Meat/Wood/Coal/Iron sama untuk Infantry, Lancer &amp; Marksman pada tier yang sama (hanya statistik tempur yang berbeda), jadi selector Troop Type di atas tidak mengubah angka biaya.</div>
- <div id="dbTroopWarn" class="notice hidden"><i class="bi bi-exclamation-triangle-fill"></i> Untuk mode Promotion, From Tier harus lebih rendah dari Target Tier. Perbaiki pilihan tier untuk melihat hasil.</div>
+ <div class="notice"><i class="bi bi-info-circle-fill"></i> Meat/Wood/Coal/Iron costs are the same for Infantry, Lancer &amp; Marksman at the same tier (only combat statistics differ), so the Troop Type selector above does not change the cost values.</div>
+ <div id="dbTroopWarn" class="notice hidden"><i class="bi bi-exclamation-triangle-fill"></i> For Promotion mode, From Tier must be lower than Target Tier. Adjust the tier selection to see the results.</div>
  <div class="bc-section">
    <h3><i class="bi bi-bag-fill"></i> Available Resources</h3>
    <div class="bc-grid">
@@ -39,7 +39,7 @@ function renderTroopDB(){
  </div>
  <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Calculation</h3><div id="dbTroopResult" class="result-grid"></div></div>
  <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Time</th><th>Power</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
- <div class="source-note">Training memakai biaya dan poin penuh tier target. Promotion memakai selisih biaya, waktu, dan poin event (Target − From) sesuai wostools.net/wiki/troops. Data dasar per tier diverifikasi 2026-09-28; selisih Promotion di luar T11→T12 dihitung dari selisih tabel biaya.</div>`;
+ <div class="source-note">Training uses the full cost and points of the target tier. Promotion uses the difference in cost, time, and event points (Target − From) according to wostools.net/wiki/troops. Base tier data was verified on September 28, 2026; Promotion differences outside T11→T12 are calculated from the cost table differences.</div>`;
  const modeSel=document.getElementById('dbTroopMode');
  const toggleFrom=()=>{ document.getElementById('dbTroopFromWrap')?.classList.toggle('hidden', modeSel.value!=='promote'); };
  modeSel.addEventListener('change',()=>{toggleFrom();calcTroopDB();});

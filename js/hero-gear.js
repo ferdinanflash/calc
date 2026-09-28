@@ -175,7 +175,7 @@ function renderSummary(){
     ['Essence Stones', essence.toLocaleString('id-ID')],
     ['Mithril', mithril.toLocaleString('id-ID')],
     ['Mythic Gear', totalMythic.toLocaleString('id-ID')],
-    ['Enhance XP (perkiraan)', Math.round(enhXP).toLocaleString('id-ID')],
+    ['Enhance XP (estimated)', Math.round(enhXP).toLocaleString('id-ID')],
     ['Widget', widgetTotal.toLocaleString('id-ID')],
     ['SvS/KOI Points (Mithril+Widget+Essence)', totalPoints.toLocaleString('id-ID')],
   ];

@@ -38,8 +38,8 @@ function renderGearDB(){
  const exName={alloy:'Alloy',solution:'Solution',plans:'Plans',amber:'Amber'};
  b.innerHTML=`<button class="modal-close" onclick="closeModal('chiefGearModal')">×</button>
  <div class="modal-title"><i class="bi bi-shield-fill"></i> Chief Gear Calculator</div>
- <div class="modal-sub">Rencanakan upgrade dari Green sampai Red T6 ★★★: Hardened Alloy, Polishing Solution, Design Plans, Lunar Amber, power, deployment capacity dan SvS points.</div>
- <div class="notice"><i class="bi bi-info-circle-fill"></i> Chief Gear terbuka di Furnace Level 22. Keenam piece memakai jalur biaya yang sama; atur current &amp; target tiap piece di bawah.</div>
+ <div class="modal-sub">Plan upgrades from Green to Red T6 ★★★: Hardened Alloy, Polishing Solution, Design Plans, Lunar Amber, power, deployment capacity, and SvS points.</div>
+ <div class="notice"><i class="bi bi-info-circle-fill"></i> Chief Gear unlocks at Furnace Level 22. All six pieces use the same cost path; set the current &amp; target levels for each piece below.</div>
  <div class="bc-section"><h3><i class="bi bi-lightning-charge-fill"></i> Quick Select</h3><div class="placeholder-grid">
   <label>Set All Current<select id="cgQuickCur">${opts(-1,'Choose tier…')}</select></label>
   <label>Set All Target<select id="cgQuickTar">${opts(-1,'Choose tier…')}</select></label>
@@ -49,14 +49,14 @@ function renderGearDB(){
   <label>${p.name} <small>(${p.type})</small><select id="cgCur${i}">${opts(cgState.cur[i])}</select></label><span class="arrow">→</span>
   <label>Target<select id="cgTar${i}">${opts(cgState.tar[i])}</select></label></div><div id="cgRow${i}" class="notice"></div></div><div class="cg-img" id="cgImgT${i}" title="Target"></div></div>`).join('')}</div>
  <div class="bc-section"><h3><i class="bi bi-bag-fill"></i> Available Resources</h3><div class="bc-grid">${CG_MATS.map(([k,ic,nm])=>`<label>${ic} ${nm}<input id="cgRes_${k}" type="number" min="0" value="${cgState.res[k]||0}"></label>`).join('')}</div></div>
- <div class="bc-section"><h3><i class="bi bi-arrow-repeat"></i> Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${exName[e[0]]} » ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/minggu)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="jumlah ${exName[e[0]]} yang ditukar"></label>`).join('')}</div>
-  <div class="source-note">Isi jumlah material sumber yang ditukar; hasilnya ditambahkan ke Available Resources. Limit mingguan ditampilkan sesuai WoSTools tetapi tidak dipaksakan di sini.</div></div>
+ <div class="bc-section"><h3><i class="bi bi-arrow-repeat"></i> Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${exName[e[0]]} » ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/week)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="amount of ${exName[e[0]]} to exchange"></label>`).join('')}</div>
+  <div class="source-note">Enter the amount of source material to exchange; the result is added to Available Resources. The weekly limit is shown according to WoSTools but is not enforced here.</div></div>
  <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Summary</h3><div id="cgSummary"></div></div>
  <div class="bc-section"><h3><i class="bi bi-bullseye"></i> Upgrade Efficiency Advisor</h3><div id="cgAdvisor"></div></div>
  <div class="bc-section"><h3><i class="bi bi-graph-up-arrow"></i> Tier Comparison (per piece, max stars)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Stat Bonus</th><th>Power</th><th>Deploy Cap.</th></tr></thead><tbody>${maxRows.map(x=>`<tr><td>${x.name}</td><td>+${x.stat.toFixed(2)}%</td><td>${fmt(x.power)}</td><td>${x.deploy?'+'+fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></div>
- <div class="bc-section"><details><summary><b><i class="bi bi-collection-fill"></i> Full Cost Database (150 tahap per piece)</b></summary><div class="table-scroll"><table class="db-table"><thead><tr><th>Tahap</th><th>Alloy</th><th>Solution</th><th>Plans</th><th>Amber</th><th>Score</th><th>Power</th><th>Stat</th><th>Deploy</th></tr></thead><tbody>${L.slice(1).map(x=>`<tr><td>${x.name}</td><td>${fmt(x.alloy)}</td><td>${fmt(x.solution)}</td><td>${fmt(x.plans)}</td><td>${fmt(x.amber)}</td><td>${fmt(x.svs)}</td><td>${fmt(x.power)}</td><td>+${x.stat.toFixed(2)}%</td><td>${x.deploy?fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></details></div>
- <div class="notice"><i class="bi bi-lightbulb-fill"></i> Tips: samakan tier keenam piece untuk set bonus (3 piece = Defense, 6 piece = Attack). Simpan upgrade untuk SvS Prep Day 5 / KoI agar poinnya maksimal. Hardened Alloy dari Polar Terror (Lv.3+) &amp; Beast (Lv.22+); Polishing Solution dari Crazy Joe &amp; Alliance Championship Shop; Design Plans dibutuhkan mulai Blue 2★; Lunar Amber hanya untuk tier Red.</div>
- <div class="source-note">Data biaya, power, stat &amp; deployment: wostools.net/wiki/gear/chief-gear (dicek 2026-09-28). SvS points = Chief Gear Score × ${G.svsPerScore}. Fitur Upgrade Suggestions, Alliance Showdown &amp; export CSV/Excel milik WoSTools belum ada di sini.</div>`;
+ <div class="bc-section"><details><summary><b><i class="bi bi-collection-fill"></i> Full Cost Database (150 steps per piece)</b></summary><div class="table-scroll"><table class="db-table"><thead><tr><th>Step</th><th>Alloy</th><th>Solution</th><th>Plans</th><th>Amber</th><th>Score</th><th>Power</th><th>Stat</th><th>Deploy</th></tr></thead><tbody>${L.slice(1).map(x=>`<tr><td>${x.name}</td><td>${fmt(x.alloy)}</td><td>${fmt(x.solution)}</td><td>${fmt(x.plans)}</td><td>${fmt(x.amber)}</td><td>${fmt(x.svs)}</td><td>${fmt(x.power)}</td><td>+${x.stat.toFixed(2)}%</td><td>${x.deploy?fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></details></div>
+ <div class="notice"><i class="bi bi-lightbulb-fill"></i> Tips: keep all six pieces at the same tier for set bonuses (3 pieces = Defense, 6 pieces = Attack). Save upgrades for SvS Prep Day 5 / KoI to maximize points. Hardened Alloy comes from Polar Terror (Lv.3+) &amp; Beast (Lv.22+); Polishing Solution comes from Crazy Joe &amp; Alliance Championship Shop; Design Plans are required starting at Blue 2★; Lunar Amber is only used for Red tiers.</div>
+ <div class="source-note">Cost, power, stat &amp; deployment data: wostools.net/wiki/gear/chief-gear (checked September 28, 2026). SvS points = Chief Gear Score × ${G.svsPerScore}. WoSTools features such as Upgrade Suggestions, Alliance Showdown &amp; CSV/Excel export are not included here.</div>`;
  const sync=()=>{for(let i=0;i<6;i++){document.getElementById('cgCur'+i).value=cgState.cur[i];document.getElementById('cgTar'+i).value=cgState.tar[i];}};
  for(let i=0;i<6;i++){
   document.getElementById('cgCur'+i).addEventListener('change',e=>{cgState.cur[i]=+e.target.value;calcGearDB();});
@@ -83,14 +83,14 @@ function calcGearDB(){
   const im=document.getElementById('cgImg'+i),imT=document.getElementById('cgImgT'+i);
   if(im)im.innerHTML=cgSvg(p.id,cgTierKey(L[c].name));if(imT)imT.innerHTML=cgSvg(p.id,cgTierKey(L[eff].name));
   const row=document.getElementById('cgRow'+i);
-  if(row)row.innerHTML=ok?`<i class="bi bi-graph-up-arrow"></i> +${(L[eff].stat-L[c].stat).toFixed(2)}% · <i class="bi bi-lightning-charge-fill"></i> +${fmt(L[eff].power-L[c].power)}${L[eff].deploy-L[c].deploy?' · <i class="bi bi-people"></i> +'+fmt(L[eff].deploy-L[c].deploy):''}`:'<i class="bi bi-exclamation-triangle-fill"></i> Target lebih rendah dari current — piece ini diabaikan.';
+  if(row)row.innerHTML=ok?`<i class="bi bi-graph-up-arrow"></i> +${(L[eff].stat-L[c].stat).toFixed(2)}% · <i class="bi bi-lightning-charge-fill"></i> +${fmt(L[eff].power-L[c].power)}${L[eff].deploy-L[c].deploy?' · <i class="bi bi-people"></i> +'+fmt(L[eff].deploy-L[c].deploy):''}`:'<i class="bi bi-exclamation-triangle-fill"></i> Target is lower than the current level — this piece will be skipped.';
  });
  // Enhancement Material Exchange (unlocks once any piece is at Gold T2 3★ or higher)
  const unlocked=cgState.cur.some(c=>c>=G.exchangeUnlockLevel);
  const avail=Object.assign({},cgState.res);
  if(unlocked)G.exchange.forEach((e,i)=>{const spent=cgState.ex[i];if(!spent)return;avail[e[0]]-=spent;avail[e[1]]+=Math.floor(spent/e[2])*e[3];});
  const exNote=document.getElementById('cgExNote');
- if(exNote)exNote.innerHTML=unlocked?'<i class="bi bi-check-circle-fill"></i> Exchange terbuka (ada piece di Gold T2 3★ atau lebih tinggi).':'<i class="bi bi-lock-fill"></i> Belum terbuka — upgrade salah satu piece ke Gold T2 3★ (current) untuk membuka Enhancement Material Exchange. Angka tukar di bawah belum berlaku.';
+ if(exNote)exNote.innerHTML=unlocked?'<i class="bi bi-check-circle-fill"></i> Exchange unlocked (at least one piece is Gold T2 3★ or higher).':'<i class="bi bi-lock-fill"></i> Not unlocked yet — upgrade one piece to Gold T2 3★ (current) to unlock Enhancement Material Exchange. The exchange rates below are not yet applicable.';
  const card=(n,l,cls)=>`<div class="stat ${cls||''}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
  const need=CG_MATS.map(([k,ic,nm])=>card(fmt(tot[k]),`${ic} ${nm}`)).join('');
  const gap=CG_MATS.map(([k,ic,nm])=>{const left=Math.max(0,tot[k]-avail[k]);return card(fmt(left),`${ic} ${nm}${avail[k]>0?' · tersedia '+fmt(avail[k]):''}`,left===0?'ok':'warn');}).join('');
@@ -107,5 +107,5 @@ function calcGearDB(){
  // Efficiency advisor: power per material for each piece's next step
  const adv=pieces.map((p,i)=>{const c=cgState.cur[i];if(c>=cgState.tar[i]||c>=L.length-1)return null;const n=L[c+1],mats=n.alloy+n.solution+n.plans+n.amber,gain=n.power-L[c].power;return{p,next:n.name,gain,ratio:mats?gain/mats:0};}).filter(Boolean).sort((a,b)=>b.ratio-a.ratio);
  const ad=document.getElementById('cgAdvisor');
- if(ad)ad.innerHTML=adv.length?`<div class="notice">Piece mana yang memberi power terbanyak per material untuk langkah upgrade berikutnya:</div><div class="result-grid">${adv.map((a,i)=>card(`+${fmt(a.gain)} <i class="bi bi-lightning-charge-fill"></i>`,`#${i+1} ${a.p.name} (${a.p.type}) → ${a.next} · ${a.ratio.toFixed(1)} pwr/mat`)).join('')}</div>`:'<div class="notice">Semua piece sudah mencapai target.</div>';
+ if(ad)ad.innerHTML=adv.length?`<div class="notice">Pieces providing the most power per material for the next upgrade step:</div><div class="result-grid">${adv.map((a,i)=>card(`+${fmt(a.gain)} <i class="bi bi-lightning-charge-fill"></i>`,`#${i+1} ${a.p.name} (${a.p.type}) → ${a.next} · ${a.ratio.toFixed(1)} pwr/mat`)).join('')}</div>`:'<div class="notice">All pieces have reached their targets.</div>';
 }

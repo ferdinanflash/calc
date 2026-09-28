@@ -54,7 +54,7 @@ function renderBuildingPlans(){
   const el=document.getElementById('buildingPlans');
   if(!el)return;
   if(!buildingPlans.length){
-    el.innerHTML='<div class="empty-plan">Belum ada building plan. Klik <b>+ Add Building Plan</b>.</div>';
+    el.innerHTML='<div class="empty-plan">No building plans yet. Click <b>+ Add Building Plan</b>.</div>';
     return;
   }
   el.innerHTML=buildingPlans.map(p=>{

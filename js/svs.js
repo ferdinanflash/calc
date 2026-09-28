@@ -80,15 +80,15 @@ const SVS_DAYS=[
   ['Refined Fire Crystal (Building)',30000,'count','high']
  ]}
 ];
-const SVS_TIER_LABEL={high:'Nilai Tinggi',medium:'Nilai Sedang',low:'Nilai Rendah'};
+const SVS_TIER_LABEL={high:'High Value',medium:'Medium Value',low:'Low Value'};
 let svsDay=0;
 let svsValues=SVS_DAYS.map(d=>d.items.map(()=>0));
 function renderSVS(){
  const tabs=document.getElementById('svsTabs'), head=document.getElementById('svsDayHead'), list=document.getElementById('svsActivities');
  if(!tabs||!head||!list)return;
  tabs.innerHTML=SVS_DAYS.map((d,i)=>`<button class="svs-tab ${i===svsDay?'active':''}" onclick="setSVSDay(${i})"><b>${d.name}</b><small>${d.theme}</small><em>${fmt(svsDayTotal(i))} pts</em></button>`).join('');
- const d=SVS_DAYS[svsDay]; head.innerHTML=`<div><b>${d.name}: ${d.theme}</b><small>Masukkan jumlah yang direncanakan. Total tersimpan otomatis di browser.</small></div><button class="mini-btn" onclick="resetSVSDay()">Reset Day</button>`;
- list.innerHTML=d.items.map((it,i)=>{const val=svsValues[svsDay][i]||0;const tier=it[3];const tierBadge=tier?`<span class="svs-tier ${tier}">${SVS_TIER_LABEL[tier]}</span>`:'';return `<div class="svs-card"><div><b>${it[0]}</b><small>${fmt(it[1])} pts ${it[2]==='minutes'?'per minute':it[2]==='score'?'per score point':it[2]==='troop'?'per applicable troop (gunakan Import untuk nilai per tier)':''}</small>${tierBadge}</div><div class="stepper"><button onclick="changeSVS(${i},-1)">−</button><input type="number" min="0" value="${val}" oninput="setSVS(${i},this.value)"><button onclick="changeSVS(${i},1)">+</button></div><strong>${fmt(val*it[1])}</strong></div>`}).join('');
+ const d=SVS_DAYS[svsDay]; head.innerHTML=`<div><b>${d.name}: ${d.theme}</b><small>Enter the planned amount. Totals are saved automatically in your browser.</small></div><button class="mini-btn" onclick="resetSVSDay()">Reset Day</button>`;
+ list.innerHTML=d.items.map((it,i)=>{const val=svsValues[svsDay][i]||0;const tier=it[3];const tierBadge=tier?`<span class="svs-tier ${tier}">${SVS_TIER_LABEL[tier]}</span>`:'';return `<div class="svs-card"><div><b>${it[0]}</b><small>${fmt(it[1])} pts ${it[2]==='minutes'?'per minute':it[2]==='score'?'per score point':it[2]==='troop'?'per applicable troop (use Import for tier-specific values)':''}</small>${tierBadge}</div><div class="stepper"><button onclick="changeSVS(${i},-1)">−</button><input type="number" min="0" value="${val}" oninput="setSVS(${i},this.value)"><button onclick="changeSVS(${i},1)">+</button></div><strong>${fmt(val*it[1])}</strong></div>`}).join('');
  calcSVS();
 }
 function setSVSDay(i){svsDay=i;renderSVS();}
@@ -128,5 +128,5 @@ function svsImport(type){
    if(idxE>=0)svsValues[3][idxE]+=hg.essence; if(idxW>=0)svsValues[3][idxW]+=hg.widgetTotal; if(idxM>=0)svsValues[3][idxM]+=hg.mithril;
    added+=hg.essence*4000+hg.widgetTotal*8000+hg.mithril*144000;
  }
- saveSVS(); renderSVS(); alert((type==='all'?'Import All':'Import '+type)+' selesai. '+fmt(added)+' pts berhasil ditambahkan.');
+ saveSVS(); renderSVS(); alert((type==='all'?'Import All':'Import '+type)+' completed. '+fmt(added)+' pts were added.');
 }
