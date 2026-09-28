@@ -172,7 +172,7 @@ function renderSummary(){
     ['Essence Stones', essence.toLocaleString('id-ID')],
     ['Mithril', mithril.toLocaleString('id-ID')],
     ['Mythic Gear', totalMythic.toLocaleString('id-ID')],
-    ['Enhance XP (perkiraan)', Math.round(enhXP).toLocaleString('id-ID')],
+    ['Enhance XP (estimated)', Math.round(enhXP).toLocaleString('id-ID')],
     ['Widget', widgetTotal.toLocaleString('id-ID')],
     ['SvS/KOI Points (Mithril+Widget)', totalPoints.toLocaleString('id-ID')],
   ];
@@ -254,7 +254,7 @@ function renderBuildingPlans(){
   const el=document.getElementById('buildingPlans');
   if(!el)return;
   if(!buildingPlans.length){
-    el.innerHTML='<div class="empty-plan">Belum ada building plan. Klik <b>+ Add Building Plan</b>.</div>';
+    el.innerHTML='<div class="empty-plan">No building plans yet. Click <b>+ Add Building Plan</b>.</div>';
     return;
   }
   el.innerHTML=buildingPlans.map(p=>`
@@ -391,7 +391,7 @@ function calcCharms(){
 }
 function setAllCharms(level){charmPieces.forEach((_,i)=>[0,1,2].forEach(s=>{document.getElementById(`ch_${i}_${s}_c`).value=level;document.getElementById(`ch_${i}_${s}_t`).value=level;}));calcCharms();}
 function resetCharms(){renderCharms();calcCharms();}
-function charmSuggestion(type){document.getElementById('charmSuggestion').textContent=type==='stats'?'Saran akan memprioritaskan upgrade dengan gain statistik paling efisien berdasarkan resource yang tersedia.':'Saran akan memprioritaskan upgrade yang menghasilkan poin event paling tinggi.';}
+function charmSuggestion(type){document.getElementById('charmSuggestion').textContent=type==='stats'?'Suggestions will prioritize upgrades with the most efficient stat gains based on available resources.':'Suggestions will prioritize upgrades that generate the highest event points.';}
 
 // ---------- CHIEF GEAR ----------
 const gearPieces=['Helmet','Watch','Jacket','Pants','Ring','Cane'];
@@ -545,7 +545,7 @@ function renderTroopDB(){
  const m=document.getElementById('troopsModal'); if(!m)return;
  const b=m.querySelector('.modal-box');
  b.innerHTML=`<button class="modal-close" onclick="closeModal('troopsModal')">×</button>
- <div class="modal-title">⚔️ Training Troops Calculator</div><div class="modal-sub">Database biaya T1–T12 + training, promotion, waktu, power dan event points.</div>
+ <div class="modal-title">⚔️ Training Troops Calculator</div><div class="modal-sub">T1–T12 cost database + training, promotion, time, power, and event points.</div>
  <div class="bc-section"><div class="placeholder-grid">
  <label>Troop Type<select id="dbTroopType"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
  <label>Mode<select id="dbTroopMode"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
@@ -576,19 +576,19 @@ function calcTroopDB(){
 function renderWarAcademyDB(){
  const m=document.getElementById('warAcademyModal'); if(!m)return; const b=m.querySelector('.modal-box');
  const rows=WOS_DB.warAcademy.helios.verifiedRows;
- b.innerHTML=`<button class="modal-close" onclick="closeModal('warAcademyModal')">×</button><div class="modal-title">🎓 War Academy</div><div class="modal-sub">Database Helios/T12 research. Semua 3 cabang troop menggunakan struktur research terpisah.</div>
+ b.innerHTML=`<button class="modal-close" onclick="closeModal('warAcademyModal')">×</button><div class="modal-title">🎓 War Academy</div><div class="modal-sub">Helios/T12 research database. All three troop branches use separate research structures.</div>
  <div class="bc-section"><div class="placeholder-grid"><label>Branch<select id="waBranch"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label><label>Research Speed %<input id="waSpeed" type="number" min="0" value="0"></label><label>FC Shards<input id="waShardInv" type="number" min="0" value="0"></label><label>Steel<input id="waSteelInv" type="number" min="0" value="0"></label><label>Refined FC<input id="waRfcInv" type="number" min="0" value="0"></label></div></div>
- <div class="bc-section"><h3>🔥 Research Structure</h3><div class="research-tree">${WOS_DB.warAcademy.helios.common.map(x=>`<div class="tree-item"><b>${x[0]}</b><span>max ${x[1]}</span></div>`).join('')}</div><div class="notice">T11 terbuka setelah jalur Helios selesai. T12 memakai 5 track Exalted + Molten I/II/III + Solar Supremacy + Training/Healing/First Aid.</div></div>
+ <div class="bc-section"><h3>🔥 Research Structure</h3><div class="research-tree">${WOS_DB.warAcademy.helios.common.map(x=>`<div class="tree-item"><b>${x[0]}</b><span>max ${x[1]}</span></div>`).join('')}</div><div class="notice">T11 unlocks after completing the Helios path. T12 uses 5 Exalted tracks + Molten I/II/III + Solar Supremacy + Training/Healing/First Aid.</div></div>
  <div class="bc-section"><h3>📋 Verified Cost Rows</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Track</th><th>Lv</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Steel</th><th>FC Shards</th><th>RFC</th><th>Time</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.track}</td><td>${r.level}</td><td>${fmt(r.meat)}</td><td>${fmt(r.wood)}</td><td>${fmt(r.coal)}</td><td>${fmt(r.iron)}</td><td>${fmt(r.steel)}</td><td>${fmt(r.shards)}</td><td>${fmt(r.refinedFC)}</td><td>${secondsText(r.seconds)}</td></tr>`).join('')}</tbody></table></div></div>
  <div class="bc-section"><h3>🔥 T12 Structure</h3><div class="result-grid"><div class="stat"><div class="n">5</div><div class="l">Exalted tracks</div></div><div class="stat"><div class="n">20</div><div class="l">Molten I / track</div></div><div class="stat"><div class="n">50</div><div class="l">Molten II / track</div></div><div class="stat"><div class="n">15</div><div class="l">Solar Supremacy</div></div><div class="stat"><div class="n">50</div><div class="l">Molten III / track</div></div></div></div>`;
 }
 function renderCharmDB(){
  const m=document.getElementById('charmModal'); if(!m)return; const b=m.querySelector('.modal-box');
- b.innerHTML=`<button class="modal-close" onclick="closeModal('charmModal')">×</button><div class="modal-title">💎 Chief Charm</div><div class="modal-sub">18 slot database — 3 charm per masing-masing dari 6 gear. Level 1–18.</div>
+ b.innerHTML=`<button class="modal-close" onclick="closeModal('charmModal')">×</button><div class="modal-title">💎 Chief Charm</div><div class="modal-sub">18-slot database — 3 charms per each of 6 gear pieces. Levels 1–18.</div>
  <div class="bc-section"><div class="placeholder-grid"><label>Current Level<select id="chCur">${Object.keys(WOS_DB.charmLevels).map(x=>`<option>${x}</option>`).join('')}</select></label><label>Target Level<select id="chTar">${Object.keys(WOS_DB.charmLevels).map(x=>`<option>${x}</option>`).join('')}</select></label><label>Number of Charms<input id="chCount" type="number" min="1" max="18" value="18"></label><label>Guides Available<input id="chG" type="number" min="0" value="0"></label><label>Designs Available<input id="chD" type="number" min="0" value="0"></label><label>Secrets Available<input id="chS" type="number" min="0" value="0"></label></div></div>
  <div class="bc-section"><h3>📊 Upgrade Summary</h3><div id="chResult" class="result-grid"></div></div>
  <div class="bc-section"><h3>🧩 18 Slots</h3><div class="charm-slots">${WOS_DB.chiefCharmsPieces.flatMap(p=>[1,2,3].map(i=>`<div class="tree-item"><b>${p.name} #${i}</b><span>${p.type}</span></div>`)).join('')}</div></div>
- <div class="bc-section"><h3>📚 Cost Database</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>Guides</th><th>Designs</th><th>Secrets</th></tr></thead><tbody>${Object.entries(WOS_DB.charmLevels).map(([l,v])=>`<tr><td>${l}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Level 17/18 memakai data terbaru yang sudah tercantum pada sumber publik; sub-level mengikuti pembagian upgrade game.</div></div>`;
+ <div class="bc-section"><h3>📚 Cost Database</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>Guides</th><th>Designs</th><th>Secrets</th></tr></thead><tbody>${Object.entries(WOS_DB.charmLevels).map(([l,v])=>`<tr><td>${l}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Levels 17/18 use the latest data listed in the public source; sub-levels follow the game's upgrade structure.</div></div>`;
  ['chCur','chTar','chCount','chG','chD','chS'].forEach(id=>document.getElementById(id)?.addEventListener('input',calcCharmDB)); calcCharmDB();
 }
 function calcCharmDB(){
@@ -601,7 +601,7 @@ function calcCharmDB(){
 function renderGearDB(){
  const m=document.getElementById('chiefGearModal');if(!m)return;const b=m.querySelector('.modal-box');
  const steps=WOS_DB.chiefGearSteps;
- b.innerHTML=`<button class="modal-close" onclick="closeModal('chiefGearModal')">×</button><div class="modal-title">🛡️ Chief Gear</div><div class="modal-sub">6 gear pieces dengan database material per tahap. Semua 6 piece memakai jalur biaya yang sama.</div>
+ b.innerHTML=`<button class="modal-close" onclick="closeModal('chiefGearModal')">×</button><div class="modal-title">🛡️ Chief Gear</div><div class="modal-sub">6 gear pieces with a material database for each step. All 6 pieces use the same cost path.</div>
  <div class="bc-section"><div class="placeholder-grid"><label>Current Stage<select id="cgCur">${steps.map((x,i)=>`<option value="${i}">${x.stage}</option>`).join('')}<option value="999">Red T6 ★★★</option></select></label><label>Target Stage<select id="cgTar">${steps.map((x,i)=>`<option value="${i}">${x.stage}</option>`).join('')}<option value="999">Red T6 ★★★</option></select></label><label>Pieces<input id="cgPieces" type="number" min="1" max="6" value="6"></label><label>Alloy Available<input id="cgA" type="number" min="0" value="0"></label><label>Solution Available<input id="cgS" type="number" min="0" value="0"></label><label>Plans Available<input id="cgP" type="number" min="0" value="0"></label><label>Amber Available<input id="cgL" type="number" min="0" value="0"></label></div></div>
  <div class="bc-section"><h3>📊 Upgrade Summary</h3><div id="cgResult" class="result-grid"></div></div>
  <div class="bc-section"><h3>🛡️ 6 Pieces</h3><div class="charm-slots">${WOS_DB.chiefGearPieces.map(p=>`<div class="tree-item"><b>${p.name}</b><span>${p.type}</span></div>`).join('')}</div></div>
