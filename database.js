@@ -41,17 +41,11 @@ const WOS_DB = {
     {id:'jacket',name:'Jacket',type:'Infantry'},{id:'pants',name:'Pants',type:'Infantry'},
     {id:'ring',name:'Ring',type:'Marksman'},{id:'cane',name:'Cane',type:'Marksman'}
   ],
-  /* Charm milestone costs published by current references. Sub-levels split the major-level payment. */
-  charmLevels:{
-    1:{guides:5,designs:5,secrets:0},2:{guides:10,designs:10,secrets:0},3:{guides:25,designs:25,secrets:0},
-    4:{guides:80,designs:100,secrets:0},5:{guides:100,designs:120,secrets:0},6:{guides:140,designs:160,secrets:0},
-    7:{guides:190,designs:220,secrets:0},8:{guides:240,designs:280,secrets:0},9:{guides:300,designs:400,secrets:0},
-    10:{guides:400,designs:410,secrets:0},11:{guides:560,designs:420,secrets:0},
-    12:{guides:580,designs:450,secrets:15},13:{guides:600,designs:480,secrets:30},
-    14:{guides:620,designs:510,secrets:45},15:{guides:635,designs:530,secrets:70},
-    16:{guides:650,designs:550,secrets:100},17:{guides:765,designs:630,secrets:135},18:{guides:1300,designs:1130,secrets:180}
-  },
-  charmRules:{pointsPerLevel:70000,exchange:{guideToDesign:2,designToGuide:2,guideToSecret:40,designToSecret:40}},
+  /* Chief Charm per-step costs (Level 0 -> 18, incl. sub-levels): built by the Chief Charm
+     builder at the end of this file from wostools.net/wiki/gear/chief-charms (checked 2026-09-28).
+     WOS_DB.charmSteps[i] = {label, guides, designs, secrets, score}; index 0 = Level 0 (none). */
+  charmSteps:null,
+  charmRules:{pointsPerScore:70,exchange:{guideToDesign:2,designToGuide:2,guideToSecret:40,designToSecret:40}},
   warAcademy:{
     troopBranches:['Infantry','Lancer','Marksman'],
     helios:{
@@ -466,4 +460,42 @@ const WOS_DB = {
     svsPerScore:36, /* SvS points = chief gear score x 36 (per wostools wiki) */
     perPieceToRedT3:{alloy:1550500,solution:17460,plans:3390,amber:280,svs:9970560},
     allSixToRedT6:{alloy:25863000,solution:272160,plans:48240,amber:6000}};
+})();
+
+/* ---- Chief Charm step table builder ----
+   Source: https://wostools.net/wiki/gear/chief-charms ("Upgrade Costs Per Charm").
+   Each row group = [labels..., guides, designs, secrets, score]; the score column is the
+   charm score (SvS points = score x 70). Column totals per charm (Lv 0 -> 18) must be
+   Guides 7,100 / Designs 6,910 / Secrets 575 / Score 249,800. */
+(function(){
+  const G=[ // [labels], guides, designs, secrets, score(s)
+    [['1'],5,5,0,[625]],[['2'],40,15,0,[1250]],[['3'],60,40,0,[3125]],[['4'],80,100,0,[8750]],
+    [['4.1','4.2','4.3','5'],25,50,0,[2813,2813,2812,2812]],
+    [['5.1','5.2','5.3','6'],30,75,0,[3125]],
+    [['6.1','6.2','6.3','7'],35,100,0,[3125]],
+    [['7.1','7.2','7.3','8'],50,100,0,[3250]],
+    [['8.1','8.2','8.3','9'],75,100,0,[3500]],
+    [['9.1','9.2','9.3','10'],105,105,0,[3750]],
+    [['10.1','10.2','10.3','11'],140,105,0,[4000]],
+    [['11.1','11.2','11.3','11.4','12'],116,90,3,[3400]],
+    [['12.1','12.2','12.3','12.4','13'],116,90,6,[3600]],
+    [['13.1','13.2','13.3','13.4','14'],120,100,9,[3800]],
+    [['14.1','14.2','14.3','14.4','15'],120,100,14,[4000]],
+    [['15.1','15.2','15.3','15.4','16'],130,110,20,[4200]],
+    [['16.1','16.2','16.3','16.4','16.5','16.6','16.7','16.8','17'],85,70,15,[2500]],
+    [['17.1'],100,90,20,[2700]],
+    [['17.2','17.3','17.4','17.5','17.6','17.7','17.8','18'],150,130,20,[2700]]
+  ];
+  const steps=[{label:'0',guides:0,designs:0,secrets:0,score:0}];
+  G.forEach(([labels,g,d,s,sc])=>labels.forEach((label,i)=>
+    steps.push({label,guides:g,designs:d,secrets:s,score:sc.length>1?sc[i]:sc[0]})));
+  WOS_DB.charmSteps=steps;
+  // Sum of steps (from, to] where from/to are indices into charmSteps.
+  WOS_DB.charmCost=function(from,to){
+    const o={guides:0,designs:0,secrets:0,score:0};
+    for(let i=Math.max(0,from)+1;i<=to&&i<steps.length;i++){
+      const x=steps[i];o.guides+=x.guides;o.designs+=x.designs;o.secrets+=x.secrets;o.score+=x.score;
+    }
+    return o;
+  };
 })();
