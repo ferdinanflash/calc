@@ -14,13 +14,39 @@ function cgTierKey(name){const m=/^(Green|Blue|Purple|Gold|Red)/.exec(name||'');
 const CG_ASSET_IDS={helmet:'helmet',watch:'watch',jacket:'coat',pants:'pants',ring:'ring',cane:'cane'};
 function cgStarCount(name){const m=(name||'').match(/(\d)★/);return m?Math.max(0,Math.min(3,Number(m[1]))):0;}
 function cgTierLabel(name){const m=(name||'').match(/\bT([1-6])\b/);return m?'T'+m[1]:'';}
-function cgAsset(id,tier,stars,name){
- if(tier==='none') return `<div class="cg-art cg-empty" title="${name||'None (Not Started)'}"><i class="bi bi-shield"></i></div>`;
+function cgAssetPath(id, levelName){
+ const m=/^Red T([56]) (\d)★$/.exec(levelName||'');
+ if(!m)return null;
+ const tier=m[1],star=m[2];
+ // Supplied artwork is exact for T5 3★ and T6 0★ for Jacket/Pants/Ring/Cane.
+ if(tier==='5' && star==='3' && ['jacket','pants','ring','cane'].includes(id))
+   return `images/chief-gear/${id}-t5-3star.jpg`;
+ if(tier==='6' && star==='0' && ['jacket','pants','ring','cane'].includes(id))
+   return `images/chief-gear/${id}-t6-0star.jpg`;
+ return null;
+}
+function cgStarMarkup(stars){
+ return stars?`<span class="cg-stars" aria-label="${stars} stars">${Array.from({length:stars},()=>'<i>★</i>').join('')}</span>`:'';
+}
+function cgTierMarkup(levelName){
+ const m=(levelName||'').match(/\bT([1-6])\b/);
+ return m?`<span class="cg-tier-badge">T${m[1]}</span>`:'';
+}
+function cgRenderArt(el,id,levelName){
+ if(!el)return;
+ const asset=cgAssetPath(id,levelName);
+ if(asset){
+   // These two supplied states already contain their T5/T6 badge and star artwork.
+   el.innerHTML=`<img class="cg-gear-asset cg-supplied" src="${asset}" alt="${id} ${levelName}" loading="lazy">`;
+   return;
+ }
+ const tier=cgTierKey(levelName), stars=cgStarCount(levelName), tierLabel=cgTierLabel(levelName);
+ if(tier==='none'){
+   el.innerHTML=`<div class="cg-art cg-empty" title="${levelName||'None (Not Started)'}"><i class="bi bi-shield"></i></div>`;
+   return;
+ }
  const file=CG_ASSET_IDS[id]||id;
- const starMarkup=stars?`<span class="cg-stars" aria-label="${stars} stars">${Array.from({length:stars},()=>'<i>★</i>').join('')}</span>`:'';
- const tierLabel=cgTierLabel(name);
- const tierMarkup=tierLabel?`<span class="cg-tier-badge">${tierLabel}</span>`:'';
- return `<div class="cg-art" title="${name||''}"><img src="images/chief-gear/${file}-${tier}.webp" alt="${name||id}" loading="lazy">${tierMarkup}${starMarkup}<span class="cg-corner-dot" aria-hidden="true"></span></div>`;
+ el.innerHTML=`<div class="cg-art" title="${levelName||''}"><img class="cg-gear-asset" src="images/chief-gear/${file}-${tier}.webp" alt="${id} ${levelName}" loading="lazy">${tierLabel?cgTierMarkup(levelName):''}${cgStarMarkup(stars)}<span class="cg-corner-dot" aria-hidden="true"></span></div>`;
 }
 function cgPrefix(){
  if(cgPrefix.cache)return cgPrefix.cache;
@@ -93,8 +119,7 @@ function calcGearDB(){
   const bt=byType[p.type]||(byType[p.type]={alloy:0,solution:0,plans:0,amber:0,svs:0});Object.keys(bt).forEach(k=>bt[k]+=cost[k]);
   power+=L[eff].power-L[c].power;deploy+=L[eff].deploy-L[c].deploy;statFrom+=L[c].stat;statTo+=L[eff].stat;
   const im=document.getElementById('cgImg'+i),imT=document.getElementById('cgImgT'+i);
-  if(im)im.innerHTML=cgAsset(p.id,cgTierKey(L[c].name),cgStarCount(L[c].name),L[c].name);
-  if(imT)imT.innerHTML=cgAsset(p.id,cgTierKey(L[eff].name),cgStarCount(L[eff].name),L[eff].name);
+  if(im)cgRenderArt(im,p.id,L[c].name);if(imT)cgRenderArt(imT,p.id,L[eff].name);
   const row=document.getElementById('cgRow'+i);
   if(row)row.innerHTML=ok?`<i class="bi bi-graph-up-arrow"></i> +${(L[eff].stat-L[c].stat).toFixed(2)}% · <i class="bi bi-lightning-charge-fill"></i> +${fmt(L[eff].power-L[c].power)}${L[eff].deploy-L[c].deploy?' · <i class="bi bi-people"></i> +'+fmt(L[eff].deploy-L[c].deploy):''}`:'<i class="bi bi-exclamation-triangle-fill"></i> Target is lower than the current level — this piece will be skipped.';
  });
