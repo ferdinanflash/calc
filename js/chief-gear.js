@@ -11,17 +11,16 @@ const cgState={cur:[0,0,0,0,0,0],tar:Array(6).fill(CG_DEFAULT_TARGET),res:{alloy
 // Chief Gear piece artwork (inline SVG, tinted by quality tier)
 const CG_TIER_COLORS={none:['#9ca3af','#4b5563','#e5e7eb'],green:['#4ade80','#166534','#bbf7d0'],blue:['#60a5fa','#1e3a8a','#bfdbfe'],purple:['#c084fc','#581c87','#e9d5ff'],gold:['#fbbf24','#854d0e','#fef3c7'],red:['#f87171','#7f1d1d','#fecaca']};
 function cgTierKey(name){const m=/^(Green|Blue|Purple|Gold|Red)/.exec(name||'');return m?m[1].toLowerCase():'none';}
-function cgSvg(id,tier){
- const [c,d,l]=CG_TIER_COLORS[tier]||CG_TIER_COLORS.none,s=`stroke="${d}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"`;
- const art={
-  helmet:`<path d="M10 40C10 22 20 10 32 10s22 12 22 30v6H10z" fill="${c}" ${s}/><path d="M18 30h28v8H18z" fill="${d}" ${s}/><path d="M10 46l4 10h10l-3-10M54 46l-4 10H40l3-10" fill="${c}" ${s}/><path d="M32 10V4M27 6q5-6 10 0" fill="none" ${s}/><path d="M22 20q10-6 20 0" fill="none" stroke="${l}" stroke-width="2.5" stroke-linecap="round"/>`,
-  watch:`<rect x="23" y="3" width="18" height="16" rx="3" fill="${d}" ${s}/><rect x="23" y="45" width="18" height="16" rx="3" fill="${d}" ${s}/><circle cx="32" cy="32" r="17" fill="${c}" ${s}/><circle cx="32" cy="32" r="12" fill="${l}" ${s}/><path d="M32 32v-8M32 32l6 4" fill="none" ${s}/><circle cx="32" cy="32" r="1.8" fill="${d}"/>`,
-  jacket:`<path d="M22 8l10 7 10-7 16 8-4 16-8-4v30H18V28l-8 4-4-16z" fill="${c}" ${s}/><path d="M22 8l10 14 10-14" fill="${l}" ${s}/><path d="M32 22v36" fill="none" ${s}/><path d="M24 40h5M35 40h5" fill="none" ${s}/>`,
-  pants:`<path d="M15 6h34l2 52H35l-3-30-3 30H13z" fill="${c}" ${s}/><path d="M15 6h34v9H15z" fill="${l}" ${s}/><path d="M32 15v13" fill="none" ${s}/><path d="M20 28h6M38 28h6" fill="none" ${s}/>`,
-  ring:`<circle cx="32" cy="40" r="15" fill="none" stroke="${d}" stroke-width="10" stroke-linejoin="round"/><circle cx="32" cy="40" r="15" fill="none" stroke="${c}" stroke-width="6"/><path d="M24 16l8-11 8 11-8 9z" fill="${l}" ${s}/><path d="M24 16h16" fill="none" ${s}/>`,
-  cane:`<path d="M20 60L36 20c2-6 6-9 12-9 6 0 9 4 9 9" fill="none" stroke="${d}" stroke-width="10" stroke-linecap="round"/><path d="M20 60L36 20c2-6 6-9 12-9 6 0 9 4 9 9" fill="none" stroke="${c}" stroke-width="5.5" stroke-linecap="round"/><circle cx="21" cy="58" r="3.5" fill="${l}" ${s}/><path d="M31 32l9 4" fill="none" ${s}/>`
- };
- return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${id} ${tier}">${art[id]||''}</svg>`;
+const CG_ASSET_IDS={helmet:'helmet',watch:'watch',jacket:'coat',pants:'pants',ring:'ring',cane:'cane'};
+function cgStarCount(name){const m=(name||'').match(/(\d)★/);return m?Math.max(0,Math.min(3,Number(m[1]))):0;}
+function cgTierLabel(name){const m=(name||'').match(/\bT([1-6])\b/);return m?'T'+m[1]:'';}
+function cgAsset(id,tier,stars,name){
+ if(tier==='none') return `<div class="cg-art cg-empty" title="${name||'None (Not Started)'}"><i class="bi bi-shield"></i></div>`;
+ const file=CG_ASSET_IDS[id]||id;
+ const starMarkup=stars?`<span class="cg-stars" aria-label="${stars} stars">${Array.from({length:stars},()=>'<i>★</i>').join('')}</span>`:'';
+ const tierLabel=cgTierLabel(name);
+ const tierMarkup=tierLabel?`<span class="cg-tier-badge">${tierLabel}</span>`:'';
+ return `<div class="cg-art" title="${name||''}"><img src="images/chief-gear/${file}-${tier}.webp" alt="${name||id}" loading="lazy">${tierMarkup}${starMarkup}<span class="cg-corner-dot" aria-hidden="true"></span></div>`;
 }
 function cgPrefix(){
  if(cgPrefix.cache)return cgPrefix.cache;
@@ -94,7 +93,8 @@ function calcGearDB(){
   const bt=byType[p.type]||(byType[p.type]={alloy:0,solution:0,plans:0,amber:0,svs:0});Object.keys(bt).forEach(k=>bt[k]+=cost[k]);
   power+=L[eff].power-L[c].power;deploy+=L[eff].deploy-L[c].deploy;statFrom+=L[c].stat;statTo+=L[eff].stat;
   const im=document.getElementById('cgImg'+i),imT=document.getElementById('cgImgT'+i);
-  if(im)im.innerHTML=cgSvg(p.id,cgTierKey(L[c].name));if(imT)imT.innerHTML=cgSvg(p.id,cgTierKey(L[eff].name));
+  if(im)im.innerHTML=cgAsset(p.id,cgTierKey(L[c].name),cgStarCount(L[c].name),L[c].name);
+  if(imT)imT.innerHTML=cgAsset(p.id,cgTierKey(L[eff].name),cgStarCount(L[eff].name),L[eff].name);
   const row=document.getElementById('cgRow'+i);
   if(row)row.innerHTML=ok?`<i class="bi bi-graph-up-arrow"></i> +${(L[eff].stat-L[c].stat).toFixed(2)}% · <i class="bi bi-lightning-charge-fill"></i> +${fmt(L[eff].power-L[c].power)}${L[eff].deploy-L[c].deploy?' · <i class="bi bi-people"></i> +'+fmt(L[eff].deploy-L[c].deploy):''}`:'<i class="bi bi-exclamation-triangle-fill"></i> Target is lower than the current level — this piece will be skipped.';
  });
