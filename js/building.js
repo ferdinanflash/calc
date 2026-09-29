@@ -65,6 +65,11 @@ function updatePlan(id,key,val){
   renderBuildingPlans();
   calcBuilding();
 }
+// Furnace FC1..FC10 badge: images/furnace/fc-{n}.webp (only Furnace has this artwork).
+function fcIconHtml(building,level){
+  if(building!=='Furnace'||typeof level!=='string'||!/^FC(?:[1-9]|10)$/.test(level))return '';
+  return `<img class="fc-ic" src="images/furnace/fc-${level.slice(2)}.webp" alt="${level}" title="${level}">`;
+}
 function renderBuildingPlans(){
   const el=document.getElementById('buildingPlans');
   if(!el)return;
@@ -80,9 +85,9 @@ function renderBuildingPlans(){
         <label>Building<select onchange="updatePlan(${p.id},'building',this.value)">
           ${buildingNames.map(n=>`<option ${n===p.building?'selected':''}>${n}</option>`).join('')}
         </select></label>
-        <label>Current Level<select onchange="updatePlan(${p.id},'from',this.value)">${optsFrom.replace(`value="${p.from}"`,`value="${p.from}" selected`)}</select></label>
+        <label>Current Level${fcIconHtml(p.building,p.from)}<select onchange="updatePlan(${p.id},'from',this.value)">${optsFrom.replace(`value="${p.from}"`,`value="${p.from}" selected`)}</select></label>
         <span class="arrow">→</span>
-        <label>Target Level<select onchange="updatePlan(${p.id},'to',this.value)">${optsTo.replace(`value="${p.to}"`,`value="${p.to}" selected`)}</select></label>
+        <label>Target Level${fcIconHtml(p.building,p.to)}<select onchange="updatePlan(${p.id},'to',this.value)">${optsTo.replace(`value="${p.to}"`,`value="${p.to}" selected`)}</select></label>
         <button class="rm" onclick="removeBuildingPlan(${p.id})">Remove</button>
       </div>
     </div>`;
