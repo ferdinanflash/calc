@@ -97,6 +97,7 @@ body.modal-open{overflow:hidden;}
 .plan-selects label{font-size:.72rem;color:var(--muted);text-transform:uppercase;}
 .plan-selects select{display:block;width:100%;margin-top:4px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:7px;}
 .plan-selects .arrow{padding-bottom:8px;color:var(--muted);}
+.plan-selects .fc-ic{width:1.9em;height:1.9em;object-fit:contain;vertical-align:middle;margin-left:6px;}
 .bc-section{background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:12px;padding:13px;margin-top:12px;}
 .bc-section h3{font-size:.95rem;margin:0 0 10px;}
 .result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
