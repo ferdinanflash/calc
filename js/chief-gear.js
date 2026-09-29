@@ -4,7 +4,8 @@
 // Level table (150 steps, Green 0★ -> Red T6 3★) lives in database.js (WOS_DB.chiefGear),
 // mirroring https://wostools.net/chief-gear-calculator and /wiki/gear/chief-gear.
 const CG_DEFAULT_TARGET=90; // Red T3 3★ (same default as wostools)
-const CG_MATS=[['alloy','<i class="bi bi-gear-fill"></i>','Hardened Alloy'],['solution','<i class="bi bi-stars"></i>','Polishing Sol.'],['plans','<i class="bi bi-rulers"></i>','Design Plans'],['amber','<i class="bi bi-circle-fill" style="color:#f5b301"></i>','Lunar Amber']];
+const cgMatImg=(k,nm)=>`<img class="mat-ic" src="images/chief-gear/${{alloy:'hardened-alloy',solution:'polishing-solution',plans:'design-plans',amber:'lunar-amber'}[k]}.webp" alt="${nm}" loading="lazy">`;
+const CG_MATS=[['alloy',cgMatImg('alloy','Hardened Alloy'),'Hardened Alloy'],['solution',cgMatImg('solution','Polishing Solution'),'Polishing Sol.'],['plans',cgMatImg('plans','Design Plans'),'Design Plans'],['amber',cgMatImg('amber','Lunar Amber'),'Lunar Amber']];
 const cgState={cur:[0,0,0,0,0,0],tar:Array(6).fill(CG_DEFAULT_TARGET),res:{alloy:0,solution:0,plans:0,amber:0},ex:Array(7).fill(0),valeria:0};
 
 // Chief Gear piece artwork (inline SVG, tinted by quality tier)
@@ -57,7 +58,7 @@ function renderGearDB(){
   <label>${p.name} <small>(${p.type})</small><select id="cgCur${i}">${opts(cgState.cur[i])}</select></label><span class="arrow">→</span>
   <label>Target<select id="cgTar${i}">${opts(cgState.tar[i])}</select></label></div><div id="cgRow${i}" class="notice"></div></div><div class="cg-img" id="cgImgT${i}" title="Target"></div></div>`).join('')}</div>
  <div class="bc-section"><h3><i class="bi bi-bag-fill"></i> Available Resources</h3><div class="bc-grid">${CG_MATS.map(([k,ic,nm])=>`<label>${ic} ${nm}<input id="cgRes_${k}" type="number" min="0" value="${cgState.res[k]||0}"></label>`).join('')}</div></div>
- <div class="bc-section"><h3><i class="bi bi-arrow-repeat"></i> Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${exName[e[0]]} » ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/week)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="amount of ${exName[e[0]]} to exchange"></label>`).join('')}</div>
+ <div class="bc-section"><h3><i class="bi bi-arrow-repeat"></i> Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${cgMatImg(e[0],exName[e[0]])} ${exName[e[0]]} » ${cgMatImg(e[1],exName[e[1]])} ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/week)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="amount of ${exName[e[0]]} to exchange"></label>`).join('')}</div>
   <div class="source-note">Enter the amount of source material to exchange; the result is added to Available Resources. The weekly limit is shown according to WoSTools but is not enforced here.</div></div>
  <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Summary</h3><div id="cgSummary"></div>
   <h4>Total Gains</h4>

@@ -43,13 +43,11 @@ const widgetStep=[0,5,10,15,20,25,30,35,40,45,50];
 function widgetCumulative(L){ let s=0; for(let i=1;i<=L;i++) s+=widgetStep[i]; return s; }
 
 // ---------- Icon set ----------
-// Goggles uses the uploaded image file; the rest are original hand-drawn SVG icons.
-const ICONS = {
-  goggles: `<img src="images/goggles.webp" style="width:100%;height:100%;object-fit:contain;" alt="goggles">`,
-  gloves: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M16 44V22c0-2 1-3 3-3s3 1 3 3v6h2V14c0-2 1-3 3-3s3 1 3 3v14h2V17c0-2 1-3 3-3s3 1 3 3v11h2V21c0-2 1-3 3-3s3 1 3 3v14c0 5-4 9-9 9H20c-2 0-4-1-4-4z" fill="#22314f" stroke="#ffb84d" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
-  belt: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="18" width="40" height="12" rx="3" fill="#22314f" stroke="#4ade80" stroke-width="3"/><rect x="18" y="15" width="12" height="18" rx="3" fill="#1c2947" stroke="#4ade80" stroke-width="3"/><circle cx="24" cy="24" r="3" fill="#4ade80"/></svg>`,
-  boots: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M14 6h12v18l10 8c2 1.5 3 3.5 3 6v4H10V26c0-2 1-3 2-4l2-2z" fill="#22314f" stroke="#f87171" stroke-width="2.5" stroke-linejoin="round"/><rect x="14" y="6" width="12" height="6" fill="#f87171" opacity=".5"/></svg>`
-};
+// Gear icons use the image files in /images.
+const ICONS = {};
+['goggles','gloves','belt','boots'].forEach(g=>{
+  ICONS[g]=`<img src="images/${g}.webp" style="width:100%;height:100%;object-fit:contain;" alt="${g}">`;
+});
 const BADGES = {
   infantry: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16 3l11 4v9c0 7-5 11-11 13C10 27 5 23 5 16V7z" fill="#3b82f6"/><path d="M16 8l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z" fill="#dbeafe"/></svg>`,
   lancer: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="14.5" y="2" width="3" height="26" rx="1.5" fill="#a78bfa" transform="rotate(20 16 15)"/><path d="M16 2l5 6-5-2-5 2z" fill="#e9d8fd" transform="rotate(20 16 15)"/></svg>`,

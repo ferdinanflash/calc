@@ -19,22 +19,46 @@ function charmLevelOpts(){
   return WOS_DB.charmSteps.map((s,i)=>`<option value="${i}">${s.label==='0'?'0 (None)':s.label}</option>`).join('');
 }
 function charmMaxIdx(){return WOS_DB.charmSteps.length-1;}
+
+// Charm icons: images/charms/charm-{type}-{LL}.webp (Lv.1-16 available; Lv.17-18 fall back to Lv.16 art).
+const CHARM_ICON_MAX=16;
+function charmBaseLevel(idx){
+  const st=WOS_DB.charmSteps[idx]; return st?Math.floor(parseFloat(st.label)||0):0;
+}
+function charmIconHtml(type,idx){
+  type=String(type).toLowerCase();
+  const lv=charmBaseLevel(idx);
+  if(lv<=0) return '<span class="charm-ic empty" title="No charm"></span>';
+  const shown=Math.min(lv,CHARM_ICON_MAX), lab=WOS_DB.charmSteps[idx].label;
+  const t=lv>CHARM_ICON_MAX?`Lv.${lab} (icon for Lv.${CHARM_ICON_MAX} shown)`:`Lv.${lab}`;
+  return `<span class="charm-ic" title="${t}"><img src="images/charms/charm-${type}-${String(shown).padStart(2,'0')}.webp" alt="${type} charm Lv.${lab}" loading="lazy"></span>`;
+}
+function charmUpdateIcons(i){
+  const slot=charmSlotList()[i], v=charmVals[i]; if(!slot||!v) return;
+  const c=document.getElementById('chIcC'+i), t=document.getElementById('chIcT'+i);
+  if(c) c.innerHTML=charmIconHtml(slot.piece.type,v.c);
+  if(t) t.innerHTML=charmIconHtml(slot.piece.type,v.t);
+}
+
 function syncCharmControls(){
   ensureCharmVals();
   charmVals.forEach((v,i)=>{
     const c=document.getElementById('chCur'+i),t=document.getElementById('chTar'+i);
     if(c)c.value=v.c; if(t)t.value=v.t;
+    charmUpdateIcons(i);
   });
   calcCharmSummary();
 }
 function charmSetCur(i,val){
   const v=charmVals[i]; v.c=+val;
   if(v.t<v.c){v.t=v.c; const t=document.getElementById('chTar'+i); if(t)t.value=v.t;}
+  charmUpdateIcons(i);
   calcCharmSummary();
 }
 function charmSetTar(i,val){
   const v=charmVals[i]; v.t=Math.max(+val,v.c);
   const t=document.getElementById('chTar'+i); if(t)t.value=v.t;
+  charmUpdateIcons(i);
   calcCharmSummary();
 }
 function charmSetAllTarget(idx){ensureCharmVals();charmVals.forEach(v=>{v.t=Math.min(idx,charmMaxIdx());if(v.t<v.c)v.t=v.c;});syncCharmControls();}
@@ -91,10 +115,11 @@ function renderCharmDB(){
  const slots=charmSlotList(), lvlOpts=charmLevelOpts();
  const rowsByType=WOS_DB.troopTypes.map(type=>{
    const rows=slots.map((s,i)=>({s,i})).filter(x=>x.s.piece.type===type).map(({s,i})=>
-     `<div class="charm-row"><span>${s.piece.name} #${s.n}</span>
+     `<div class="charm-row"><span class="charm-ic-wrap" id="chIcC${i}"></span><span>${s.piece.name} #${s.n}</span>
       <select id="chCur${i}" onchange="charmSetCur(${i},this.value)">${lvlOpts}</select>
       <span>→</span>
       <select id="chTar${i}" onchange="charmSetTar(${i},this.value)">${lvlOpts}</select>
+      <span class="charm-ic-wrap" id="chIcT${i}"></span>
       </div>`).join('');
    return `<div class="bc-section"><h3><i class="bi bi-gem"></i> ${type}</h3><div class="research-list">${rows}</div></div>`;
  }).join('');
