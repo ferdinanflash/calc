@@ -97,7 +97,7 @@ function calcBuilding(){
 
   window._buildingTotals={...totals};
   const available={meat:valNum('resMeat'),wood:valNum('resWood'),coal:valNum('resCoal'),iron:valNum('resIron'),fc:valNum('resFC'),rfc:valNum('resRFC')};
-  const names={meat:'<img class="res-ic" src="images/resources/meat.webp" alt="Meat"> Meat',wood:'<img class="res-ic" src="images/resources/wood.webp" alt="Wood"> Wood',coal:'<img class="res-ic" src="images/resources/coal.webp" alt="Coal"> Coal',iron:'<img class="res-ic" src="images/resources/iron.webp" alt="Iron"> Iron',fc:'<i class="bi bi-fire"></i> Fire Crystals',rfc:'<i class="bi bi-diamond-fill"></i> Refined FC'};
+  const names={meat:'<img class="res-ic" src="images/resources/meat.webp" alt="Meat"> Meat',wood:'<img class="res-ic" src="images/resources/wood.webp" alt="Wood"> Wood',coal:'<img class="res-ic" src="images/resources/coal.webp" alt="Coal"> Coal',iron:'<img class="res-ic" src="images/resources/iron.webp" alt="Iron"> Iron',fc:'<img class="res-ic" src="images/resources/fire-crystal.webp" alt="Fire Crystal"> Fire Crystals',rfc:'<img class="res-ic" src="images/resources/refined-fire-crystal.webp" alt="Refined FC"> Refined FC'};
   let cards=Object.keys(names).map(k=>{
     const need=Math.ceil(totals[k]||0);
     const ok=available[k]>=need;

@@ -308,7 +308,7 @@ function calcWarAcademy(){
  Object.keys(WA_T12).forEach(type=>{const el=document.getElementById('waThreshold-'+type);if(el){const n=per[type]?.unlock||0;el.textContent=` · ${n}/25 Tier 1 Exalted`;el.className='t12-threshold '+(n>=25?'ok':'warn');}});
  const result=document.getElementById('waResult');if(!result)return;
  result.innerHTML=[
-  [fmt(total.shards),'<i class="bi bi-fire"></i> FC Shards'],
+  [fmt(total.shards),'<img class="res-ic" src="images/resources/fire-crystal-shard.webp" alt="FC Shard"> FC Shards'],
   [fmt(total.rfc),'<i class="bi bi-gem"></i> Refined FC'],
   [fmt(total.steel),'<i class="bi bi-gear-fill"></i> Steel'],
   [fmt(total.meat),'<img class="res-ic" src="images/resources/meat.webp" alt="Meat"> Meat'],

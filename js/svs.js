@@ -1,7 +1,20 @@
-// Resource icon in front of "Gather ... Meat/Wood/Coal/Iron" task names.
+// Icon in front of SvS task names (resources, Fire Crystal items, speedups).
+const SVS_ICON_RULES=[
+  [/^Refined Fire Crystal/,'resources/refined-fire-crystal'],
+  [/^Fire Crystal Shard/,'resources/fire-crystal-shard'],
+  [/^Fire Crystal/,'resources/fire-crystal'],
+  [/^Construction Speedup/,'speedups/construction'],
+  [/^Research Speedup/,'speedups/research'],
+  [/^Troops? Training Speedup/,'speedups/troop-training'],
+  [/Learning Speedup/,'speedups/learning'],
+  [/^Troop Healing Speedup/,'speedups/troop-healing'],
+  [/^General Speedup/,'speedups/general']
+];
 function svsTaskLabel(name){
   const m=/\b(Meat|Wood|Coal|Iron)$/.exec(name);
-  return m?`<img class="res-ic" src="images/resources/${m[1].toLowerCase()}.webp" alt=""> ${name}`:name;
+  if(m)return `<img class="res-ic" src="images/resources/${m[1].toLowerCase()}.webp" alt=""> ${name}`;
+  const r=SVS_ICON_RULES.find(x=>x[0].test(name));
+  return r?`<img class="res-ic" src="images/${r[1]}.webp" alt=""> ${name}`:name;
 }
 // SvS Prep Phase Calculator
 
