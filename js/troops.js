@@ -69,14 +69,14 @@ function renderTroopDB(){
  <div class="bc-section">
    <h3><i class="bi bi-bag-fill"></i> Available Resources</h3>
    <div class="bc-grid">
-     <label><i class="bi bi-egg-fried"></i> Meat<input id="dbTroopMeat" type="number" min="0" value="0"></label>
-     <label><i class="bi bi-tree-fill"></i> Wood<input id="dbTroopWood" type="number" min="0" value="0"></label>
-     <label><i class="bi bi-hexagon-fill"></i> Coal<input id="dbTroopCoal" type="number" min="0" value="0"></label>
-     <label><i class="bi bi-link-45deg"></i> Iron<input id="dbTroopIron" type="number" min="0" value="0"></label>
+     <label><img class="res-ic" src="images/resources/meat.webp" alt="Meat"> Meat<input id="dbTroopMeat" type="number" min="0" value="0"></label>
+     <label><img class="res-ic" src="images/resources/wood.webp" alt="Wood"> Wood<input id="dbTroopWood" type="number" min="0" value="0"></label>
+     <label><img class="res-ic" src="images/resources/coal.webp" alt="Coal"> Coal<input id="dbTroopCoal" type="number" min="0" value="0"></label>
+     <label><img class="res-ic" src="images/resources/iron.webp" alt="Iron"> Iron<input id="dbTroopIron" type="number" min="0" value="0"></label>
    </div>
  </div>
  <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Calculation</h3><div id="dbTroopResult" class="result-grid"></div></div>
- <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Meat</th><th>Wood</th><th>Coal</th><th>Iron</th><th>Time</th><th>Power / Unit (Inf / Lan / Mrk)</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${t==='T3'?'6 / 5 / 5':fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
+ <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th><img class="res-ic" src="images/resources/meat.webp" alt=""> Meat</th><th><img class="res-ic" src="images/resources/wood.webp" alt=""> Wood</th><th><img class="res-ic" src="images/resources/coal.webp" alt=""> Coal</th><th><img class="res-ic" src="images/resources/iron.webp" alt=""> Iron</th><th>Time</th><th>Power / Unit (Inf / Lan / Mrk)</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${t==='T3'?'6 / 5 / 5':fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
  <div class="source-note">Training uses the full cost and event points of the target tier. Troop Power uses the verified per-unit FC table: T10 Base/FC0→FC10 = 66→124, T11 FC0→FC10 = 80→148, T12 FC0→FC10 = 130→235. Promotion uses the difference in cost, time, event points, and actual selected source/target troop power. Base tier data was verified on September 28, 2026; Promotion differences outside T11→T12 are calculated from the cost table differences.</div>`;
  const modeSel=document.getElementById('dbTroopMode');
  const typeSel=document.getElementById('dbTroopType');
@@ -134,7 +134,7 @@ function calcTroopDB(){
 
  const avail={meat:valNum('dbTroopMeat'),wood:valNum('dbTroopWood'),coal:valNum('dbTroopCoal'),iron:valNum('dbTroopIron')};
  const need={meat,wood,coal,iron};
- const icons={meat:'<i class="bi bi-egg-fried"></i> Meat',wood:'<i class="bi bi-tree-fill"></i> Wood',coal:'<i class="bi bi-hexagon-fill"></i> Coal',iron:'<i class="bi bi-link-45deg"></i> Iron'};
+ const icons={meat:'<img class="res-ic" src="images/resources/meat.webp" alt="Meat"> Meat',wood:'<img class="res-ic" src="images/resources/wood.webp" alt="Wood"> Wood',coal:'<img class="res-ic" src="images/resources/coal.webp" alt="Coal"> Coal',iron:'<img class="res-ic" src="images/resources/iron.webp" alt="Iron"> Iron'};
  const resCards=Object.keys(need).map(k=>{
    const ok=avail[k]>=need[k];
    return statCard(fmt(need[k]),`${icons[k]}${avail[k]?' · available '+fmt(avail[k]):''}`,ok?'ok':'warn');

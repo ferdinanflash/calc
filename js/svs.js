@@ -1,3 +1,8 @@
+// Resource icon in front of "Gather ... Meat/Wood/Coal/Iron" task names.
+function svsTaskLabel(name){
+  const m=/\b(Meat|Wood|Coal|Iron)$/.exec(name);
+  return m?`<img class="res-ic" src="images/resources/${m[1].toLowerCase()}.webp" alt=""> ${name}`:name;
+}
 // SvS Prep Phase Calculator
 
 // ---------- SvS PREP PHASE CALCULATOR ----------
@@ -88,7 +93,7 @@ function renderSVS(){
  if(!tabs||!head||!list)return;
  tabs.innerHTML=SVS_DAYS.map((d,i)=>`<button class="svs-tab ${i===svsDay?'active':''}" data-svs-tab="${i}" onclick="setSVSDay(${i})"><b>${d.name}</b><small>${d.theme}</small><em>${fmt(svsDayTotal(i))} pts</em></button>`).join('');
  const d=SVS_DAYS[svsDay]; head.innerHTML=`<div><b>${d.name}: ${d.theme}</b><small>Enter the planned amount. Totals are saved automatically in your browser.</small></div><button class="mini-btn" onclick="resetSVSDay()">Reset Day</button>`;
- list.innerHTML=d.items.map((it,i)=>{const val=svsValues[svsDay][i]||0;const tier=it[3];const tierBadge=tier?`<span class="svs-tier ${tier}">${SVS_TIER_LABEL[tier]}</span>`:'';return `<div class="svs-card"><div><b>${it[0]}</b><small>${fmt(it[1])} pts ${it[2]==='minutes'?'per minute':it[2]==='score'?'per score point':it[2]==='troop'?'per applicable troop (use Import for tier-specific values)':''}</small>${tierBadge}</div><div class="stepper"><button onclick="changeSVS(${i},-1)">−</button><input type="number" min="0" value="${val}" data-svs-in="${i}" oninput="setSVS(${i},this.value)"><button onclick="changeSVS(${i},1)">+</button></div><strong data-svs-total="${i}">${fmt(val*it[1])}</strong></div>`}).join('');
+ list.innerHTML=d.items.map((it,i)=>{const val=svsValues[svsDay][i]||0;const tier=it[3];const tierBadge=tier?`<span class="svs-tier ${tier}">${SVS_TIER_LABEL[tier]}</span>`:'';return `<div class="svs-card"><div><b>${svsTaskLabel(it[0])}</b><small>${fmt(it[1])} pts ${it[2]==='minutes'?'per minute':it[2]==='score'?'per score point':it[2]==='troop'?'per applicable troop (use Import for tier-specific values)':''}</small>${tierBadge}</div><div class="stepper"><button onclick="changeSVS(${i},-1)">−</button><input type="number" min="0" value="${val}" data-svs-in="${i}" oninput="setSVS(${i},this.value)"><button onclick="changeSVS(${i},1)">+</button></div><strong data-svs-total="${i}">${fmt(val*it[1])}</strong></div>`}).join('');
  calcSVS();
 }
 function setSVSDay(i){svsDay=i;renderSVS();}
