@@ -388,11 +388,11 @@ const WOS_DB = {
     // Sum resource/time cost for a building between two level identifiers.
     costBetween: function(name, from, to){
       const data = getSteps(name);
-      const zero = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0};
+      const zero = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,stepSeconds:[]};
       if (!data) return zero;
       const fi = this.levelToIndex(from), ti = this.levelToIndex(to);
       if (isNaN(fi) || isNaN(ti) || ti <= fi) return zero;
-      let out = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0};
+      let out = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,stepSeconds:[]};
       // steps[k] holds the cost of the upgrade THAT PRODUCES level/tier (k+1),
       // so reaching every level from (from+1) through (to) means summing
       // indices (fi+1) .. ti inclusive.
@@ -401,6 +401,9 @@ const WOS_DB = {
         if (!s) continue;
         out.meat += s.meat; out.wood += s.wood; out.coal += s.coal; out.iron += s.iron;
         out.fc += s.fc; out.rfc += s.rfc; out.seconds += s.seconds;
+        // Placeholder rows (e.g. War Academy Lv1-30, which has no pre-FC cost) are not
+        // real upgrades, so they must not count as steps or receive per-step reductions.
+        if (s.seconds > 0 || s.meat || s.wood || s.coal || s.iron || s.fc || s.rfc) out.stepSeconds.push(s.seconds);
       }
       return out;
     }
