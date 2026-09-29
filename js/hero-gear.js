@@ -43,11 +43,11 @@ const widgetStep=[0,5,10,15,20,25,30,35,40,45,50];
 function widgetCumulative(L){ let s=0; for(let i=1;i<=L;i++) s+=widgetStep[i]; return s; }
 
 // ---------- Icon set ----------
-// Gear icons use the image files in /images.
-const ICONS = {};
-['goggles','gloves','belt','boots'].forEach(g=>{
-  ICONS[g]=`<img src="images/${g}.webp" style="width:100%;height:100%;object-fit:contain;" alt="${g}">`;
-});
+// Mythic Hero Gear artwork: images/hero-gear/{troop}-{gear}.webp
+// (Infantry = Guardian, Lancer = Saboteur, Marksman = Sniper). The troop badge is part of the artwork.
+function gearIcon(troop,gear){
+  return `<img src="images/hero-gear/${troop}-${gear}.webp" style="width:100%;height:100%;object-fit:contain;display:block;" alt="${troop} ${gear}">`;
+}
 const BADGES = {
   infantry: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16 3l11 4v9c0 7-5 11-11 13C10 27 5 23 5 16V7z" fill="#3b82f6"/><path d="M16 8l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z" fill="#dbeafe"/></svg>`,
   lancer: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="14.5" y="2" width="3" height="26" rx="1.5" fill="#a78bfa" transform="rotate(20 16 15)"/><path d="M16 2l5 6-5-2-5 2z" fill="#e9d8fd" transform="rotate(20 16 15)"/></svg>`,
@@ -75,8 +75,7 @@ function buildPieceRow(id){
   div.innerHTML=`
       <div class="piece-head">
         <div class="icon-wrap">
-          <div class="gear-icon">${ICONS[p.gear]}</div>
-          <div class="badge-icon">${BADGES[p.troop]}</div>
+          <div class="gear-icon">${gearIcon(p.troop,p.gear)}</div>
         </div>
         <select onchange="updatePiece(${id},'troop',this.value)">
           ${Object.keys(TROOP_LABEL).map(t=>`<option value="${t}" ${t===p.troop?'selected':''}>${TROOP_LABEL[t]}</option>`).join('')}
