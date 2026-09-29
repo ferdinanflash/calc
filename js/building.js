@@ -95,6 +95,7 @@ function calcBuilding(){
   totalHours = Math.max(0, totalHours - valNum('agnesBonus')*totals.levels);
   if(document.getElementById('doubleTime')?.checked) totalHours*=0.8;
 
+  window._buildingTotals={...totals};
   const available={meat:valNum('resMeat'),wood:valNum('resWood'),coal:valNum('resCoal'),iron:valNum('resIron'),fc:valNum('resFC'),rfc:valNum('resRFC')};
   const names={meat:'<i class="bi bi-egg-fried"></i> Meat',wood:'<i class="bi bi-tree-fill"></i> Wood',coal:'<i class="bi bi-hexagon-fill"></i> Coal',iron:'<i class="bi bi-link-45deg"></i> Iron',fc:'<i class="bi bi-fire"></i> Fire Crystals',rfc:'<i class="bi bi-diamond-fill"></i> Refined FC'};
   let cards=Object.keys(names).map(k=>{

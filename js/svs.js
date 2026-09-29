@@ -117,7 +117,7 @@ function loadSVS(){try{const v=JSON.parse(localStorage.getItem('calc_svs_values'
 function svsImport(type){
  let added=0;
  if(type==='troops'||type==='all'){
-   const q=Number(document.getElementById('dbTroopQty')?.value)||0; const mode=document.getElementById('dbTroopMode')?.value||'train'; const tk=document.getElementById('dbTroopTier')?.value||'T1'; const fk=document.getElementById('dbTroopFrom')?.value||tk; const valid=mode!=='promote'||Object.keys(WOS_DB.troops).indexOf(fk)<Object.keys(WOS_DB.troops).indexOf(tk); const pts=valid?q*troopPointsPer(mode,fk,tk).svs:0; const idx=SVS_DAYS[3].items.findIndex(x=>x[0]===(mode==='promote'?'Troop Promotion':'Troop Training')); if(idx>=0)svsValues[3][idx]+=pts; added+=pts;
+   const q=Number(document.getElementById('dbTroopQty')?.value)||0; const mode=document.getElementById('dbTroopMode')?.value||'train'; const tk=document.getElementById('dbTroopTier')?.value||'T1'; const fk=document.getElementById('dbTroopFrom')?.value||tk; const troopType=document.getElementById('dbTroopType')?.value||'Infantry'; const fromFc=Number(document.getElementById('dbTroopFromFc')?.value)||0; const targetFc=Number(document.getElementById('dbTroopTargetFc')?.value)||0; const valid=mode!=='promote'||Object.keys(WOS_DB.troops).indexOf(fk)<Object.keys(WOS_DB.troops).indexOf(tk); const pts=valid?q*troopPointsPer(mode,fk,tk,troopType,fromFc,targetFc).svs:0; const idx=SVS_DAYS[3].items.findIndex(x=>x[0]===(mode==='promote'?'Troop Promotion':'Troop Training')); if(idx>=0)svsValues[3][idx]+=pts; added+=pts;
  }
  if(type==='charm'||type==='all'){
    ensureCharmVals(); const score=calcCharmTotals().totals.score; const pts=score*WOS_DB.charmRules.pointsPerScore; const idx=SVS_DAYS[3].items.findIndex(x=>x[0]==='Chief Charm Score');if(idx>=0)svsValues[3][idx]+=score;added+=pts;
@@ -126,10 +126,10 @@ function svsImport(type){
    const pieces=Number(document.getElementById('cgPieces')?.value)||0; const cur=Number(document.getElementById('cgCur')?.value||0),tar=Number(document.getElementById('cgTar')?.value||0); const score=Math.max(0,tar-cur)*pieces;const idx=SVS_DAYS[4].items.findIndex(x=>x[0]==='Chief Gear Score');if(idx>=0)svsValues[4][idx]+=score;added+=score*36;
  }
  if(type==='war'||type==='all'){
-   const shards=Number(document.getElementById('waShardInv')?.value)||0; const idx=SVS_DAYS[1].items.findIndex(x=>x[0].includes('Fire Crystal Shard'));if(idx>=0)svsValues[1][idx]+=shards;added+=shards*1000;
+   const wa=window._warAcademyTotals||{shards:0}; const shards=Number(wa.shards)||0; const idx=SVS_DAYS[1].items.findIndex(x=>x[0].includes('Fire Crystal Shard'));if(idx>=0)svsValues[1][idx]+=shards;added+=shards*1000;
  }
  if(type==='building'||type==='all'){
-   const plans=document.querySelectorAll('#buildingPlans .building-plan').length; const idx=SVS_DAYS[0].items.findIndex(x=>x[0]==='Fire Crystal (Building)');if(idx>=0)svsValues[0][idx]+=plans;added+=plans*2000;
+   const b=window._buildingTotals||{fc:0,rfc:0}; const fc=Number(b.fc)||0, rfc=Number(b.rfc)||0; const idx=SVS_DAYS[0].items.findIndex(x=>x[0]==='Fire Crystal (Building)'); const idxR=SVS_DAYS[0].items.findIndex(x=>x[0]==='Refined Fire Crystal (Building)'); if(idx>=0)svsValues[0][idx]+=fc; if(idxR>=0)svsValues[0][idxR]+=rfc; added+=fc*2000+rfc*30000;
  }
  if(type==='hero'||type==='all'){
    const hg=window._heroGearTotals||{essence:0,mithril:0,widgetTotal:0};
