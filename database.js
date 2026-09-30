@@ -129,13 +129,23 @@ const WOS_DB = {
   // tier (matches the site's real sub-level granularity: e.g. Furnace's
   // "FC1" tier = 30-1,30-2,30-3,30-4,FC1). Leftover rows (e.g. War Academy's
   // trailing FC10) form the final tier.
-  function chunkFc(flatRows){
+  function chunkFc(flatRows, leadSingle){
     const rows = flatRows.map(fcRow);
+    const mk = (part) => {
+      const t = sumRows(part);
+      // Every row is a real upgrade of its own (e.g. 30-1, 30-2, 30-3, 30-4, FC1); keep their
+      // individual durations so per-step bonuses (Agnes flat reduction, step count) stay correct.
+      t.subSeconds = part.filter(r => r.seconds > 0 || r.meat || r.wood || r.coal || r.iron || r.fc || r.rfc).map(r => r.seconds);
+      return t;
+    };
     const tiers = [];
-    for (let i = 0; i < rows.length; i += 5){
-      tiers.push(sumRows(rows.slice(i, i+5)));
+    let i = 0;
+    // War Academy: FC1 is a single unlock row, then FC2..FC10 are 5 rows each (4 sub-steps + the tier).
+    if (leadSingle){ tiers.push(mk(rows.slice(0,1))); i = 1; }
+    for (; i < rows.length; i += 5){
+      tiers.push(mk(rows.slice(i, i+5)));
     }
-    while (tiers.length < 10) tiers.push({meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0});
+    while (tiers.length < 10) tiers.push({meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,subSeconds:[]});
     return tiers.slice(0,10);
   }
 
@@ -366,7 +376,7 @@ const WOS_DB = {
     const def = RAW[name];
     if (!def) return null;
     const baseSteps = def.base.map(baseRow); // 30 (or fewer, e.g. Barricade) entries
-    const fcSteps = def.fc ? chunkFc(def.fc) : Array.from({length:10}, () => ({meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0}));
+    const fcSteps = def.fc ? chunkFc(def.fc, name === 'War Academy') : Array.from({length:10}, () => ({meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0}));
     const steps = baseSteps.concat(fcSteps); // index 0..29 = level1..30 (or fewer), 30..39 = FC1..FC10
     _stepsCache[name] = { steps, maxLevel: def.maxLevel || 30, hasFc: !!def.fc };
     return _stepsCache[name];
@@ -403,7 +413,8 @@ const WOS_DB = {
         out.fc += s.fc; out.rfc += s.rfc; out.seconds += s.seconds;
         // Placeholder rows (e.g. War Academy Lv1-30, which has no pre-FC cost) are not
         // real upgrades, so they must not count as steps or receive per-step reductions.
-        if (s.seconds > 0 || s.meat || s.wood || s.coal || s.iron || s.fc || s.rfc) out.stepSeconds.push(s.seconds);
+        if (s.subSeconds) s.subSeconds.forEach(x => out.stepSeconds.push(x));
+        else if (s.seconds > 0 || s.meat || s.wood || s.coal || s.iron || s.fc || s.rfc) out.stepSeconds.push(s.seconds);
       }
       return out;
     }
