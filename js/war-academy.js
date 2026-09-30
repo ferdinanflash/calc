@@ -309,8 +309,8 @@ function calcWarAcademy(){
  const result=document.getElementById('waResult');if(!result)return;
  result.innerHTML=[
   [fmt(total.shards),'<img class="res-ic" src="images/resources/fire-crystal-shard.webp" alt="FC Shard"> FC Shards'],
-  [fmt(total.rfc),'<i class="bi bi-gem"></i> Refined FC'],
-  [fmt(total.steel),'<i class="bi bi-gear-fill"></i> Steel'],
+  [fmt(total.rfc),'<img class="res-ic" src="images/resources/refined-fire-crystal.webp" alt="Refined FC"> Refined FC'],
+  [fmt(total.steel),'<img class="res-ic" src="images/resources/steel.webp" alt="Steel"> Steel'],
   [fmt(total.meat),'<img class="res-ic" src="images/resources/meat.webp" alt="Meat"> Meat'],
   [fmt(total.wood),'<img class="res-ic" src="images/resources/wood.webp" alt="Wood"> Wood'],
   [fmt(total.coal),'<img class="res-ic" src="images/resources/coal.webp" alt="Coal"> Coal'],
