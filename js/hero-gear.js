@@ -6,25 +6,35 @@
 function masteryEssence(L){ return 5*L*(L+1); } // 10+20+...+10L
 function masteryMythic(L){ return L<=10?0:((L-10)*(L-9))/2; }
 
-// Enhance track control points (cumulative XP), levels 0-200
-const enhPts = [
-  [0,0],[10,55],[20,105],[30,160],[40,280],[50,470],[60,730],[70,1040],
-  [80,1400],[90,1810],[100,2400],[119,5325],[120,5325],[139,9275],[140,9275],
-  [159,14175],[160,14175],[179,20575],[180,20575],[199,28575],[200,28575]
-];
-function enhCumulative(L){
-  L=Math.max(0,Math.min(200,L));
-  for(let i=0;i<enhPts.length-1;i++){
-    const [l1,v1]=enhPts[i],[l2,v2]=enhPts[i+1];
-    if(L>=l1 && L<=l2){
-      if(l2===l1) return v1;
-      return v1 + (v2-v1)*(L-l1)/(l2-l1);
+// Enhance track: XP needed to go from level n-1 to n (levels 1-200).
+// 1-100 (Mythic): key points from game data, linear in between (approximate);
+//   91-100 follows a +50/level ramp ending at 2400 (matches the known 92->101 total of 17,800).
+// 101 = Ascension (0 XP, 2 Mythic). 102-199: exact ranges; 120/140/160/180/200 = Mithril milestones (0 XP).
+const enhKeyPts=[[1,10],[10,55],[20,105],[30,160],[40,280],[50,470],[60,730],[70,1040],[80,1400],[90,1810]];
+function enhLevelXP(n){
+  if(n<1||n>200) return 0;
+  if(n<=90){
+    for(let i=0;i<enhKeyPts.length-1;i++){
+      const [l1,v1]=enhKeyPts[i],[l2,v2]=enhKeyPts[i+1];
+      if(n>=l1&&n<=l2) return Math.round(v1+(v2-v1)*(n-l1)/(l2-l1));
     }
   }
-  return enhPts[enhPts.length-1][1];
+  if(n<=100) return 2400-(100-n)*50;
+  if(n===101||n%20===0) return 0;
+  if(n<=119) return 2500+50*(n-102);
+  if(n<=139) return 3500+50*(n-121);
+  if(n<=159) return 4450+50*(n-141);
+  if(n<=179) return 5500+100*(n-161);
+  return 7500+100*(n-181);
 }
-// Mithril milestones inside Enhance track: level -> {mithril, mythic}
-const mithrilMilestones = {120:{mithril:10,mythic:3},140:{mithril:20,mythic:5},160:{mithril:30,mythic:5},180:{mithril:40,mythic:10},200:{mithril:50,mythic:10}};
+const ENH_CUM=[0];
+for(let i=1;i<=200;i++) ENH_CUM[i]=ENH_CUM[i-1]+enhLevelXP(i);
+function enhCumulative(L){
+  L=Math.max(0,Math.min(200,Math.round(L)));
+  return ENH_CUM[L];
+}
+// Ascension (101) + Mithril milestones: level -> {mithril, mythic}
+const mithrilMilestones = {101:{mithril:0,mythic:2},120:{mithril:10,mythic:3},140:{mithril:20,mythic:5},160:{mithril:30,mythic:5},180:{mithril:40,mythic:10},200:{mithril:50,mythic:10}};
 function milestonesBetween(curr,des){
   let mithril=0,mythic=0,points=0;
   Object.keys(mithrilMilestones).forEach(lv=>{
@@ -37,6 +47,9 @@ function milestonesBetween(curr,des){
   });
   return {mithril,mythic,points};
 }
+
+// Mastery Forging requirements for Enhance targets (ascension needs L10, reaching 200 needs L15)
+function hgMasteryReq(eDes){ return eDes>=200?15:(eDes>100?10:0); }
 
 // Widget step costs, level 0-10
 const widgetStep=[0,5,10,15,20,25,30,35,40,45,50];
@@ -110,8 +123,18 @@ function buildPieceRow(id){
             <select onchange="updatePiece(${id},'wDes',this.value)">${lvlOptions(10,p.wDes,p.wCur)}</select>
           </div>
         </div>
-      </div>`;
+      </div>
+      <div class="hg-req" style="display:none;margin-top:8px;font-size:.85rem;color:#f5c542"></div>`;
+  hgUpdateReq(div,p);
   return div;
+}
+function hgUpdateReq(row,p){
+  const el=row.querySelector('.hg-req'); if(!el) return;
+  const need=hgMasteryReq(p.eDes);
+  if(need && p.mDes<need){
+    el.style.display='block';
+    el.innerHTML=`\u26A0 Requires Mastery Forging Level ${need} <button type="button" class="mini-btn" onclick="updatePiece(${row.dataset.id},'mDes',${need})">Set to L${need}</button>`;
+  } else { el.style.display='none'; el.innerHTML=''; }
 }
 function buildWidgetRow(id){
   const w=widgets[id];
@@ -167,7 +190,7 @@ function updatePiece(id,field,val){
   const row=document.querySelector(`#pieces [data-id="${id}"]`);
   if(row){
     if(isLabel) row.replaceWith(buildPieceRow(id)); // icon + badge change
-    else hgSyncDesired(row,p,[['mCur','mDes','mDes'],['eCur','eDes','eDes'],['wCur','wDes','wDes']]);
+    else { hgSyncDesired(row,p,[['mCur','mDes','mDes'],['eCur','eDes','eDes'],['wCur','wDes','wDes']]); hgUpdateReq(row,p); }
   }
   renderSummary();
 }
@@ -205,7 +228,7 @@ function renderSummary(){
     ['Essence Stones', fmt(essence)],
     ['Mithril', fmt(mithril)],
     ['Mythic Gear', fmt(totalMythic)],
-    ['Enhance XP (estimated)', fmt(enhXP)],
+    ['Enhance XP', fmt(enhXP)],
     ['Widget', fmt(widgetTotal)],
     ['SvS/KOI Points (Mithril+Widget+Essence)', fmt(totalPoints)],
   ];
