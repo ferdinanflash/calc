@@ -59,11 +59,14 @@ const GEAR_LABEL={goggles:'Goggles',gloves:'Gloves',belt:'Belt',boots:'Boots'};
 let pieceId=0, widgetId=0;
 const pieces={}, widgets={};
 
-function lvlOptions(max,val){
+function lvlOptions(max,val,min){
   let o='';
-  for(let i=0;i<=max;i++) o+=`<option value="${i}" ${i===val?'selected':''}>${i}</option>`;
+  for(let i=0;i<=max;i++) o+=`<option value="${i}" ${i===val?'selected':''} ${min!==undefined&&i<min?'disabled':''}>${i}</option>`;
   return o;
 }
+// Desired can never be below Current: pairs of [currentKey, desiredKey, max].
+const HG_PAIRS=[['mCur','mDes',20],['eCur','eDes',200],['wCur','wDes',10]];
+function hgEnforce(o,curK,desK){ if(o[desK]<o[curK]) o[desK]=o[curK]; }
 
 // Rows are created/removed/replaced individually. Editing a level only recalculates the summary,
 // so the inputs the user is typing in are never destroyed and re-created.
@@ -90,21 +93,21 @@ function buildPieceRow(id){
           <div class="row2">
             <select onchange="updatePiece(${id},'mCur',this.value)">${lvlOptions(20,p.mCur)}</select>
             <span class="arrow">→</span>
-            <select onchange="updatePiece(${id},'mDes',this.value)">${lvlOptions(20,p.mDes)}</select>
+            <select onchange="updatePiece(${id},'mDes',this.value)">${lvlOptions(20,p.mDes,p.mCur)}</select>
           </div>
         </div>
         <div class="field"><label>Enhance (0-200)</label>
           <div class="row2">
             <input type="number" min="0" max="200" value="${p.eCur}" onchange="updatePiece(${id},'eCur',this.value)">
             <span class="arrow">→</span>
-            <input type="number" min="0" max="200" value="${p.eDes}" onchange="updatePiece(${id},'eDes',this.value)">
+            <input type="number" min="${p.eCur}" max="200" value="${p.eDes}" onchange="updatePiece(${id},'eDes',this.value)">
           </div>
         </div>
         <div class="field"><label>Widget (0-10)</label>
           <div class="row2">
             <select onchange="updatePiece(${id},'wCur',this.value)">${lvlOptions(10,p.wCur)}</select>
             <span class="arrow">→</span>
-            <select onchange="updatePiece(${id},'wDes',this.value)">${lvlOptions(10,p.wDes)}</select>
+            <select onchange="updatePiece(${id},'wDes',this.value)">${lvlOptions(10,p.wDes,p.wCur)}</select>
           </div>
         </div>
       </div>`;
@@ -117,7 +120,7 @@ function buildWidgetRow(id){
   div.dataset.id=id;
   div.innerHTML=`
       <div class="field"><label>Current</label><select onchange="updateWidget(${id},'cur',this.value)">${lvlOptions(10,w.cur)}</select></div>
-      <div class="field"><label>Desired</label><select onchange="updateWidget(${id},'des',this.value)">${lvlOptions(10,w.des)}</select></div>
+      <div class="field"><label>Desired</label><select onchange="updateWidget(${id},'des',this.value)">${lvlOptions(10,w.des,w.cur)}</select></div>
       <button class="rm" onclick="removeWidget(${id})">Remove</button>`;
   return div;
 }
@@ -145,15 +148,35 @@ function removeWidget(id){
   renderSummary();
 }
 
+// Update the Desired controls in place (value + disabled options) so the field being edited keeps focus.
+function hgSyncDesired(row,o,pairs){
+  pairs.forEach(([cur,des,ctl])=>{
+    const el=row.querySelector(`[onchange*="'${ctl}'"]`); if(!el) return;
+    if(el.tagName==='SELECT'){ for(const opt of el.options) opt.disabled=+opt.value<o[cur]; el.value=String(o[des]); }
+    else { el.min=o[cur]; el.value=o[des]; }
+  });
+}
 function updatePiece(id,field,val){
   const isLabel=(field==='troop'||field==='gear');
-  pieces[id][field]= isLabel?val:(parseInt(val)||0);
-  // Only the troop/gear pickers change what the row itself looks like (icon + badge).
-  if(isLabel) document.querySelector(`#pieces [data-id="${id}"]`)?.replaceWith(buildPieceRow(id));
+  const p=pieces[id];
+  p[field]= isLabel?val:(parseInt(val)||0);
+  if(!isLabel){
+    p.eCur=Math.min(200,Math.max(0,p.eCur)); p.eDes=Math.min(200,Math.max(0,p.eDes));
+    HG_PAIRS.forEach(([c,d])=>hgEnforce(p,c,d)); // raising Current past Desired drags Desired along
+  }
+  const row=document.querySelector(`#pieces [data-id="${id}"]`);
+  if(row){
+    if(isLabel) row.replaceWith(buildPieceRow(id)); // icon + badge change
+    else hgSyncDesired(row,p,[['mCur','mDes','mDes'],['eCur','eDes','eDes'],['wCur','wDes','wDes']]);
+  }
   renderSummary();
 }
 function updateWidget(id,field,val){
-  widgets[id][field]=parseInt(val)||0;
+  const w=widgets[id];
+  w[field]=parseInt(val)||0;
+  hgEnforce(w,'cur','des');
+  const row=document.querySelector(`#widgets [data-id="${id}"]`);
+  if(row) hgSyncDesired(row,w,[['cur','des','des']]);
   renderSummary();
 }
 

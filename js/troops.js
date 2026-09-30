@@ -45,6 +45,21 @@ function syncTroopFcSelectors(){
    if([...fromFc.options].some(o=>+o.value===old))fromFc.value=String(old);
  }
 }
+// Promotion: Target Tier must be above From Tier. Disable the invalid options and nudge the other select if needed.
+function troopEnforceTiers(){
+ const modeSel=document.getElementById('dbTroopMode'),fromSel=document.getElementById('dbTroopFrom'),toSel=document.getElementById('dbTroopTier');
+ if(!modeSel||!fromSel||!toSel)return;
+ const tiers=Object.keys(WOS_DB.troops),promote=modeSel.value==='promote';
+ if(promote){
+   let fi=tiers.indexOf(fromSel.value),ti=tiers.indexOf(toSel.value);
+   if(ti<=fi){ if(fi>=tiers.length-1){fi=tiers.length-2;fromSel.value=tiers[fi];} ti=fi+1;toSel.value=tiers[ti]; }
+   for(const o of toSel.options)o.disabled=tiers.indexOf(o.value)<=fi;
+   for(const o of fromSel.options)o.disabled=tiers.indexOf(o.value)>=ti;
+ }else{
+   for(const o of toSel.options)o.disabled=false;
+   for(const o of fromSel.options)o.disabled=false;
+ }
+}
 function renderTroopDB(){
  const m=document.getElementById('troopsModal'); if(!m)return;
  const b=m.querySelector('.modal-box');
@@ -85,11 +100,12 @@ function renderTroopDB(){
    document.getElementById('dbTroopFromWrap')?.classList.toggle('hidden',!promote);
    document.getElementById('dbTroopFromFcWrap')?.classList.toggle('hidden',!promote);
  };
- modeSel.addEventListener('change',()=>{toggleFrom();syncTroopFcSelectors();calcTroopDB();});
+ modeSel.addEventListener('change',()=>{toggleFrom();troopEnforceTiers();syncTroopFcSelectors();calcTroopDB();});
  typeSel?.addEventListener('change',()=>{syncTroopFcSelectors();calcTroopDB();});
- document.getElementById('dbTroopTier')?.addEventListener('change',()=>{syncTroopFcSelectors();calcTroopDB();});
- document.getElementById('dbTroopFrom')?.addEventListener('change',()=>{syncTroopFcSelectors();calcTroopDB();});
+ document.getElementById('dbTroopTier')?.addEventListener('change',()=>{troopEnforceTiers();syncTroopFcSelectors();calcTroopDB();});
+ document.getElementById('dbTroopFrom')?.addEventListener('change',()=>{troopEnforceTiers();syncTroopFcSelectors();calcTroopDB();});
  toggleFrom();
+ troopEnforceTiers();
  syncTroopFcSelectors();
  b.dataset.built='1';
  ['dbTroopTargetFc','dbTroopFromFc','dbTroopQty','dbTroopSpeed','dbTroopQueues','dbTroopAdvanced','dbTroopMeat','dbTroopWood','dbTroopCoal','dbTroopIron'].forEach(id=>document.getElementById(id)?.addEventListener('input',calcTroopDB));

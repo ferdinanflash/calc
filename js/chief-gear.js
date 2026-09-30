@@ -3,10 +3,10 @@
 // ---------- CHIEF GEAR ----------
 // Level table (150 steps, Green 0★ -> Red T6 3★) lives in database.js (WOS_DB.chiefGear),
 // mirroring https://wostools.net/chief-gear-calculator and /wiki/gear/chief-gear.
-const CG_DEFAULT_TARGET=90; // Red T3 3★ (same default as wostools)
+const CG_DEFAULT_TARGET=0; // default: None (Not Started)
 const cgMatImg=(k,nm)=>`<img class="mat-ic" src="images/chief-gear/${{alloy:'hardened-alloy',solution:'polishing-solution',plans:'design-plans',amber:'lunar-amber'}[k]}.webp" alt="${nm}" loading="lazy">`;
 const CG_MATS=[['alloy',cgMatImg('alloy','Hardened Alloy'),'Hardened Alloy'],['solution',cgMatImg('solution','Polishing Solution'),'Polishing Sol.'],['plans',cgMatImg('plans','Design Plans'),'Design Plans'],['amber',cgMatImg('amber','Lunar Amber'),'Lunar Amber']];
-const cgState={cur:[0,0,0,0,0,0],tar:Array(6).fill(CG_DEFAULT_TARGET),res:{alloy:0,solution:0,plans:0,amber:0},ex:Array(7).fill(0),valeria:0};
+const cgState={qCur:0,qTar:0,cur:[0,0,0,0,0,0],tar:Array(6).fill(CG_DEFAULT_TARGET),res:{alloy:0,solution:0,plans:0,amber:0},ex:Array(7).fill(0),valeria:0};
 
 // Chief Gear piece artwork (inline SVG, tinted by quality tier)
 const CG_TIER_COLORS={none:['#9ca3af','#4b5563','#e5e7eb'],green:['#4ade80','#166534','#bbf7d0'],blue:['#60a5fa','#1e3a8a','#bfdbfe'],purple:['#c084fc','#581c87','#e9d5ff'],gold:['#fbbf24','#854d0e','#fef3c7'],red:['#f87171','#7f1d1d','#fecaca']};
@@ -59,6 +59,19 @@ function syncGearControls(){
  CG_MATS.forEach(([k])=>{const e=document.getElementById('cgRes_'+k);if(e)e.value=cgState.res[k]||0;});
  G.exchange.forEach((_,i)=>{const e=document.getElementById('cgEx'+i);if(e)e.value=cgState.ex[i]||0;});
  const v=document.getElementById('cgValeria');if(v)v.value=cgState.valeria;
+ const qc=document.getElementById('cgQuickCur'),qt=document.getElementById('cgQuickTar');
+ if(qc)qc.value=cgState.qCur;if(qt)qt.value=cgState.qTar;
+ cgApplyMins();
+}
+// Target can never be below Current: keep states consistent and disable lower options.
+function cgEnforce(){
+ cgState.qTar=Math.max(cgState.qTar,cgState.qCur);
+ for(let i=0;i<6;i++)cgState.tar[i]=Math.max(cgState.tar[i],cgState.cur[i]);
+}
+function cgSetMin(sel,min){if(!sel)return;for(const o of sel.options)o.disabled=+o.value<min;}
+function cgApplyMins(){
+ cgSetMin(document.getElementById('cgQuickTar'),cgState.qCur);
+ for(let i=0;i<6;i++)cgSetMin(document.getElementById('cgTar'+i),cgState.cur[i]);
 }
 function renderGearDB(){
  const m=document.getElementById('chiefGearModal');if(!m)return;
@@ -72,8 +85,8 @@ function renderGearDB(){
  <div class="modal-sub">Plan upgrades from Green to Red T6 ★★★: Hardened Alloy, Polishing Solution, Design Plans, Lunar Amber, power, deployment capacity, and SvS points.</div>
  <div class="notice"><i class="bi bi-info-circle-fill"></i> Chief Gear unlocks at Furnace Level 22. All six pieces use the same cost path; set the current &amp; target levels for each piece below.</div>
  <div class="bc-section"><h3><i class="bi bi-lightning-charge-fill"></i> Quick Select</h3><div class="placeholder-grid">
-  <label>Set All Current<select id="cgQuickCur">${opts(-1,'Choose tier…')}</select></label>
-  <label>Set All Target<select id="cgQuickTar">${opts(-1,'Choose tier…')}</select></label>
+  <label>Set All Current<select id="cgQuickCur">${opts(cgState.qCur)}</select></label>
+  <label>Set All Target<select id="cgQuickTar">${opts(cgState.qTar)}</select></label>
   <label>&nbsp;<button class="mini-btn" id="cgResetAll" type="button">Reset All</button></label>
  </div></div>
  <div class="bc-section"><h3><i class="bi bi-shield-fill"></i> Gear Pieces</h3>${G.pieces.map((p,i)=>`<div class="building-plan cg-piece"><div class="cg-img" id="cgImg${i}" title="Current"></div><div><div class="plan-selects">
@@ -92,16 +105,17 @@ function renderGearDB(){
  <div class="notice"><i class="bi bi-lightbulb-fill"></i> Tips: keep all six pieces at the same tier for set bonuses (3 pieces = Defense, 6 pieces = Attack). Save upgrades for SvS Prep Day 5 / KoI to maximize points. Hardened Alloy comes from Polar Terror (Lv.3+) &amp; Beast (Lv.22+); Polishing Solution comes from Crazy Joe &amp; Alliance Championship Shop; Design Plans are required starting at Blue 2★; Lunar Amber is only used for Red tiers.</div>
  <div class="source-note">Cost, power, stat &amp; deployment data: wostools.net/wiki/gear/chief-gear (checked September 28, 2026). SvS points = Chief Gear Score × ${G.svsPerScore}. WoSTools features such as Upgrade Suggestions, Alliance Showdown &amp; CSV/Excel export are not included here.</div>`;
  for(let i=0;i<6;i++){
-  document.getElementById('cgCur'+i).addEventListener('change',e=>{cgState.cur[i]=+e.target.value;calcGearDB();});
-  document.getElementById('cgTar'+i).addEventListener('change',e=>{cgState.tar[i]=+e.target.value;calcGearDB();});
+  document.getElementById('cgCur'+i).addEventListener('change',e=>{cgState.cur[i]=+e.target.value;cgEnforce();syncGearControls();calcGearDB();});
+  document.getElementById('cgTar'+i).addEventListener('change',e=>{cgState.tar[i]=Math.max(+e.target.value,cgState.cur[i]);cgEnforce();syncGearControls();calcGearDB();});
  }
- document.getElementById('cgQuickCur').addEventListener('change',e=>{if(e.target.value==='')return;cgState.cur.fill(+e.target.value);syncGearControls();e.target.value='';calcGearDB();});
- document.getElementById('cgQuickTar').addEventListener('change',e=>{if(e.target.value==='')return;cgState.tar.fill(+e.target.value);syncGearControls();e.target.value='';calcGearDB();});
- document.getElementById('cgResetAll').addEventListener('click',()=>{cgState.cur.fill(0);cgState.tar.fill(CG_DEFAULT_TARGET);cgState.res={alloy:0,solution:0,plans:0,amber:0};cgState.ex.fill(0);cgState.valeria=0;syncGearControls();calcGearDB();});
+ document.getElementById('cgQuickCur').addEventListener('change',e=>{cgState.qCur=+e.target.value;cgState.cur.fill(cgState.qCur);cgEnforce();syncGearControls();calcGearDB();});
+ document.getElementById('cgQuickTar').addEventListener('change',e=>{cgState.qTar=Math.max(+e.target.value,cgState.qCur);cgState.tar=cgState.cur.map(c=>Math.max(cgState.qTar,c));cgEnforce();syncGearControls();calcGearDB();});
+ document.getElementById('cgResetAll').addEventListener('click',()=>{cgState.qCur=0;cgState.qTar=0;cgState.cur.fill(0);cgState.tar.fill(CG_DEFAULT_TARGET);cgState.res={alloy:0,solution:0,plans:0,amber:0};cgState.ex.fill(0);cgState.valeria=0;syncGearControls();calcGearDB();});
  CG_MATS.forEach(([k])=>document.getElementById('cgRes_'+k).addEventListener('input',calcGearDB));
  G.exchange.forEach((_,i)=>document.getElementById('cgEx'+i).addEventListener('input',calcGearDB));
  document.getElementById('cgValeria').addEventListener('change',e=>{cgState.valeria=+e.target.value;calcGearDB();});
  b.dataset.built='1';
+ cgApplyMins();
  calcGearDB();
 }
 function calcGearDB(){

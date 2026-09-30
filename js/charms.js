@@ -44,11 +44,16 @@ function charmUpdateIcons(i){
   if(t) t.innerHTML=charmIconHtml(slot.piece.type,v.t);
 }
 
+function charmApplyMin(i){
+  const t=document.getElementById('chTar'+i), v=charmVals[i]; if(!t||!v) return;
+  for(const o of t.options) o.disabled=+o.value<v.c; // target can't be below current
+}
 function syncCharmControls(){
   ensureCharmVals();
   charmVals.forEach((v,i)=>{
     const c=document.getElementById('chCur'+i),t=document.getElementById('chTar'+i);
     if(c)c.value=v.c; if(t)t.value=v.t;
+    charmApplyMin(i);
     charmUpdateIcons(i);
   });
   calcCharmSummary();
@@ -56,6 +61,7 @@ function syncCharmControls(){
 function charmSetCur(i,val){
   const v=charmVals[i]; v.c=+val;
   if(v.t<v.c){v.t=v.c; const t=document.getElementById('chTar'+i); if(t)t.value=v.t;}
+  charmApplyMin(i);
   charmUpdateIcons(i);
   calcCharmSummary();
 }
