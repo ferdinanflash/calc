@@ -14,13 +14,19 @@ let buildingPlans=[], buildingPlanId=0;
 //   otherwise they would have no choices at all.
 // role 'to': only levels strictly above the chosen Current Level.
 function levelOptions(building,role,fromLevel){
-  const info = WOS_DB.buildings.getSteps(building) || {maxLevel:30,hasFc:false};
+  const B=WOS_DB.buildings, info = B.getSteps(building) || {maxLevel:30,hasFc:false};
   const max = info.maxLevel || 30;
   let s='';
   if (info.hasFc){
-    const start = role==='to' ? Math.max(1, WOS_DB.buildings.levelToIndex(fromLevel)-29+1) : 1;
-    const end = role==='to' ? 10 : 9;
-    for(let i=start;i<=end;i++) s+=`<option value="FC${i}">FC ${i}</option>`;
+    // One continuous ladder: Lv.1..30, then FC1..FC10 (step index 0..39).
+    // 'from' offers everything except the last tier; 'to' only tiers strictly above the current one.
+    let fi=B.levelToIndex(fromLevel); if(isNaN(fi)) fi=0;
+    const start = role==='to' ? Math.min(39,fi+1) : 0;
+    const end = role==='to' ? 39 : 38;
+    for(let i=start;i<=end;i++){
+      const v = i<30 ? String(i+1) : 'FC'+(i-29);
+      s+=`<option value="${v}">${i<30?'Lv. '+(i+1):'FC '+(i-29)}</option>`;
+    }
   } else {
     const start = role==='to' ? (Number(fromLevel)||1)+1 : 1;
     const end = role==='to' ? max : max-1;
@@ -46,13 +52,15 @@ function updatePlan(id,key,val){
 
   const info=B.getSteps(p.building)||{maxLevel:30,hasFc:false};
   if(info.hasFc){
-    // Current Level is always an FC tier (FC1..FC9); Target is an FC tier above it.
-    let fi = typeof p.from==='string' ? parseInt(p.from.slice(2),10) : 1;
-    fi = Math.min(Math.max(fi,1),9);
-    let ti = typeof p.to==='string' ? parseInt(p.to.slice(2),10) : 0;
-    if(key!=='to') ti = fi+1;                    // Current Level / building changed -> Target = Current + 1
-    if(!(ti>fi)) fi = Math.max(1,ti-1);          // safety: target must stay above current
-    p.from='FC'+fi; p.to='FC'+Math.min(ti>fi?ti:fi+1,10);
+    // Levels form one ladder (index 0..39 = Lv.1..30, FC1..FC10); Target must stay above Current.
+    const idxToLv=i=>i<30?i+1:'FC'+(i-29);
+    let fi=B.levelToIndex(p.from); if(isNaN(fi)) fi=0;
+    fi=Math.min(Math.max(fi,0),38);
+    let ti=B.levelToIndex(p.to); if(isNaN(ti)) ti=fi+1;
+    if(key!=='to') ti=fi+1;                      // Current Level / building changed -> Target = Current + 1
+    if(!(ti>fi)) fi=Math.max(0,ti-1);            // safety: target must stay above current
+    ti=Math.min(Math.max(ti,fi+1),39);
+    p.from=idxToLv(fi); p.to=idxToLv(ti);
   } else {
     const max=info.maxLevel;
     let f = typeof p.from==='number' ? p.from : 1;

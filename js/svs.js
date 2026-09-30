@@ -141,7 +141,8 @@ function svsImport(type){
    ensureCharmVals(); const score=calcCharmTotals().totals.score; const pts=score*WOS_DB.charmRules.pointsPerScore; const idx=SVS_DAYS[3].items.findIndex(x=>x[0]==='Chief Charm Score');if(idx>=0)svsValues[3][idx]+=score;added+=pts;
  }
  if(type==='gear'||type==='all'){
-   const pieces=Number(document.getElementById('cgPieces')?.value)||0; const cur=Number(document.getElementById('cgCur')?.value||0),tar=Number(document.getElementById('cgTar')?.value||0); const score=Math.max(0,tar-cur)*pieces;const idx=SVS_DAYS[4].items.findIndex(x=>x[0]==='Chief Gear Score');if(idx>=0)svsValues[4][idx]+=score;added+=score*36;
+   let score=0; if(typeof cgState!=='undefined')cgState.cur.forEach((c,k)=>{score+=cgCost(c,Math.max(cgState.tar[k],c)).svs;});
+   const per=WOS_DB.chiefGear.svsPerScore||36; const idx=SVS_DAYS[4].items.findIndex(x=>x[0]==='Chief Gear Score');if(idx>=0)svsValues[4][idx]+=score;added+=score*per;
  }
  if(type==='war'||type==='all'){
    const wa=window._warAcademyTotals||{shards:0}; const shards=Number(wa.shards)||0; const idx=SVS_DAYS[1].items.findIndex(x=>x[0].includes('Fire Crystal Shard'));if(idx>=0)svsValues[1][idx]+=shards;added+=shards*1000;

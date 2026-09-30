@@ -11,7 +11,7 @@ const WA_T12={
  Lancer:{exalted:['Exalted Warcrown','Exalted Pauldron','Exalted Platemail','Exalted Warpath','Exalted Pike'],moltenI:['Molten Vambrace I','Molten Helmets I','Molten Tactics I','Molten Lance I'],gateway:'Meridian Phalanx',moltenII:['Molten Vambrace II','Molten Helmets II','Molten Tactics II','Molten Lance II'],solar:'Solar Supremacy',moltenIII:['Molten Vambrace III','Molten Helmets III','Molten Tactics III','Molten Lance III'],t12Support:['Exalted Lancer Training','Exalted Lancer Healing','Exalted Lancer First Aid']},
  Marksman:{exalted:['Exalted Veil','Exalted Mantle','Exalted War Garb','Exalted Cadence','Exalted Blunderbuss'],moltenI:['Molten Grips I','Molten Scales I','Molten Sharpshooting I','Molten Shot I'],gateway:'Starfire',moltenII:['Molten Grips II','Molten Scales II','Molten Sharpshooting II','Molten Shot II'],solar:'Solar Supremacy',moltenIII:['Molten Grips III','Molten Scales III','Molten Sharpshooting III','Molten Shot III'],t12Support:['Exalted Marksman Training','Exalted Marksman Healing','Exalted Marksman First Aid']}
 };
-const WA_T12_MAX=n=>n.includes('Exalted')&&/(Training|Healing|First Aid)$/.test(n)?10:n.includes('Exalted')?5:n==='Solar Supremacy'?15:['Indomitable Wall','Meridian Phalanx','Starfire'].includes(n)?3:50;
+const WA_T12_MAX=n=>n.includes('Exalted')&&/(Training|Healing|First Aid)$/.test(n)?10:n.includes('Exalted')?5:n==='Solar Supremacy'?15:/^Molten .* I$/.test(n)?20:['Indomitable Wall','Meridian Phalanx','Starfire'].includes(n)?3:50;
 const WA_T12_COST={};
 function waRes(meat,wood,coal,iron,steel,rfc,shards,seconds){return{meat,wood,coal,iron,steel,rfc,shards,seconds};}
 // Exalted tracks are exact 5-level premium-material tracks from the public wiki.
