@@ -352,7 +352,7 @@ function calcWarAcademy(){
   const shards=lv*1250,steel=lv*250,meat=lv*100000,wood=lv*100000,coal=lv*50000,iron=lv*25000,time=lv*7200/speed;
   const fmt=n=>Math.round(n).toLocaleString('id-ID');
   document.getElementById('waResult').innerHTML=[
-    ['n',fmt(shards),'<i class="bi bi-fire"></i> FC Shards'],['n',fmt(steel),'<i class="bi bi-gear-fill"></i> Steel'],['n',fmt(meat),'<i class="bi bi-egg-fried"></i> Meat'],['n',fmt(wood),'<i class="bi bi-tree-fill"></i> Wood'],
+    ['n',fmt(shards),'<i class="bi bi-fire"></i> FC Shards'],['n',fmt(steel),'<img class="res-ic" src="images/resources/steel.webp" alt="Steel"> Steel'],['n',fmt(meat),'<i class="bi bi-egg-fried"></i> Meat'],['n',fmt(wood),'<i class="bi bi-tree-fill"></i> Wood'],
     ['n',fmt(coal),'<i class="bi bi-hexagon-fill"></i> Coal'],['n',fmt(iron),'<i class="bi bi-link-45deg"></i> Iron'],['n',formatDuration(time),'<i class="bi bi-stopwatch-fill"></i> Research Time'],['n',fmt(lv),'<i class="bi bi-graph-up-arrow"></i> Research Levels']
   ].map(x=>`<div class="stat"><div class="n">${x[1]}</div><div class="l">${x[2]}</div></div>`).join('');
 }
