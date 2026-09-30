@@ -15,15 +15,12 @@ const CG_ASSET_IDS={helmet:'helmet',watch:'watch',jacket:'coat',pants:'pants',ri
 function cgStarCount(name){const m=(name||'').match(/(\d)★/);return m?Math.max(0,Math.min(3,Number(m[1]))):0;}
 function cgTierLabel(name){const m=(name||'').match(/\bT([1-6])\b/);return m?'T'+m[1]:'';}
 function cgAssetPath(id, levelName){
- const m=/^Red T([56]) (\d)★$/.exec(levelName||'');
- if(!m)return null;
- const tier=m[1],star=m[2];
- // Supplied artwork is exact for T5 3★ and T6 0★ for Jacket/Pants/Ring/Cane.
- if(tier==='5' && star==='3' && ['jacket','pants','ring','cane'].includes(id))
-   return `images/chief-gear/${id}-t5-3star.jpg`;
- if(tier==='6' && star==='0' && ['jacket','pants','ring','cane'].includes(id))
-   return `images/chief-gear/${id}-t6-0star.jpg`;
- return null;
+ // Reference art: Jacket/Pants/Ring/Cane have T5 and T6 (t5-t6.jpg); Helmet/Watch only have T6,
+ // so they use the T6 art for T5 too. The badge and stars are drawn by cgRenderArt.
+ const m=/^Red T([56])\b/.exec(levelName||'');
+ if(!m || !['helmet','watch','jacket','pants','ring','cane'].includes(id))return null;
+ const t=(id==='helmet'||id==='watch')?'6':m[1];
+ return `images/chief-gear/${id}-t${t}.webp`;
 }
 function cgStarMarkup(stars){
  return stars?`<span class="cg-stars" aria-label="${stars} stars">${Array.from({length:stars},()=>'<i>★</i>').join('')}</span>`:'';
@@ -36,8 +33,8 @@ function cgRenderArt(el,id,levelName){
  if(!el)return;
  const asset=cgAssetPath(id,levelName);
  if(asset){
-   // These two supplied states already contain their T5/T6 badge and star artwork.
-   el.innerHTML=`<img class="cg-gear-asset cg-supplied" src="${asset}" alt="${id} ${levelName}" loading="lazy">`;
+   const tl=cgTierLabel(levelName), st=cgStarCount(levelName);
+   el.innerHTML=`<div class="cg-art" title="${levelName||''}"><img class="cg-gear-asset" src="${asset}" alt="${id} ${levelName}" loading="lazy">${cgTierMarkup(levelName)}${cgStarMarkup(st)}</div>`;
    return;
  }
  const tier=cgTierKey(levelName), stars=cgStarCount(levelName), tierLabel=cgTierLabel(levelName);

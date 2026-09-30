@@ -20,6 +20,10 @@ function charmLevelOpts(){
 }
 function charmMaxIdx(){return WOS_DB.charmSteps.length-1;}
 
+// Material icons (Charm Guide / Charm Design / Jewel Secrets): images/charms/material-*.webp
+const chMatImg=(k,nm)=>`<img class="mat-ic" src="images/charms/material-${k}.webp" alt="${nm}" loading="lazy">`;
+const CH_GUIDE=chMatImg('guide','Charm Guide'), CH_DESIGN=chMatImg('design','Charm Design'), CH_SECRET=chMatImg('secrets','Jewel Secrets');
+
 // Charm icons: images/charms/charm-{type}-{LL}.webp (Lv.1-16 available; Lv.17-18 fall back to Lv.16 art).
 const CHARM_ICON_MAX=16;
 function charmBaseLevel(idx){
@@ -87,9 +91,9 @@ function calcCharmSummary(){
 
   const req=document.getElementById('chTotalResult');
   if(req) req.innerHTML=[
-    ['<i class="bi bi-book-fill"></i> Charm Guides',fmt(totals.guides)],
-    ['<i class="bi bi-journal-text"></i> Charm Designs',fmt(totals.designs)],
-    ['<i class="bi bi-gem"></i> Jewel Secrets',fmt(totals.secrets)],
+    [CH_GUIDE+' Charm Guides',fmt(totals.guides)],
+    [CH_DESIGN+' Charm Designs',fmt(totals.designs)],
+    [CH_SECRET+' Jewel Secrets',fmt(totals.secrets)],
     ['<i class="bi bi-arrow-up-circle-fill"></i> Upgrade Steps',fmt(totals.steps)],
     ['<i class="bi bi-trophy-fill"></i> SvS / KoI Points',fmt(points)]
   ].map(x=>statCard(x[1],x[0])).join('');
@@ -97,7 +101,7 @@ function calcCharmSummary(){
   const need=document.getElementById('chNeedResult');
   const allCovered=needG===0&&needD===0&&needS===0;
   if(need) need.innerHTML=[
-    ['<i class="bi bi-book-fill"></i> Guides',needG],['<i class="bi bi-journal-text"></i> Designs',needD],['<i class="bi bi-gem"></i> Secrets',needS]
+    [CH_GUIDE+' Guides',needG],[CH_DESIGN+' Designs',needD],[CH_SECRET+' Secrets',needS]
   ].map(x=>statCard(fmt(x[1]),x[0],x[1]===0?'ok':'warn')).join('')
    +`<div class="notice">${allCovered?'✅ The entered resources are sufficient for all upgrades.':'⚠️ More resources are required above to reach the target.'}</div>`;
 
@@ -134,14 +138,14 @@ function renderCharmDB(){
  </div>
  ${rowsByType}
  <div class="bc-section"><h3><i class="bi bi-bag-fill"></i> Available Resources</h3><div class="bc-grid">
-   <label><i class="bi bi-book-fill"></i> Charm Guides<input id="chAvailG" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
-   <label><i class="bi bi-journal-text"></i> Charm Designs<input id="chAvailD" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
-   <label><i class="bi bi-gem"></i> Jewel Secrets<input id="chAvailS" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
+   <label>${CH_GUIDE} Charm Guides<input id="chAvailG" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
+   <label>${CH_DESIGN} Charm Designs<input id="chAvailD" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
+   <label>${CH_SECRET} Jewel Secrets<input id="chAvailS" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
  </div></div>
  <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Materials Required</h3><div id="chTotalResult" class="result-grid"></div></div>
  <div class="bc-section result"><h3><i class="bi bi-exclamation-triangle-fill"></i> Still Needed (After Available)</h3><div id="chNeedResult" class="result-grid"></div></div>
  <div class="bc-section"><h3><i class="bi bi-diagram-3-fill"></i> By Troop Type</h3><div id="chByType" class="charm-slots"></div></div>
- <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Cost Database (per charm, per level)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>Guides</th><th>Designs</th><th>Secrets</th><th>Score</th></tr></thead><tbody>${WOS_DB.charmSteps.slice(1).map(v=>`<tr><td>${v.label}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td><td>${fmt(v.score)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Cost per charm and level step from wostools.net/chief-charms-calculator (checked September 28, 2026). Score × 70 = SvS/KoI points. Jewel Secrets are only required for Lv.12–18. Lv.11 unlocks Material Exchange.</div></div>
+ <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Cost Database (per charm, per level)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>${CH_GUIDE} Guides</th><th>${CH_DESIGN} Designs</th><th>${CH_SECRET} Secrets</th><th>Score</th></tr></thead><tbody>${WOS_DB.charmSteps.slice(1).map(v=>`<tr><td>${v.label}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td><td>${fmt(v.score)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Cost per charm and level step from wostools.net/chief-charms-calculator (checked September 28, 2026). Score × 70 = SvS/KoI points. Jewel Secrets are only required for Lv.12–18. Lv.11 unlocks Material Exchange.</div></div>
  <div class="bc-section"><h3><i class="bi bi-lightbulb-fill"></i> Tips</h3><ul class="tip-list">
    <li><b>Save for events:</b> upgrade during King of Icefield, Officer Project, Armament Competition, or Alliance Mobilization.</li>
    <li><b>Jewel Secrets:</b> are only required for levels 12–18, with costs increasing rapidly (15 at Lv.12 up to 180 at Lv.18 per charm).</li>
