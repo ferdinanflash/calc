@@ -24,8 +24,8 @@ function charmMaxIdx(){return WOS_DB.charmSteps.length-1;}
 const chMatImg=(k,nm)=>`<img class="mat-ic" src="images/charms/material-${k}.webp" alt="${nm}" loading="lazy">`;
 const CH_GUIDE=chMatImg('guide','Charm Guide'), CH_DESIGN=chMatImg('design','Charm Design'), CH_SECRET=chMatImg('secrets','Jewel Secrets');
 
-// Charm icons: images/charms/charm-{type}-{LL}.webp (Lv.1-16 available; Lv.17-18 fall back to Lv.16 art).
-const CHARM_ICON_MAX=16;
+// Charm icons: images/charms/charm-{type}-{LL}.webp (Lv.1-18 available).
+const CHARM_ICON_MAX=18;
 function charmBaseLevel(idx){
   const st=WOS_DB.charmSteps[idx]; return st?Math.floor(parseFloat(st.label)||0):0;
 }
