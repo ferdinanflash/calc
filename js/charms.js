@@ -114,7 +114,7 @@ function calcCharmSummary(){
   const byTypeEl=document.getElementById('chByType');
   if(byTypeEl) byTypeEl.innerHTML=WOS_DB.troopTypes.map(t=>{
     const b=byType[t]; const pts=b.score*WOS_DB.charmRules.pointsPerScore;
-    return `<div class="tree-item"><b>${t}</b><span>${fmt(b.guides)} Guides · ${fmt(b.designs)} Designs · ${fmt(b.secrets)} Secrets · ${fmt(pts)} pts</span></div>`;
+    return `<div class="tree-item"><b>${troopIcon(t)} ${t}</b><span>${fmt(b.guides)} Guides · ${fmt(b.designs)} Designs · ${fmt(b.secrets)} Secrets · ${fmt(pts)} pts</span></div>`;
   }).join('');
 }
 
@@ -131,7 +131,7 @@ function renderCharmDB(){
       <select id="chTar${i}" onchange="charmSetTar(${i},this.value)">${lvlOpts}</select>
       <span class="charm-ic-wrap" id="chIcT${i}"></span>
       </div>`).join('');
-   return `<div class="bc-section"><h3><i class="bi bi-gem"></i> ${type}</h3><div class="research-list">${rows}</div></div>`;
+   return `<div class="bc-section"><h3>${troopIcon(type)} ${type}</h3><div class="research-list">${rows}</div></div>`;
  }).join('');
 
  b.innerHTML=`<button class="modal-close" onclick="closeModal('charmModal')">×</button><div class="modal-title"><i class="bi bi-gem"></i> Chief Charm</div><div class="modal-sub">18 independent charm slots — 3 charms per gear piece (Helmet+Watch = Lancer, Jacket+Pants = Infantry, Ring+Cane = Marksman). Levels 1–18, with sub-levels starting at Lv.4. Chief Charm unlocks at Furnace Lv.25; Lv.16 requires Gen 7 state.</div>

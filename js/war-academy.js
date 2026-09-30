@@ -229,7 +229,7 @@ function renderSelect(name,idx,max,type,group){
 }
 function renderT12(type){
  const m=WA_T12[type];
- return `<div class="bc-section t12-section"><h3>🔥 T12 Exalted &amp; Molten ${type}<small class="t12-threshold" id="waThreshold-${type}"></small></h3><div class="notice">T12 unlocks after all 5 Exalted tracks reach Lv.5. Exalted gates: FC5 → FC7 → FC8 → FC9 → FC10. Molten I/II/III require War Academy FC10. Gateway gates Molten II at Lv.1/2/3; Solar gates Molten III.</div><div class="research-list">`
+ return `<div class="bc-section t12-section"><h3>${troopIcon(type)} T12 Exalted &amp; Molten ${type}<small class="t12-threshold" id="waThreshold-${type}"></small></h3><div class="notice">T12 unlocks after all 5 Exalted tracks reach Lv.5. Exalted gates: FC5 → FC7 → FC8 → FC9 → FC10. Molten I/II/III require War Academy FC10. Gateway gates Molten II at Lv.1/2/3; Solar gates Molten III.</div><div class="research-list">`
   +m.exalted.map((n,i)=>renderSelect(n,i,5,type,'t12')).join('')
   +m.moltenI.map((n,i)=>renderSelect(n,5+i,20,type,'t12')).join('')
   +renderSelect(m.gateway,9,3,type,'t12')
@@ -243,7 +243,7 @@ function renderT12(type){
 function buildWAControls(){
  const el=document.getElementById('warBranches');if(!el)return;
  if(el.dataset.built)return;
- el.innerHTML=Object.entries(WA_HELIOS).map(([type,items])=>`<div class="bc-section"><h3>⚔️ ${type}</h3><div class="bc-toolbar"><button class="mini-btn" onclick="waSetBranch('${type}',0,'h')">Reset Current</button><button class="mini-btn" onclick="waSetBranch('${type}',${items.length},'h')">Max Helios</button><button class="mini-btn" onclick="waSetT12('${type}',5)">Unlock T12</button><button class="mini-btn" onclick="waSetT12('${type}',999)">Max T12</button></div><div class="research-list">${items.map((x,i)=>renderSelect(x[0],i,x[1],type,'h')).join('')}</div>${renderT12(type)}</div>`).join('');
+ el.innerHTML=Object.entries(WA_HELIOS).map(([type,items])=>`<div class="bc-section"><h3>${troopIcon(type)} ${type}</h3><div class="bc-toolbar"><button class="mini-btn" onclick="waSetBranch('${type}',0,'h')">Reset Current</button><button class="mini-btn" onclick="waSetBranch('${type}',${items.length},'h')">Max Helios</button><button class="mini-btn" onclick="waSetT12('${type}',5)">Unlock T12</button><button class="mini-btn" onclick="waSetT12('${type}',999)">Max T12</button></div><div class="research-list">${items.map((x,i)=>renderSelect(x[0],i,x[1],type,'h')).join('')}</div>${renderT12(type)}</div>`).join('');
  el.dataset.built='1';
 }
 // Push waLevels into the existing <select>s (no DOM rebuild, keeps focus and scroll position).

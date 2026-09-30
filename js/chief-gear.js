@@ -90,7 +90,7 @@ function renderGearDB(){
   <label>&nbsp;<button class="mini-btn" id="cgResetAll" type="button">Reset All</button></label>
  </div></div>
  <div class="bc-section"><h3><i class="bi bi-shield-fill"></i> Gear Pieces</h3>${G.pieces.map((p,i)=>`<div class="building-plan cg-piece"><div class="cg-img" id="cgImg${i}" title="Current"></div><div><div class="plan-selects">
-  <label>${p.name} <small>(${p.type})</small><select id="cgCur${i}">${opts(cgState.cur[i])}</select></label><span class="arrow">→</span>
+  <label>${p.name} <small>${troopIcon(p.type)}(${p.type})</small><select id="cgCur${i}">${opts(cgState.cur[i])}</select></label><span class="arrow">→</span>
   <label>Target<select id="cgTar${i}">${opts(cgState.tar[i])}</select></label></div><div id="cgRow${i}" class="notice"></div></div><div class="cg-img" id="cgImgT${i}" title="Target"></div></div>`).join('')}</div>
  <div class="bc-section"><h3><i class="bi bi-bag-fill"></i> Available Resources</h3><div class="bc-grid">${CG_MATS.map(([k,ic,nm])=>`<label>${ic} ${nm}<input id="cgRes_${k}" type="number" min="0" value="${cgState.res[k]||0}"></label>`).join('')}</div></div>
  <div class="bc-section"><h3><i class="bi bi-arrow-repeat"></i> Enhancement Material Exchange</h3><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${cgMatImg(e[0],exName[e[0]])} ${exName[e[0]]} » ${cgMatImg(e[1],exName[e[1]])} ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/week)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="amount of ${exName[e[0]]} to exchange"></label>`).join('')}</div>
@@ -142,7 +142,7 @@ function calcGearDB(){
  if(exNote)exNote.innerHTML=unlocked?'<i class="bi bi-check-circle-fill"></i> Exchange unlocked (at least one piece is Gold T2 3★ or higher).':'<i class="bi bi-lock-fill"></i> Not unlocked yet — upgrade one piece to Gold T2 3★ (current) to unlock Enhancement Material Exchange. The exchange rates below are not yet applicable.';
  const need=CG_MATS.map(([k,ic,nm])=>statCard(fmt(tot[k]),`${ic} ${nm}`)).join('');
  const gap=CG_MATS.map(([k,ic,nm])=>{const left=Math.max(0,tot[k]-avail[k]);return statCard(fmt(left),`${ic} ${nm}${avail[k]>0?' · available '+fmt(avail[k]):''}`,left===0?'ok':'warn');}).join('');
- const types=Object.entries(byType).map(([tp,v])=>`<h4>${tp}</h4><div class="result-grid">${CG_MATS.map(([k,ic,nm])=>statCard(fmt(v[k]),`${ic} ${nm}`)).join('')}${statCard(fmt(v.svs*G.svsPerScore*svsMult),'<i class="bi bi-trophy-fill"></i> SvS')}</div>`).join('');
+ const types=Object.entries(byType).map(([tp,v])=>`<h4>${troopIcon(tp)} ${tp}</h4><div class="result-grid">${CG_MATS.map(([k,ic,nm])=>statCard(fmt(v[k]),`${ic} ${nm}`)).join('')}${statCard(fmt(v.svs*G.svsPerScore*svsMult),'<i class="bi bi-trophy-fill"></i> SvS')}</div>`).join('');
  const svsPts=tot.svs*G.svsPerScore*svsMult;
  const el=document.getElementById('cgSummary');
  if(el)el.innerHTML=`<h4>Total Materials Required</h4><div class="result-grid">${need}</div>

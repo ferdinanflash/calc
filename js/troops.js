@@ -68,7 +68,7 @@ function renderTroopDB(){
  b.innerHTML=`<button class="modal-close" onclick="closeModal('troopsModal')">×</button>
  <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion for Infantry, Lancer, and Marksman — T1–T12, FC-adjusted troop power, speed bonuses, resource gaps, and event points.</div>
  <div class="bc-section"><div class="placeholder-grid">
- <label>Troop Type<select id="dbTroopType"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
+ <label>Troop Type <span id="dbTroopTypeIc">${troopIcon("Infantry")}</span><select id="dbTroopType"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
  <label>Mode<select id="dbTroopMode"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
  <label id="dbTroopFromWrap" class="hidden">From Tier (Current)<select id="dbTroopFrom">${tierOpts(prevTier)}</select></label>
  <label>Target Tier<select id="dbTroopTier">${tierOpts(lastTier)}</select></label>
@@ -101,7 +101,7 @@ function renderTroopDB(){
    document.getElementById('dbTroopFromFcWrap')?.classList.toggle('hidden',!promote);
  };
  modeSel.addEventListener('change',()=>{toggleFrom();troopEnforceTiers();syncTroopFcSelectors();calcTroopDB();});
- typeSel?.addEventListener('change',()=>{syncTroopFcSelectors();calcTroopDB();});
+ typeSel?.addEventListener('change',()=>{const ic=document.getElementById('dbTroopTypeIc');if(ic)ic.innerHTML=troopIcon(typeSel.value);syncTroopFcSelectors();calcTroopDB();});
  document.getElementById('dbTroopTier')?.addEventListener('change',()=>{troopEnforceTiers();syncTroopFcSelectors();calcTroopDB();});
  document.getElementById('dbTroopFrom')?.addEventListener('change',()=>{troopEnforceTiers();syncTroopFcSelectors();calcTroopDB();});
  toggleFrom();

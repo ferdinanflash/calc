@@ -7,5 +7,12 @@ function formatDuration(sec){sec=Math.round(sec||0);let d=Math.floor(sec/86400);
 // Shared "stat" tile used by every calculator's result grid.
 function statCard(n,l,cls){return `<div class="stat${cls?' '+cls:''}"><div class="n">${n}</div><div class="l">${l}</div></div>`;}
 
+// Troop type badge (Infantry / Lancer / Marksman): images/troops/{type}.webp
+function troopIcon(type){
+  const k=String(type||'').toLowerCase();
+  if(!['infantry','lancer','marksman'].includes(k))return '';
+  return `<img class="tr-ic" src="images/troops/${k}.webp" alt="${type}" title="${type}">`;
+}
+
 function fmt(n){return Math.round(Number(n)||0).toLocaleString('en-US');}
 function secondsText(s){s=Math.max(0,Math.round(s||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);const sec=s%60;return (d?d+'d ':'')+(h?h+'h ':'')+(m?m+'m ':'')+(sec?sec+'s':'').trim()||'0s';}
