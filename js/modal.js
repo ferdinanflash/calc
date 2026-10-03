@@ -13,6 +13,7 @@ function openModal(id){
   if(id==='charmModal') renderCharmDB();
   if(id==='chiefGearModal') renderGearDB();
   if(id==='svsModal'){ loadSVS(); renderSVS(); }
+  if(id==='rfcModal') initRFC();
 }
 function closeModal(id){
   const m=document.getElementById(id);

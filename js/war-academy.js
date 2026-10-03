@@ -35,13 +35,13 @@ function moltenIRows(){
 function blockRows(kind){
  const rows=[];
  const blocks=kind==='II' ? [[1,10,500,100,25,18,5,75,720],[11,20,620,120,31,22.5,6,93,900],[21,30,750,150,37,27,7,112,1080],[31,40,870,170,43,31.5,8,131,1260],[41,50,1000,200,50,36,10,150,1440]] : [[1,10,1000,200,50,25,5,125,2880],[11,20,1200,250,62,31.3,6,156,3600],[21,30,1500,300,75,37.5,7,187,4320],[31,40,1700,350,87,43.8,8,218,5040],[41,50,2000,400,100,50,10,250,5760]];
- blocks.forEach(b=>{for(let i=b[0];i<=b[1];i++)rows.push(waRes(b[2]*1000,b[2]*1000,b[3]*1000,b[4]*1000,b[5]*1000,b[6],b[7],b[8]));}); return rows;
+ blocks.forEach(b=>{for(let i=b[0];i<=b[1];i++)rows.push(waRes(b[2]*1000,b[2]*1000,b[3]*1000,b[4]*1000,b[5]*1000,b[6],b[7],b[8]*60));}); return rows;
 }
 ['Molten Shields II','Molten Plating II','Molten Guard II','Molten Blades II','Molten Vambrace II','Molten Helmets II','Molten Tactics II','Molten Lance II','Molten Grips II','Molten Scales II','Molten Sharpshooting II','Molten Shot II'].forEach(n=>WA_T12_COST[n]=blockRows('II'));
 ['Molten Shields III','Molten Plating III','Molten Guard III','Molten Blades III','Molten Vambrace III','Molten Helmets III','Molten Tactics III','Molten Lance III','Molten Grips III','Molten Scales III','Molten Sharpshooting III','Molten Shot III'].forEach(n=>WA_T12_COST[n]=blockRows('III'));
 function gatewayRows(){return [1,2,3].map(()=>waRes(15000000,15000000,750000,750000,200000,50,325,1728000));}
 ['Indomitable Wall','Meridian Phalanx','Starfire'].forEach(n=>WA_T12_COST[n]=gatewayRows());
-WA_T12_COST['Solar Supremacy']=Array.from({length:15},(_,i)=>{const meat=[500,520,550,600,650,700,750,800,850,900,950,1000,1000,1100,1200][i]*1000;const coal=[100,100,110,120,130,140,150,160,170,180,190,200,210,230,250][i]*1000;const iron=[25,26,27,30,32,35,37,40,42,45,47,50,52,57,62][i]*1000;const steel=[25,26.3,27.5,30,32.5,35,37.5,40,40,45,47.5,50,52.5,57.5,62.5][i]*1000;const rfc=[5,5,5,6,6,7,7,8,8,9,9,10,10,11,12][i];const sh=[75,78,82,90,97,105,112,120,127,135,142,150,157,172,187][i];const sec=[720,756,792,864,936,1008,1080,1152,1224,1296,1368,1440,1512,1656,1800][i];return waRes(meat,meat,coal,iron,steel,rfc,sh,sec);});
+WA_T12_COST['Solar Supremacy']=Array.from({length:15},(_,i)=>{const meat=[500,520,550,600,650,700,750,800,850,900,950,1000,1000,1100,1200][i]*1000;const coal=[100,100,110,120,130,140,150,160,170,180,190,200,210,230,250][i]*1000;const iron=[25,26,27,30,32,35,37,40,42,45,47,50,52,57,62][i]*1000;const steel=[25,26.3,27.5,30,32.5,35,37.5,40,40,45,47.5,50,52.5,57.5,62.5][i]*1000;const rfc=[5,5,5,6,6,7,7,8,8,9,9,10,10,11,12][i];const sh=[75,78,82,90,97,105,112,120,127,135,142,150,157,172,187][i];const sec=[720,756,792,864,936,1008,1080,1152,1224,1296,1368,1440,1512,1656,1800][i]*60;return waRes(meat,meat,coal,iron,steel,rfc,sh,sec);});
 // Research Power per level (WoSTools War Academy table): Molten I/II/III 50K, Gateway 350K, Solar Supremacy 60K.
 // Applied after all cost rows are built; rows that already carry a power (Exalted tracks) are left untouched.
 function waApplyT12Power(){
@@ -203,9 +203,11 @@ function t12PrereqProblems(type){
  return [...new Set(problems)];
 }
 function t12TrackFcRequirement(type,index){ if(index<5)return WA_T12_FC_REQ[index]; return 10; }
+// Per-level gate: Exalted Lv.1 opens at FC5/7/8/9/10 (by track), Lv.2-5 all need War Academy FC10. Other T12 tracks need FC10.
+function t12LevelFcRequirement(index,levelIdx){ if(index<5)return levelIdx===0?WA_T12_FC_REQ[index]:10; return 10; }
 function t12FcRequirement(type){
  const t=waLevels[type].t12; let req=0;
- for(let i=0;i<5;i++) if(t[i]>0) req=Math.max(req,WA_T12_FC_REQ[i]);
+ for(let i=0;i<5;i++) if(t[i]>0) req=Math.max(req,t[i]>1?10:WA_T12_FC_REQ[i]);
  if(t.slice(5).some(v=>v>0)) req=Math.max(req,10);
  return req;
 }
@@ -269,7 +271,7 @@ function waSetBranch(type,v,group){ // v=0: "Reset Current" (Helios + T12 curren
  if(v===0){
   waCur[type].h=waCur[type].h.map(()=>0);waCur[type].t12=waCur[type].t12.map(()=>0);
  }else{
-  waLevels[type].h=waLevels[type].h.map((x,i)=>Math.max(waCur[type].h[i],Math.min(v,WA_HELIOS[type][i][1])));
+  waLevels[type].h=waLevels[type].h.map((x,i)=>Math.max(waCur[type].h[i],WA_HELIOS[type][i][1])); // each track's own max (some tracks go to 12, not 10)
  }
  autoPrereq(type);
  syncWAControls();calcWarAcademy();
@@ -295,7 +297,14 @@ function calcWarAcademy(){
   // Count only prerequisite-valid tracks. Each T12 track is independently gated by its required War Academy FC.
   let countedT12Levels=0;
   if(!problems.length || document.getElementById('waPrereq')?.checked){
-    t12Meta(type).forEach((n,i)=>{ const trackReq=t12TrackFcRequirement(type,i); if(fc>=trackReq){waAdd(c,t12Cost(n,cu.t12[i],lv.t12[i])); countedT12Levels+=Math.max(0,lv.t12[i]-cu.t12[i]); const rows=WA_T12_COST[n]||[]; for(let j=cu.t12[i];j<Math.min(lv.t12[i],rows.length);j++) power+=(rows[j].power||0);} });
+    t12Meta(type).forEach((n,i)=>{
+      // Level-by-level FC gate: levels run in order, so stop at the first level the current War Academy FC can't open.
+      const rows=WA_T12_COST[n]||[]; const to=Math.min(lv.t12[i],rows.length);
+      for(let j=cu.t12[i];j<to;j++){
+        if(fc<t12LevelFcRequirement(i,j)) break;
+        waAdd(c,rows[j]); countedT12Levels++; power+=(rows[j].power||0);
+      }
+    });
   }
   waAdd(total,c);
   levels+=waSum(lv.h)-waSum(cu.h)+countedT12Levels;
