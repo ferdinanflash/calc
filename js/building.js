@@ -18,14 +18,15 @@ function levelOptions(building,role,fromLevel){
   const max = info.maxLevel || 30;
   let s='';
   if (info.hasFc){
-    // One continuous ladder: Lv.1..30, then FC1..FC10 (step index 0..39).
-    // 'from' offers everything except the last tier; 'to' only tiers strictly above the current one.
-    let fi=B.levelToIndex(fromLevel); if(isNaN(fi)) fi=0;
-    const start = role==='to' ? Math.min(39,fi+1) : 0;
-    const end = role==='to' ? 39 : 38;
+    // One continuous ladder: Lv.1..30, then every FC sub-step (30-1..30-4, FC 1, FC 1-1..FC 1-4, FC 2, ... FC 10).
+    // 'from' offers everything except the last level; 'to' only levels strictly above the current one.
+    const L=info.ladder;
+    let fi=B.indexOf(building,fromLevel); if(isNaN(fi)) fi=0;
+    const start = role==='to' ? Math.min(L.length-1,fi+1) : 0;
+    const end = role==='to' ? L.length-1 : L.length-2;
     for(let i=start;i<=end;i++){
-      const v = i<30 ? String(i+1) : 'FC'+(i-29);
-      s+=`<option value="${v}">${i<30?'Lv. '+(i+1):'FC '+(i-29)}</option>`;
+      const v = L[i].base ? String(i+1) : L[i].key;
+      s+=`<option value="${v}">${L[i].text}</option>`;
     }
   } else {
     const start = role==='to' ? (Number(fromLevel)||1)+1 : 1;
@@ -48,19 +49,22 @@ function updatePlan(id,key,val){
   if(!p)return;
   const B=WOS_DB.buildings;
   if(key==='building') p.building=val;
-  else p[key]=String(val).startsWith('FC')?val:parseInt(val,10);
+  else p[key]=/^\d+$/.test(String(val))?parseInt(val,10):String(val);
 
   const info=B.getSteps(p.building)||{maxLevel:30,hasFc:false};
   if(info.hasFc){
-    // Levels form one ladder (index 0..39 = Lv.1..30, FC1..FC10); Target must stay above Current.
-    const idxToLv=i=>i<30?i+1:'FC'+(i-29);
-    let fi=B.levelToIndex(p.from); if(isNaN(fi)) fi=0;
-    fi=Math.min(Math.max(fi,0),38);
-    let ti=B.levelToIndex(p.to); if(isNaN(ti)) ti=fi+1;
-    if(key!=='to') ti=fi+1;                      // Current Level / building changed -> Target = Current + 1
+    // Levels form one ladder (Lv.1..30, then every FC sub-step); Target must stay above Current.
+    const L=info.ladder, last=L.length-1;
+    const val=i=>L[i].base?i+1:L[i].key;
+    let fi=B.indexOf(p.building,p.from); if(isNaN(fi)) fi=0;
+    fi=Math.min(Math.max(fi,0),last-1);
+    let ti=B.indexOf(p.building,p.to); if(isNaN(ti)) ti=fi+1;
+    if(key!=='to'){                              // Current Level / building changed -> Target = next whole level/tier
+      ti=fi+1; while(ti<last && !L[ti].whole) ti++;
+    }
     if(!(ti>fi)) fi=Math.max(0,ti-1);            // safety: target must stay above current
-    ti=Math.min(Math.max(ti,fi+1),39);
-    p.from=idxToLv(fi); p.to=idxToLv(ti);
+    ti=Math.min(Math.max(ti,fi+1),last);
+    p.from=val(fi); p.to=val(ti);
   } else {
     const max=info.maxLevel;
     let f = typeof p.from==='number' ? p.from : 1;
@@ -75,8 +79,10 @@ function updatePlan(id,key,val){
 }
 // Furnace FC1..FC10 badge: images/furnace/fc-{n}.webp (only Furnace has this artwork).
 function fcIconHtml(building,level){
-  if(building!=='Furnace'||typeof level!=='string'||!/^FC(?:[1-9]|10)$/.test(level))return '';
-  return `<img class="fc-ic" src="images/furnace/fc-${level.slice(2)}.webp" alt="${level}" title="${level}">`;
+  if(building!=='Furnace'||typeof level!=='string')return '';
+  const m=level.match(/^FC(\d+)(?:-\d+)?$/);
+  if(!m||+m[1]<1||+m[1]>10)return '';
+  return `<img class="fc-ic" src="images/furnace/fc-${m[1]}.webp" alt="${level}" title="${level}">`;
 }
 function renderBuildingPlans(){
   const el=document.getElementById('buildingPlans');
