@@ -105,8 +105,10 @@ function renderBuildingPlans(){
 function calcBuilding(){
   let totals={meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,levels:0};
   let stepSeconds=[];
+  const planCosts=[];
   buildingPlans.forEach(p=>{
     const cost=WOS_DB.buildings.costBetween(p.building,p.from,p.to);
+    planCosts.push({plan:p,cost});
     totals.meat+=cost.meat; totals.wood+=cost.wood; totals.coal+=cost.coal; totals.iron+=cost.iron;
     totals.fc+=cost.fc; totals.rfc+=cost.rfc; totals.seconds+=cost.seconds;
     stepSeconds=stepSeconds.concat(cost.stepSeconds);
@@ -122,13 +124,14 @@ function calcBuilding(){
   // and eat into the time of the long ones.
   const agnesSec=valNum('agnesBonus')*3600;
   const doubleTime=document.getElementById('doubleTime')?.checked;
-  let totalSeconds=0;
-  stepSeconds.forEach(sec=>{
+  const adjustSec=sec=>{
     let t=sec/(1+bonus/100);
     t=Math.max(0,t-agnesSec);
     if(doubleTime) t*=0.8;
-    totalSeconds+=t;
-  });
+    return t;
+  };
+  let totalSeconds=0;
+  stepSeconds.forEach(sec=>{ totalSeconds+=adjustSec(sec); });
   const totalHours=totalSeconds/3600;
 
   window._buildingTotals={...totals};
@@ -142,6 +145,49 @@ function calcBuilding(){
   cards+=statCard(totalSeconds>0&&totalSeconds<60?secondsText(totalSeconds):formatDuration(totalSeconds),`Total Time · ${bonus.toFixed(1)}% speed bonus`);
   cards+=statCard(fmt(totals.levels),'Upgrade Steps');
   document.getElementById('buildingResult').innerHTML=cards;
+  renderBuildingSteps(planCosts,adjustSec);
+}
+
+// ---------- PER-STEP BREAKDOWN ----------
+// Every upgrade is a separate construction (e.g. Furnace FC7 -> FC8 = FC7-1, FC7-2, FC7-3, FC7-4, FC8),
+// so list each one with its own cost and time (time already includes speed bonuses / Agnes / Double Time).
+function fmtShort(n){
+  n=Math.round(Number(n)||0);
+  if(!n) return '-';
+  if(n>=1e6){ const v=n/1e6; return (v>=100?v.toFixed(0):v.toFixed(v%1?1:0))+'M'; }
+  if(n>=1e4){ const v=n/1e3; return (v>=100?v.toFixed(0):v.toFixed(v%1?1:0))+'K'; }
+  return n.toLocaleString('en-US');
+}
+function stepTimeText(sec){
+  return sec>0&&sec<60 ? secondsText(sec) : formatDuration(sec);
+}
+function renderBuildingSteps(planCosts,adjustSec){
+  const el=document.getElementById('buildingSteps');
+  if(!el) return;
+  const cols=[['meat','Meat','meat'],['wood','Wood','wood'],['coal','Coal','coal'],['iron','Iron','iron'],['fc','Fire Crystal','fire-crystal'],['rfc','Refined FC','refined-fire-crystal']];
+  const blocks=planCosts.filter(x=>x.cost.steps.length).map(({plan,cost})=>{
+    // hide resource columns that are 0 for every step of this plan
+    const used=cols.filter(c=>cost.steps.some(r=>r[c[0]]>0));
+    let cum=0;
+    const rows=cost.steps.map((r,i)=>{
+      const t=adjustSec(r.seconds); cum+=t;
+      return `<tr>
+        <td class="st-n">${i+1}</td>
+        <td class="st-name">${r.label}</td>
+        ${used.map(c=>`<td title="${fmt(r[c[0]])}">${fmtShort(r[c[0]])}</td>`).join('')}
+        <td class="st-time" title="Base time: ${formatDuration(r.seconds)}">${stepTimeText(t)}</td>
+        <td class="st-cum">${stepTimeText(cum)}</td>
+      </tr>`;
+    }).join('');
+    const tot=k=>cost.steps.reduce((a,r)=>a+r[k],0);
+    const head=`<tr><th>#</th><th>Step</th>${used.map(c=>`<th><img class="res-ic" src="images/resources/${c[2]}.webp" alt="${c[1]}" title="${c[1]}"></th>`).join('')}<th>Time</th><th>Total Time</th></tr>`;
+    const foot=`<tr class="st-total"><td></td><td>Total</td>${used.map(c=>`<td title="${fmt(tot(c[0]))}">${fmtShort(tot(c[0]))}</td>`).join('')}<td>${stepTimeText(cum)}</td><td></td></tr>`;
+    return `<div class="steps-block">
+      <div class="steps-title">${fcIconHtml(plan.building,plan.from)}<b>${plan.building}</b> · ${plan.from==null?'':(typeof plan.from==='string'?plan.from:'Lv. '+plan.from)} → ${typeof plan.to==='string'?plan.to:'Lv. '+plan.to} <small>(${cost.steps.length} step${cost.steps.length>1?'s':''})</small>${fcIconHtml(plan.building,plan.to)}</div>
+      <div class="table-scroll"><table class="steps-table"><thead>${head}</thead><tbody>${rows}</tbody><tfoot>${foot}</tfoot></table></div>
+    </div>`;
+  }).join('');
+  el.innerHTML=blocks||'<div class="empty-plan">Choose a Current Level and Target Level to see each upgrade step.</div>';
 }
 function initBuilding(){
   if(!buildingPlans.length) addBuildingPlan();
