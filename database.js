@@ -387,7 +387,16 @@ const WOS_DB = {
     const baseSteps = def.base.map(baseRow); // 30 (or fewer, e.g. Barricade) entries
     const fcSteps = def.fc ? chunkFc(def.fc, name === 'War Academy') : Array.from({length:10}, () => ({meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0}));
     const steps = baseSteps.concat(fcSteps); // index 0..29 = level1..30 (or fewer), 30..39 = FC1..FC10
-    _stepsCache[name] = { steps, maxLevel: def.maxLevel || 30, hasFc: !!def.fc };
+    // Flat ladder of every selectable level, in order: Lv.1..30, then each FC sub-step
+    // (30-1..30-4, FC1, FC1-1..FC1-4, FC2, ... FC10). ladder[k].row = cost of the upgrade INTO that level.
+    const ladder = baseSteps.map((s, i) => ({ key: String(i + 1), text: 'Lv. ' + (i + 1), whole: true, row: s, base: true }));
+    if (def.fc) fcSteps.forEach(t => (t.subRows || []).forEach(r => {
+      const m = r.label.match(/^FC(\d+)(?:-(\d+))?$/);
+      const whole = !!m && m[2] === undefined;
+      const text = m ? 'FC ' + m[1] + (m[2] ? '-' + m[2] : '') : 'Lv. ' + r.label;
+      ladder.push({ key: r.label, text, whole, row: r, base: false });
+    }));
+    _stepsCache[name] = { steps, ladder, maxLevel: def.maxLevel || 30, hasFc: !!def.fc };
     return _stepsCache[name];
   }
 
@@ -395,38 +404,32 @@ const WOS_DB = {
     names: ['Furnace','Infantry Camp','Lancer Camp','Marksman Camp','Embassy','Command Center',
       'Research Center','War Academy','Infirmary','Storehouse',"Hunter's Hut",'Sawmill','Coal Mine','Iron Mine','Barricade'],
     getSteps: getSteps,
-    // Convert a level identifier (number 1..30/10, or 'FC1'..'FC10') to a 0-based step index.
-    levelToIndex: function(lvl){
-      if (typeof lvl === 'string'){
-        const m = lvl.match(/^FC(\d+)$/i);
-        if (m) return 29 + parseInt(m[1], 10);
-        return NaN;
-      }
-      return lvl - 1;
+    // Position of a level identifier (number 1..30, 'FC3', 'FC3-2', '30-1') in the building's ladder.
+    indexOf: function(name, lvl){
+      const data = getSteps(name);
+      if (!data) return NaN;
+      const k = String(lvl);
+      const i = data.ladder.findIndex(x => x.key === k);
+      return i < 0 ? NaN : i;
     },
-    // Sum resource/time cost for a building between two level identifiers.
+    // Sum resource/time cost for a building between two level identifiers (sub-steps included).
     costBetween: function(name, from, to){
       const data = getSteps(name);
       const zero = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,stepSeconds:[],steps:[]};
       if (!data) return zero;
-      const fi = this.levelToIndex(from), ti = this.levelToIndex(to);
+      const fi = this.indexOf(name, from), ti = this.indexOf(name, to);
       if (isNaN(fi) || isNaN(ti) || ti <= fi) return zero;
       let out = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,stepSeconds:[],steps:[]};
-      // steps[k] holds the cost of the upgrade THAT PRODUCES level/tier (k+1),
-      // so reaching every level from (from+1) through (to) means summing
-      // indices (fi+1) .. ti inclusive.
-      for (let i = Math.max(0, fi+1); i <= ti; i++){
-        const s = data.steps[i];
-        if (!s) continue;
+      // ladder[k].row is the cost of the upgrade that produces that level, so reaching every
+      // level from (from+1) through (to) means summing indices (fi+1) .. ti inclusive.
+      for (let i = fi + 1; i <= ti; i++){
+        const e = data.ladder[i], s = e.row;
+        // Placeholder rows (e.g. War Academy Lv1-30, which has no pre-FC cost) are not real upgrades.
+        if (!(s.seconds > 0 || s.meat || s.wood || s.coal || s.iron || s.fc || s.rfc)) continue;
         out.meat += s.meat; out.wood += s.wood; out.coal += s.coal; out.iron += s.iron;
         out.fc += s.fc; out.rfc += s.rfc; out.seconds += s.seconds;
-        // Placeholder rows (e.g. War Academy Lv1-30, which has no pre-FC cost) are not
-        // real upgrades, so they must not count as steps or receive per-step reductions.
-        if (s.subRows) s.subRows.forEach(r => { out.stepSeconds.push(r.seconds); out.steps.push(r); });
-        else if (s.seconds > 0 || s.meat || s.wood || s.coal || s.iron || s.fc || s.rfc){
-          out.stepSeconds.push(s.seconds);
-          out.steps.push({label:'Lv. ' + (i+1), meat:s.meat, wood:s.wood, coal:s.coal, iron:s.iron, fc:s.fc, rfc:s.rfc, seconds:s.seconds});
-        }
+        out.stepSeconds.push(s.seconds);
+        out.steps.push({label: e.base ? 'Lv. ' + (i + 1) : e.key, meat:s.meat, wood:s.wood, coal:s.coal, iron:s.iron, fc:s.fc, rfc:s.rfc, seconds:s.seconds});
       }
       return out;
     }
