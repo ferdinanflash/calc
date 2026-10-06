@@ -131,19 +131,28 @@ const WOS_DB = {
   // trailing FC10) form the final tier.
   function chunkFc(flatRows, leadSingle){
     const rows = flatRows.map(fcRow);
-    const mk = (part) => {
+    const mk = (part, tierNo) => {
       const t = sumRows(part);
-      // Every row is a real upgrade of its own (e.g. 30-1, 30-2, 30-3, 30-4, FC1); keep their
-      // individual durations so per-step bonuses (Agnes flat reduction, step count) stay correct.
-      t.subSeconds = part.filter(r => r.seconds > 0 || r.meat || r.wood || r.coal || r.iron || r.fc || r.rfc).map(r => r.seconds);
+      // Every row is a real upgrade of its own (e.g. 30-1, 30-2, 30-3, 30-4, FC1); keep each one
+      // (with its own name + cost) so per-step bonuses (Agnes flat reduction, step count) and the
+      // Per-Step Breakdown table stay correct. Sub-steps are named after the PREVIOUS tier
+      // (FC7 -> FC8 = FC7-1, FC7-2, FC7-3, FC7-4, FC8); the last row of a tier is the tier itself.
+      const prev = tierNo === 1 ? '30' : 'FC' + (tierNo - 1);
+      t.subRows = [];
+      part.forEach((r, j) => {
+        if (!(r.seconds > 0 || r.meat || r.wood || r.coal || r.iron || r.fc || r.rfc)) return;
+        const label = (j === part.length - 1) ? 'FC' + tierNo : prev + '-' + (j + 1);
+        t.subRows.push({label, meat:r.meat, wood:r.wood, coal:r.coal, iron:r.iron, fc:r.fc, rfc:r.rfc, seconds:r.seconds});
+      });
+      t.subSeconds = t.subRows.map(r => r.seconds);
       return t;
     };
     const tiers = [];
     let i = 0;
     // War Academy: FC1 is a single unlock row, then FC2..FC10 are 5 rows each (4 sub-steps + the tier).
-    if (leadSingle){ tiers.push(mk(rows.slice(0,1))); i = 1; }
+    if (leadSingle){ tiers.push(mk(rows.slice(0,1), 1)); i = 1; }
     for (; i < rows.length; i += 5){
-      tiers.push(mk(rows.slice(i, i+5)));
+      tiers.push(mk(rows.slice(i, i+5), tiers.length + 1));
     }
     while (tiers.length < 10) tiers.push({meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,subSeconds:[]});
     return tiers.slice(0,10);
@@ -398,11 +407,11 @@ const WOS_DB = {
     // Sum resource/time cost for a building between two level identifiers.
     costBetween: function(name, from, to){
       const data = getSteps(name);
-      const zero = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,stepSeconds:[]};
+      const zero = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,stepSeconds:[],steps:[]};
       if (!data) return zero;
       const fi = this.levelToIndex(from), ti = this.levelToIndex(to);
       if (isNaN(fi) || isNaN(ti) || ti <= fi) return zero;
-      let out = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,stepSeconds:[]};
+      let out = {meat:0,wood:0,coal:0,iron:0,fc:0,rfc:0,seconds:0,stepSeconds:[],steps:[]};
       // steps[k] holds the cost of the upgrade THAT PRODUCES level/tier (k+1),
       // so reaching every level from (from+1) through (to) means summing
       // indices (fi+1) .. ti inclusive.
@@ -413,8 +422,11 @@ const WOS_DB = {
         out.fc += s.fc; out.rfc += s.rfc; out.seconds += s.seconds;
         // Placeholder rows (e.g. War Academy Lv1-30, which has no pre-FC cost) are not
         // real upgrades, so they must not count as steps or receive per-step reductions.
-        if (s.subSeconds) s.subSeconds.forEach(x => out.stepSeconds.push(x));
-        else if (s.seconds > 0 || s.meat || s.wood || s.coal || s.iron || s.fc || s.rfc) out.stepSeconds.push(s.seconds);
+        if (s.subRows) s.subRows.forEach(r => { out.stepSeconds.push(r.seconds); out.steps.push(r); });
+        else if (s.seconds > 0 || s.meat || s.wood || s.coal || s.iron || s.fc || s.rfc){
+          out.stepSeconds.push(s.seconds);
+          out.steps.push({label:'Lv. ' + (i+1), meat:s.meat, wood:s.wood, coal:s.coal, iron:s.iron, fc:s.fc, rfc:s.rfc, seconds:s.seconds});
+        }
       }
       return out;
     }
