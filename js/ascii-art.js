@@ -21,7 +21,7 @@ const ASCII_CATEGORIES = [
 
 
 // Emoji-square helpers for flags and pixel banners ("　" = full-width blank, same width as an emoji)
-const SQ = {R:'🟥',W:'⬜',B:'🟦',Y:'🟨',G:'🟩',K:'⬛',O:'🟧',P:'🟪'};
+const SQ = {R:'🟥',W:'⬜',B:'🟦',Y:'🟨',G:'🟩',K:'⬛',O:'🟧',P:'🟪',N:'🟫',S:'🩷',F:'🌸',D:'😈'};
 function sqRows(rows){ return rows.map(r => [...r].map(c => SQ[c] || '　').join('')).join('\n'); }
 function stripesH(pattern, w, h){            // horizontal stripes, each h rows tall
   const out = [];
@@ -241,6 +241,184 @@ const ASCII_DATA = {
     ['Big love','♥ ♡ ♥ ♡ ♥']
   ],
   pixel:[
+    ['Notebook cat',`◾　　　　　　　　　　　　　◾◾
+◾◾◾　　　　　　　　　　◾📒◾
+◾📒◾　　　　　　　　　◾📒📒◾
+◾📒📒◾　　　　　　　◾📒📒📒◾
+◾📒📒◾◾　　　　　◾◾📒📒📒◾
+◾◾📒📒◾◾◾◾◾◾◾📒📒📒◾　
+　◾📒📒📒📒📒📒📒📒📒📒📒◾　　
+　◾📒📒📒📒📒📒📒📒📒📒📒◾　　
+　◾◾📒📒📒📒📒📒📒📒📒📒◾　　
+　◾📒📒📒📒📒📒📒📒📒📒📒📒◾　
+ ◾📒⚪◾📒📒📒📒📒📒⚪◾📒◾　
+◾◾📒◾◾📒📒📒📒📒📒◾◾📒◾◾
+◾📒📕📒📒📒📒◾◾📒📒📒📒📕📒◾
+◾◾📕📕📒📒📒📒📒📒📒📒📕📕◾◾
+　◾◾📕📒📒📒◾◾📒📒📒📕◾◾　
+　◾📒📒📒📒📒📒📒📒📒📒📒📒◾　
+◾◾📒📒📒📒📒📒📒📒📒📒📒📒◾◾
+◾📒📒📒📒📒📒📒📒📒📒📒📒📒📒◾
+◾📒📒◾📒📒📒📒📒📒📒📒◾📒📒◾
+◾📒◾📒📒📒📒📒📒📒📒📒📒◾📒◾`],
+    ['Red heart', sqRows([
+      '.RRR...RRR.',
+      'RWRRR.RRRRR',
+      'RRRRRRRRRRR',
+      'RRRRRRRRRRR',
+      '.RRRRRRRRR.',
+      '..RRRRRRR..',
+      '...RRRRR...',
+      '....RRR....',
+      '.....R.....'
+    ])],
+    ['Whale', sqRows([
+      '....W.W....',
+      '.....W.....',
+      '..BBBBBB..B',
+      '.BBBBBBBBBB',
+      'BBKBBBBBBB.',
+      'BBBBBBBBB..',
+      'BWWWWWWBB..',
+      '.BBBBBBB...'
+    ])],
+    ['Beer mug', sqRows([
+      'WWWWWWWWW..',
+      'WWWWWWWWW..',
+      'NOOOOOOONNN',
+      'NOOOOOOON.N',
+      'NOOOOOOON.N',
+      'NOOOOOOONNN',
+      'NOOOOOOON..',
+      'NNNNNNNNN..'
+    ])],
+    ['Hot coffee', sqRows([
+      '..W...W....',
+      '...W...W...',
+      'WWWWWWWWW..',
+      'WNNNNNNNWWW',
+      'WNNNNNNNW.W',
+      'WNNNNNNNWWW',
+      'WWWWWWWWW..',
+      '..WWWWW....'
+    ])],
+    ['Thumbs up', sqRows([
+      '....YY.....',
+      '....YY.....',
+      '...YYY.....',
+      'BBYYYYYYYY.',
+      'BBYYYYYYYYY',
+      'BBYYYYYYYYY',
+      'BBYYYYYYYY.',
+      'BBYYYYYYY..'
+    ])],
+    ['Pizza slice', sqRows([
+      'NNNNNNNNNNN',
+      '.YYRYYYYRY.',
+      '..YYYYRYY..',
+      '...YRYYY...',
+      '....YYR....',
+      '.....Y.....'
+    ])],
+    ['Devil cat', sqRows([
+      'D.........D',
+      'DD.......DD',
+      'DDDDDDDDDDD',
+      'DDWKDDDWKDD',
+      'DDDDDDDDDDD',
+      'DDDDDKDDDDD',
+      '.DDDDDDDDD.',
+      '..DDDDDDD..'
+    ])],
+    ['Frog', sqRows([
+      '..WW...WW..',
+      '.WKWGGGWKW.',
+      'GGGGGGGGGGG',
+      'GGGGGGGGGGG',
+      'GGGKKKKKGGG',
+      '.GGGGGGGGG.',
+      '..GG...GG..'
+    ])],
+    ['Bear', sqRows([
+      '.NN.....NN.',
+      'NNNNNNNNNNN',
+      'NNKNNNNNKNN',
+      'NNNNOOONNNN',
+      'NNNNOKONNNN',
+      'NNNNOOONNNN',
+      '.NNNNNNNNN.',
+      '..NNNNNNN..'
+    ])],
+    ['Panda', sqRows([
+      'KK.......KK',
+      '.KWWWWWWWK.',
+      'WWWWWWWWWWW',
+      'WKKWWWWWKKW',
+      'WWWWWKWWWWW',
+      '.WWWWWWWWW.',
+      '..WWWWWWW..'
+    ])],
+    ['Bunny', sqRows([
+      '.WW.....WW.',
+      '.WS.....SW.',
+      '.WS.....SW.',
+      'WWWWWWWWWWW',
+      'WWKWWWWWKWW',
+      'WWWWWSWWWWW',
+      '.WWWWWWWWW.',
+      '..WWWWWWW..'
+    ])],
+    ['Duck', sqRows([
+      '...YYYY....',
+      '..YYKYYOO..',
+      '..YYYYYOO..',
+      '...YYYY....',
+      '..YYYYYYYY.',
+      '.YYYYYYYYY.',
+      '..YYYYYYY..',
+      '...OO.OO...'
+    ])],
+    ['Blossom', sqRows([
+      '....FFF....',
+      '..F.FFF.F..',
+      '.FFFFYFFFF.',
+      '..F.FFF.F..',
+      '....FFF....',
+      '.....G.....',
+      '...GGG.....'
+    ])],
+    ['Skull', sqRows([
+      '..WWWWWWW..',
+      '.WWWWWWWWW.',
+      'WWKKWWWKKWW',
+      'WWKKWWWKKWW',
+      'WWWWWKWWWWW',
+      '.WWWWWWWWW.',
+      '..WKWKWKW..',
+      '..WWWWWWW..'
+    ])],
+    ['Star', sqRows([
+      '.....Y.....',
+      '.....Y.....',
+      'YYYYYYYYYYY',
+      '.YYYYYYYYY.',
+      '..YYYYYYY..',
+      '..YYY.YYY..',
+      '.YYY...YYY.',
+      'YY.......YY'
+    ])],
+    ['Snowman', sqRows([
+      '....RRR....',
+      '...RRRRR...',
+      '..WWWWWWW..',
+      '..WKWWWKW..',
+      '..WWWOWWW..',
+      '..WWWWWWW..',
+      '.WWWWKWWWW.',
+      '.WWWWKWWWW.',
+      '.WWWWWWWWW.',
+      '..WWWWWWW..'
+    ])],
     ['Heart',` ██  ██
 ████████
 ████████
@@ -367,8 +545,9 @@ function renderAsciiArt(){
   box.innerHTML = items.map(a => {
     const multi = a.art.includes('\n');
     const emoji = /\p{Extended_Pictographic}/u.test(a.art);
+    const wide = multi && Math.max(...a.art.split('\n').map(l => [...l].length)) > 13;
     const body = multi
-      ? `<pre class="ascii-pre${emoji?' emoji':''}">${escapeAscii(a.art)}</pre>`
+      ? `<pre class="ascii-pre${emoji?' emoji':''}${wide?' wide':''}">${escapeAscii(a.art)}</pre>`
       : `<span class="ascii-one${emoji?' emoji':''}">${escapeAscii(a.art)}</span>`;
     return `<div class="ascii-card">
       ${a.custom ? '<span class="ascii-badge">COMMUNITY</span>' : ''}
