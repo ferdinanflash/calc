@@ -19,6 +19,24 @@ const ASCII_CATEGORIES = [
   {id:'general',  label:'General'}
 ];
 
+
+// Emoji-square helpers for flags and pixel banners ("　" = full-width blank, same width as an emoji)
+const SQ = {R:'🟥',W:'⬜',B:'🟦',Y:'🟨',G:'🟩',K:'⬛',O:'🟧',P:'🟪'};
+function sqRows(rows){ return rows.map(r => [...r].map(c => SQ[c] || '　').join('')).join('\n'); }
+function stripesH(pattern, w, h){            // horizontal stripes, each h rows tall
+  const out = [];
+  for(const c of pattern) for(let i=0;i<h;i++) out.push(c.repeat(w));
+  return sqRows(out);
+}
+function stripesV(pattern, h, wEach){        // vertical stripes
+  const row = [...pattern].map(c => c.repeat(wEach)).join('');
+  return sqRows(Array(h).fill(row));
+}
+const BRAZIL_FLAG = sqRows([
+  'GGGGGGGGGGG','GGGGGYGGGGG','GGGYYBYYGGG','GYYBBBBBYYG','GGGYYBYYGGG','GGGGGYGGGGG','GGGGGGGGGGG'
+]);
+const JAPAN_FLAG = sqRows(['WWWWWWWWW','WWWRRRWWW','WWWRRRWWW','WWWRRRWWW','WWWWWWWWW']);
+
 const ASCII_DATA = {
   borders:[
     ['Diamond divider','◈━━━━◈━━━━◈'],
@@ -145,6 +163,28 @@ const ASCII_DATA = {
     ['Infinity','∞ ✧ ∞']
   ],
   banners:[
+    ['Alliance banner',`▛▀▀▀▀▀▀▀▀▀▀▀▀▜
+    ALLIANCE
+▙▄▄▄▄▄▄▄▄▄▄▄▄▟`],
+    ['Victory banner',`◢◤◢◤◢◤◢◤◢◤◢◤
+   V I C T O R Y
+◥◣◥◣◥◣◥◣◥◣◥◣`],
+    ['Indonesia Flag', stripesH('RW',9,2)+'\nMERDEKA!'],
+    ['Romania Flag', stripesV('BYR',5,3)+'\nROMANIA'],
+    ['Brazil Flag', BRAZIL_FLAG+'\nBRASIL'],
+    ['France Flag', stripesV('BWR',5,3)+'\nFRANCE'],
+    ['Italy Flag', stripesV('GWR',5,3)+'\nITALIA'],
+    ['Germany Flag', stripesH('KRY',9,2)+'\nDEUTSCHLAND'],
+    ['Netherlands Flag', stripesH('RWB',9,2)+'\nNEDERLAND'],
+    ['Russia Flag', stripesH('WBR',9,2)+'\nRUSSIA'],
+    ['Poland Flag', stripesH('WR',9,2)+'\nPOLSKA'],
+    ['Ukraine Flag', stripesH('BY',9,2)+'\nUKRAINE'],
+    ['Thailand Flag', stripesH('RWBBWR',9,1)+'\nTHAILAND'],
+    ['Spain Flag', stripesH('RYYR',9,1)+'\nESPAÑA'],
+    ['Hungary Flag', stripesH('RWG',9,2)+'\nMAGYARORSZÁG'],
+    ['Ireland Flag', stripesV('GWO',5,3)+'\nÉIRE'],
+    ['Belgium Flag', stripesV('KYR',5,3)+'\nBELGIË'],
+    ['Japan Flag', JAPAN_FLAG+'\nNIHON'],
     ['Welcome',String.raw`+--------------------+
 |   WELCOME TO THE   |
 |      ALLIANCE      |
@@ -168,6 +208,25 @@ const ASCII_DATA = {
 ⚔━━━━━━━━━━━━━⚔`]
   ],
   love:[
+    ['Flower bouquet',`🌺🌷🌼🌸🌻
+🌹✨🌷✨🌺
+　🌼🌸🌹🌼
+　　＼｜／
+　　ʕ•ᴥ•ʔ
+　　 ♡`],
+    ['LOVE',`　🌸🌸　🌸🌸
+🌸💗💗🌸💗💗🌸
+🌸💗💗💗💗💗🌸
+　🌸💗💗💗🌸
+　　🌸💗🌸
+　　　🌸`],
+    ['Cuddle',` ∩────────∩
+ ||(•ᴗ•)(•ᴗ•)||
+ ||________||
+  warm together`],
+    ['Love you hard','(•̀ᴗ•́)و ̑̑ 💕 LOVE YOU!'],
+    ['Heart eyes','(♡ᴗ♡)'],
+    ['Flying hearts','💕 ・゜゜・。。・゜゜💗'],
     ['Heart','♡'],
     ['Hearts','❤ ❥ ❣'],
     ['Sparkle heart','♡･ﾟ: *✧･ﾟ:*'],
@@ -264,9 +323,9 @@ function saveAsciiCustom(list){
 function buildAsciiList(){
   asciiAll = [];
   Object.keys(ASCII_DATA).forEach(cat => {
-    ASCII_DATA[cat].forEach(([name, art]) => asciiAll.push({cat, name, art, custom:false}));
+    ASCII_DATA[cat].forEach(([name, art, by]) => asciiAll.push({cat, name, art, by, custom:false}));
   });
-  loadAsciiCustom().forEach((c, i) => asciiAll.push({cat:c.cat, name:c.name, art:c.art, custom:true, ci:i}));
+  loadAsciiCustom().forEach((c, i) => asciiAll.push({cat:c.cat, name:c.name, art:c.art, by:c.by, custom:true, ci:i}));
 }
 
 function initAsciiArt(){
@@ -305,14 +364,23 @@ function renderAsciiArt(){
     box.innerHTML = '<div class="ascii-empty">No design found.</div>';
     return;
   }
-  box.innerHTML = items.map(a => `<div class="ascii-card">
-      <div class="ascii-art${a.art.includes('\n')?' multi':''}">${escapeAscii(a.art)}</div>
+  box.innerHTML = items.map(a => {
+    const multi = a.art.includes('\n');
+    const emoji = /\p{Extended_Pictographic}/u.test(a.art);
+    const body = multi
+      ? `<pre class="ascii-pre${emoji?' emoji':''}">${escapeAscii(a.art)}</pre>`
+      : `<span class="ascii-one${emoji?' emoji':''}">${escapeAscii(a.art)}</span>`;
+    return `<div class="ascii-card">
+      ${a.custom ? '<span class="ascii-badge">COMMUNITY</span>' : ''}
+      <div class="ascii-art">${body}</div>
       <div class="ascii-name">${escapeAscii(a.name)}</div>
+      ${a.by ? `<div class="ascii-by">by ${escapeAscii(a.by)}</div>` : ''}
       <div class="ascii-actions">
         <button type="button" class="ascii-copy" onclick="copyAscii(${a.i})"><i class="bi bi-copy"></i> COPY</button>
         ${a.custom ? `<button type="button" class="ascii-del" title="Delete" onclick="deleteAsciiCustom(${a.ci})"><i class="bi bi-trash"></i></button>` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function escapeAscii(s){
@@ -346,13 +414,15 @@ function toggleAsciiForm(){
 function addAsciiCustom(){
   const name = document.getElementById('asciiNewName').value.trim();
   const cat  = document.getElementById('asciiNewCat').value;
+  const by   = (document.getElementById('asciiNewBy')?.value || '').trim();
   const art  = document.getElementById('asciiNewArt').value.replace(/\s+$/,'');
   if(!name || !art){ showAsciiToast('Fill in the name and the design'); return; }
   const list = loadAsciiCustom();
-  list.push({name, cat, art});
+  list.push({name, cat, art, by});
   saveAsciiCustom(list);
   document.getElementById('asciiNewName').value = '';
   document.getElementById('asciiNewArt').value = '';
+  if(document.getElementById('asciiNewBy')) document.getElementById('asciiNewBy').value = '';
   document.getElementById('asciiForm').classList.remove('open');
   renderAsciiArt();
   showAsciiToast('Design added (saved in this browser)');
