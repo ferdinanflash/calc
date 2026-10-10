@@ -14,6 +14,7 @@ function openModal(id){
   if(id==='chiefGearModal') renderGearDB();
   if(id==='svsModal'){ loadSVS(); renderSVS(); }
   if(id==='rfcModal') initRFC();
+  if(id==='asciiModal') initAsciiArt();
 }
 function closeModal(id){
   const m=document.getElementById(id);
