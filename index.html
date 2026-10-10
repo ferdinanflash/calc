@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 <div class="wrap">
@@ -317,6 +317,7 @@
         <input id="asciiSearch" type="search" placeholder="Search a design..." oninput="renderAsciiArt()">
       </div>
       <div id="asciiChips" class="ascii-chips"></div>
+      <button type="button" class="ascii-add ascii-editor-btn" onclick="openModal('asciiEditorModal')"><i class="bi bi-brush"></i> Create with editor</button>
       <button type="button" class="ascii-add" onclick="toggleAsciiForm()"><i class="bi bi-plus-lg"></i> Add your design</button>
       <div id="asciiForm" class="ascii-form">
         <input id="asciiNewName" type="text" placeholder="Design name" maxlength="40">
@@ -327,6 +328,71 @@
       </div>
       <div id="asciiList" class="ascii-list"></div>
       <div id="asciiToast" class="ascii-toast" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- CHAT ART EDITOR MODAL -->
+  <div class="modal" id="asciiEditorModal" aria-hidden="true">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('asciiEditorModal')">×</button>
+      <div class="modal-title"><i class="bi bi-brush"></i> Chat Art Editor</div>
+      <div class="modal-sub">Paint on the grid or convert an image, then copy it for game chat or save it to the gallery.</div>
+
+      <div id="aeTools" class="ae-row">
+        <button type="button" class="ae-tool" data-tool="paint" onclick="aeSetTool('paint')"><i class="bi bi-pencil-fill"></i> Paint</button>
+        <button type="button" class="ae-tool" data-tool="erase" onclick="aeSetTool('erase')"><i class="bi bi-eraser-fill"></i> Erase</button>
+        <button type="button" class="ae-tool" data-tool="fill" onclick="aeSetTool('fill')"><i class="bi bi-paint-bucket"></i> Fill</button>
+        <button type="button" class="ae-tool" data-tool="pick" onclick="aeSetTool('pick')"><i class="bi bi-eyedropper"></i> Pick</button>
+        <button type="button" id="aeSym" class="ae-tool" onclick="aeToggleSym()"><i class="bi bi-symmetry-vertical"></i> Symmetry</button>
+      </div>
+
+      <div id="aePalette" class="ae-palette"></div>
+      <div class="ae-row">
+        <input id="aeCustom" type="text" class="ae-input ae-emoji-input" placeholder="Add emoji" maxlength="12" onkeydown="if(event.key==='Enter')aeAddCustom()">
+        <button type="button" class="ae-tool" onclick="aeAddCustom()"><i class="bi bi-plus-lg"></i> Add</button>
+        <label class="ae-size">W <input id="aeCols" type="number" min="4" max="24" value="12" onchange="aeResize()"></label>
+        <label class="ae-size">H <input id="aeRows" type="number" min="4" max="24" value="12" onchange="aeResize()"></label>
+      </div>
+
+      <div id="aeGridWrap" class="ae-grid-wrap"><div id="aeGrid" class="ae-grid"></div></div>
+
+      <div class="ae-row">
+        <button type="button" class="ae-tool" onclick="aeUndo()"><i class="bi bi-arrow-counterclockwise"></i> Undo</button>
+        <button type="button" class="ae-tool" onclick="aeFlipH()"><i class="bi bi-arrow-left-right"></i> Flip</button>
+        <button type="button" class="ae-tool" onclick="aeFlipV()"><i class="bi bi-arrow-down-up"></i> Flip</button>
+        <button type="button" class="ae-tool" onclick="aeClear()"><i class="bi bi-trash"></i> Clear</button>
+      </div>
+
+      <div class="ae-box">
+        <div class="ae-box-title">Convert an image</div>
+        <div class="ae-row">
+          <label class="ae-file"><i class="bi bi-image"></i> Choose image<input id="aeFile" type="file" accept="image/*"></label>
+          <label class="ae-check"><input id="aeWhiteBlank" type="checkbox" checked> Treat white as blank</label>
+        </div>
+        <small class="ae-hint">The image is shrunk to the grid size and matched to the nearest emoji colour. Small, simple pictures work best.</small>
+      </div>
+
+      <div class="ae-box">
+        <div class="ae-box-title">Result <span id="aeCount" class="ae-count">0 / 512</span></div>
+        <textarea id="aeOut" class="ae-out" rows="6" readonly></textarea>
+        <div class="ae-row">
+          <label class="ae-check"><input id="aeTrim" type="checkbox" checked onchange="aeUpdateOutput()"> Trim empty edges (saves characters)</label>
+        </div>
+        <button type="button" class="ascii-add" onclick="aeCopy()"><i class="bi bi-copy"></i> Copy for game chat</button>
+      </div>
+
+      <div class="ae-box">
+        <div class="ae-box-title">Save to gallery</div>
+        <div class="ae-row">
+          <input id="aeName" type="text" class="ae-input" placeholder="Design name" maxlength="40">
+          <select id="aeCat" class="ae-input"></select>
+        </div>
+        <div class="ae-row">
+          <input id="aeBy" type="text" class="ae-input" placeholder="Your name (optional)" maxlength="30">
+          <button type="button" class="ae-tool ae-save" onclick="aeSave()"><i class="bi bi-bookmark-plus"></i> Save</button>
+        </div>
+      </div>
+      <div id="aeToast" class="ascii-toast" role="status" aria-live="polite"></div>
     </div>
   </div>
 
@@ -345,6 +411,7 @@
 <script defer src="js/svs.js?v=8"></script>
 <script defer src="js/rfc.js?v=8"></script>
 <script defer src="js/ascii-art.js?v=5"></script>
+<script defer src="js/ascii-editor.js?v=1"></script>
 <script defer src="js/main.js?v=8"></script>
 </body>
 </html>
