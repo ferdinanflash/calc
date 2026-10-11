@@ -358,3 +358,6 @@ footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--border);font-
 .ae-hint{display:block;color:var(--muted);font-size:.76rem}
 .ae-out{width:100%;box-sizing:border-box;padding:10px;border-radius:10px;border:1px solid var(--border);background:rgba(127,127,127,.1);color:inherit;resize:vertical;font-size:.8rem;line-height:1.15;margin-bottom:8px}
 .ae-save{flex:0 0 auto}
+
+.ascii-badge.mine{color:#94a3b8;border-color:rgba(148,163,184,.5)}
+.ascii-share-row{margin:2px 0}

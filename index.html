@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 <div class="wrap">
@@ -324,6 +324,7 @@
         <select id="asciiNewCat"></select>
         <input id="asciiNewBy" type="text" placeholder="Your name (optional)" maxlength="30">
         <textarea id="asciiNewArt" rows="4" placeholder="Paste or type your design here"></textarea>
+        <label class="ae-check ascii-share-row"><input id="asciiShare" type="checkbox" checked> Share with everyone (reviewed first)</label>
         <button type="button" class="mini-btn" onclick="addAsciiCustom()">Save design</button>
       </div>
       <div id="asciiList" class="ascii-list"></div>
@@ -387,6 +388,7 @@
           <input id="aeName" type="text" class="ae-input" placeholder="Design name" maxlength="40">
           <select id="aeCat" class="ae-input"></select>
         </div>
+        <label class="ae-check ascii-share-row"><input id="aeShare" type="checkbox" checked> Share with everyone (reviewed first)</label>
         <div class="ae-row">
           <input id="aeBy" type="text" class="ae-input" placeholder="Your name (optional)" maxlength="30">
           <button type="button" class="ae-tool ae-save" onclick="aeSave()"><i class="bi bi-bookmark-plus"></i> Save</button>
@@ -410,8 +412,10 @@
 <script defer src="js/chief-gear.js?v=8"></script>
 <script defer src="js/svs.js?v=8"></script>
 <script defer src="js/rfc.js?v=8"></script>
-<script defer src="js/ascii-art.js?v=5"></script>
-<script defer src="js/ascii-editor.js?v=1"></script>
+<script defer src="js/ascii-config.js?v=1"></script>
+<script defer src="js/ascii-art.js?v=6"></script>
+<script defer src="js/ascii-share.js?v=1"></script>
+<script defer src="js/ascii-editor.js?v=2"></script>
 <script defer src="js/main.js?v=8"></script>
 </body>
 </html>
