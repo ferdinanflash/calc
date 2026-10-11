@@ -84,6 +84,27 @@ async function submitAsciiShared(entry){
   }
 }
 
+// Saves a new design. When sharing is on, the Google Sheet is the only home for it:
+// nothing is kept in this browser unless sending fails (then it is a local fallback).
+async function asciiSaveEntry(entry, wantShare){
+  const keepLocal = () => {
+    const list = loadAsciiCustom();
+    list.push(asciiNormalizeEntry(entry));
+    saveAsciiCustom(list);
+  };
+  if(wantShare){
+    const r = await submitAsciiShared(entry);
+    if(r.ok){
+      await loadAsciiShared(true);   // reload the shared list so the new design shows right away
+      return 'Shared! Your design is now live for everyone.';
+    }
+    keepLocal();
+    return `Saved on this device only: ${r.msg}`;
+  }
+  keepLocal();
+  return 'Saved in this browser only';
+}
+
 function asciiShareUI(){
   const on = asciiShareEnabled();
   document.querySelectorAll('.ascii-share-row').forEach(el => { el.style.display = on ? '' : 'none'; });

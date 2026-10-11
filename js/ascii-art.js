@@ -608,20 +608,16 @@ async function addAsciiCustom(){
   const by   = (document.getElementById('asciiNewBy')?.value || '').trim();
   const art  = document.getElementById('asciiNewArt').value.replace(/\s+$/,'');
   if(!name || !art){ showAsciiToast('Fill in the name and the design'); return; }
-  const list = loadAsciiCustom();
-  list.push({name, cat, art, by});
-  saveAsciiCustom(list);
   const shareBox = document.getElementById('asciiShare');
   const wantShare = !!(shareBox && shareBox.checked) && typeof asciiShareEnabled === 'function' && asciiShareEnabled();
   document.getElementById('asciiNewName').value = '';
   document.getElementById('asciiNewArt').value = '';
   if(document.getElementById('asciiNewBy')) document.getElementById('asciiNewBy').value = '';
   document.getElementById('asciiForm').classList.remove('open');
+  showAsciiToast(wantShare ? 'Sending...' : 'Saving...');
+  const msg = await asciiSaveEntry({name, cat, art, by}, wantShare);
   renderAsciiArt();
-  if(!wantShare){ showAsciiToast('Design added (saved in this browser)'); return; }
-  showAsciiToast('Sending...');
-  const r = await submitAsciiShared({name, cat, art, by});
-  showAsciiToast(r.ok ? 'Sent! It shows up for everyone after review.' : `Saved on this device only: ${r.msg}`);
+  showAsciiToast(msg);
 }
 
 function deleteAsciiCustom(ci){
