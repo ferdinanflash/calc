@@ -94,6 +94,7 @@ function initAsciiEditor(){
     window.addEventListener('resize', () => { if(aeEl('asciiEditorModal')?.classList.contains('open')) aeRenderGrid(); });
     aeEl('aeFile').addEventListener('change', aeImportImage);
   }
+  if(typeof asciiShareUI === 'function') asciiShareUI();
   aeRenderPalette();
   aeSyncTools();
   aeEl('aeCols').value = ae.cols;
@@ -304,17 +305,23 @@ async function aeCopy(){
   aeToast(ok ? 'Copied! Paste it in game chat.' : 'Copy failed, select the text manually');
 }
 
-function aeSave(){
+async function aeSave(){
   const text = aeEl('aeOut').value;
   const name = aeEl('aeName').value.trim();
   if(!text){ aeToast('Draw something first'); return; }
   if(!name){ aeToast('Give your design a name'); return; }
+  const entry = {name, cat: aeEl('aeCat').value, art: text, by: aeEl('aeBy').value.trim()};
   const list = loadAsciiCustom();
-  list.push({name, cat: aeEl('aeCat').value, art: text, by: aeEl('aeBy').value.trim()});
+  list.push(entry);
   saveAsciiCustom(list);
   aeEl('aeName').value = '';
   if(typeof renderAsciiArt === 'function') renderAsciiArt();
-  aeToast('Saved to the gallery (this browser only)');
+  const box = aeEl('aeShare');
+  const wantShare = !!(box && box.checked) && typeof asciiShareEnabled === 'function' && asciiShareEnabled();
+  if(!wantShare){ aeToast('Saved to the gallery (this browser only)'); return; }
+  aeToast('Sending...');
+  const r = await submitAsciiShared(entry);
+  aeToast(r.ok ? 'Sent! It shows up for everyone after review.' : `Saved on this device only: ${r.msg}`);
 }
 
 function aeToast(msg){

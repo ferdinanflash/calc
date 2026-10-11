@@ -489,6 +489,7 @@ const ASCII_DATA = {
 const ASCII_CUSTOM_KEY = 'wosAsciiCustom';
 let asciiCat = 'all';
 let asciiAll = [];
+let asciiShared = [];
 let asciiToastTimer = null;
 
 function loadAsciiCustom(){
@@ -503,7 +504,13 @@ function buildAsciiList(){
   Object.keys(ASCII_DATA).forEach(cat => {
     ASCII_DATA[cat].forEach(([name, art, by]) => asciiAll.push({cat, name, art, by, custom:false}));
   });
-  loadAsciiCustom().forEach((c, i) => asciiAll.push({cat:c.cat, name:c.name, art:c.art, by:c.by, custom:true, ci:i}));
+  asciiShared.forEach(d => asciiAll.push({cat:d.cat, name:d.name, art:d.art, by:d.by, custom:false, shared:true}));
+  // once a design you shared is approved it comes back as shared, so hide your local copy
+  const seen = new Set(asciiShared.map(d => d.name + '\u0000' + d.art));
+  loadAsciiCustom().forEach((c, i) => {
+    if(seen.has(c.name + '\u0000' + c.art)) return;
+    asciiAll.push({cat:c.cat, name:c.name, art:c.art, by:c.by, custom:true, ci:i});
+  });
 }
 
 function initAsciiArt(){
@@ -517,7 +524,12 @@ function initAsciiArt(){
     if(sel) sel.innerHTML = ASCII_CATEGORIES.filter(c => c.id!=='all')
       .map(c => `<option value="${c.id}">${c.label}</option>`).join('');
   }
+  asciiShareUI();
   renderAsciiArt();
+  if(!asciiSharedLoaded && typeof loadAsciiShared === 'function'){
+    asciiSharedLoaded = true;
+    loadAsciiShared().then(ok => { if(ok) renderAsciiArt(); });
+  }
 }
 
 function setAsciiCat(id){
@@ -550,7 +562,7 @@ function renderAsciiArt(){
       ? `<pre class="ascii-pre${emoji?' emoji':''}${wide?' wide':''}">${escapeAscii(a.art)}</pre>`
       : `<span class="ascii-one${emoji?' emoji':''}">${escapeAscii(a.art)}</span>`;
     return `<div class="ascii-card">
-      ${a.custom ? '<span class="ascii-badge">COMMUNITY</span>' : ''}
+      ${a.shared ? '<span class="ascii-badge">COMMUNITY</span>' : (a.custom ? '<span class="ascii-badge mine">MY DESIGN</span>' : '')}
       <div class="ascii-art">${body}</div>
       <div class="ascii-name">${escapeAscii(a.name)}</div>
       ${a.by ? `<div class="ascii-by">by ${escapeAscii(a.by)}</div>` : ''}
@@ -590,7 +602,7 @@ function toggleAsciiForm(){
   if(f) f.classList.toggle('open');
 }
 
-function addAsciiCustom(){
+async function addAsciiCustom(){
   const name = document.getElementById('asciiNewName').value.trim();
   const cat  = document.getElementById('asciiNewCat').value;
   const by   = (document.getElementById('asciiNewBy')?.value || '').trim();
@@ -599,12 +611,17 @@ function addAsciiCustom(){
   const list = loadAsciiCustom();
   list.push({name, cat, art, by});
   saveAsciiCustom(list);
+  const shareBox = document.getElementById('asciiShare');
+  const wantShare = !!(shareBox && shareBox.checked) && typeof asciiShareEnabled === 'function' && asciiShareEnabled();
   document.getElementById('asciiNewName').value = '';
   document.getElementById('asciiNewArt').value = '';
   if(document.getElementById('asciiNewBy')) document.getElementById('asciiNewBy').value = '';
   document.getElementById('asciiForm').classList.remove('open');
   renderAsciiArt();
-  showAsciiToast('Design added (saved in this browser)');
+  if(!wantShare){ showAsciiToast('Design added (saved in this browser)'); return; }
+  showAsciiToast('Sending...');
+  const r = await submitAsciiShared({name, cat, art, by});
+  showAsciiToast(r.ok ? 'Sent! It shows up for everyone after review.' : `Saved on this device only: ${r.msg}`);
 }
 
 function deleteAsciiCustom(ci){
