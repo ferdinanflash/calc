@@ -413,9 +413,33 @@
 <script defer src="js/svs.js?v=8"></script>
 <script defer src="js/rfc.js?v=8"></script>
 <script defer src="js/ascii-config.js?v=1"></script>
-<script defer src="js/ascii-art.js?v=7"></script>
+<script defer src="js/ascii-art.js?v=8"></script>
 <script defer src="js/ascii-share.js?v=2"></script>
 <script defer src="js/ascii-editor.js?v=3"></script>
 <script defer src="js/main.js?v=8"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js?v=14').then(function (reg) {
+      // Optional: prompt when new SW waiting
+      reg.addEventListener('updatefound', function () {
+        var nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener('statechange', function () {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+            // New version ready — reload to activate
+            // Uncomment next line for auto-reload:
+            // window.location.reload();
+            console.log('[SW] New version available. Refresh to update.');
+          }
+        });
+      });
+    }).catch(function (err) {
+      console.warn('[SW] register failed', err);
+    });
+  });
+}
+</script>
 </body>
 </html>
