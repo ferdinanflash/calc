@@ -286,12 +286,13 @@ const ASCII_DATA = {
     ['Fish emoji','🐟'],
     ['Dragon','🐉'],
     ['Simple fish','><(((º>  <º)))><'],
-    ['Ocean fish',`🐡    🐠             /`·.¸        🐡           🐠            
-        🐠            /¸...¸`:·.           🐡           
-          🐡    ¸.·´)¸  )`·.¸.·´)               
-  🐟          : o ):´; ). ) ¸  {      🐟              🐠
-        🐟      `·.¸)`·  ¸.·´\`·¸)         🐠     🐡
- 🐡     🐠          `\\´´\¸.·´            🐠`]
+    ['Ocean fish', '🐡    🐠             /`·.¸        🐡           🐠            \n' +
+        '        🐠            /¸...¸`:·.           🐡           \n' +
+        '          🐡    ¸.·´)¸  )`·.¸.·´)               \n' +
+        '  🐟          : o ):´; ). ) ¸  {      🐟              🐠\n' +
+        '        🐟      `·.¸)`·  ¸.·´\\`·¸)         🐠     🐡\n' +
+        ' 🐡     🐠          `\\\\´´\\¸.·´            🐠'],
+    ['Fish line','🐟 🐠 🐡 🐟 🐠 🐡']
   ],
   symbols:[
     ['Stars','★☆★☆★'],
@@ -369,7 +370,7 @@ const ASCII_DATA = {
     ['Foundry',`⚔━━━━━━━━━━━━━⚔
  FOUNDRY BATTLE
 ⚔━━━━━━━━━━━━━⚔`],
-    ['Simple welcome',`★ WELCOME ★`],
+    ['Simple welcome','★ WELCOME ★'],
     ['Join us','★ JOIN US ★'],
     ['Active only','★ ACTIVE ONLY ★'],
     ['Rally banner','⚔ RALLY ⚔'],
