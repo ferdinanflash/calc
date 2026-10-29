@@ -77,7 +77,27 @@ const ASCII_DATA = {
     ['Corner box','┌──────────────┐'],
     ['Bottom box','└──────────────┘'],
     ['Full box top','┏━━━━━━━━━━━━━━┓'],
-    ['Full box bot','┗━━━━━━━━━━━━━━┛']
+    ['Full box bot','┗━━━━━━━━━━━━━━┛'],
+['Double star line','★━━━━━━━━★━━━━━━━━★'],
+['Wave diamond','～～◆～～◆～～◆～～'],
+['Heart wave','♡～♡～♡～♡～♡～♡'],
+['Arrow wave','➤～➤～➤～➤～➤'],
+['Frost wave','❄～❅～❆～❄～❅'],
+['Thick bar','▬▬▬▬▬▬▬▬▬▬▬▬▬▬'],
+['Dash diamond','─ ─ ◆ ─ ─ ◆ ─ ─'],
+['Star bullets','★ • ★ • ★ • ★'],
+['Corner stars','★──────────────★'],
+['Triple line','════════════════'],
+['Soft dots','· · · · · · · · · · · ·'],
+['Pipe line','│ │ │ │ │ │ │ │'],
+['Slash line','/ / / / / / / / / /'],
+['Backslash line','\\\\ \\\\ \\\\'],
+['Equals star','════ ★ ════'],
+['Ribbon','╰──────☆──────╯'],
+['Top ribbon','╭──────★──────╮'],
+['Bracket line','【 ────────── 】'],
+['Quote line','「 ────────── 」'],
+['Sword divider','⚔══════⚔══════⚔']
   ],
   frost:[
     ['Snow trio','❄ ❅ ❆'],
@@ -109,7 +129,27 @@ const ASCII_DATA = {
     ['Snow mountain','⛰❄⛰❄⛰'],
     ['Whiteout title','★ WHITEOUT ★'],
     ['Frost rank','❄ R5 ❄'],
-    ['Ice chief','❄ Chief ❄']
+    ['Ice chief','❄ Chief ❄'],
+['Snow row','❄❄❄❄❄❄❄❄❄'],
+['Ice title 2','❆ ICE AGE ❆'],
+['Frozen solid','❄ FROZEN SOLID ❄'],
+['Winter is here','★ WINTER IS HERE ★'],
+['Blizzard alert','⚠ BLIZZARD ⚠'],
+['Snow castle','⛰❄ SNOW CASTLE ❄⛰'],
+['Ice queen','♕ ICE QUEEN ♕'],
+['Frost king','♛ FROST KING ♛'],
+['Polar night','★ POLAR NIGHT ★'],
+['Aurora','✦ AURORA ✦'],
+['Snowball','❄ SNOWBALL FIGHT ❄'],
+['Cold blood','❄ COLD BLOOD ❄'],
+['Ice wall','❄│❄│❄│❄│❄'],
+['Winter storm','🌨 WINTER STORM 🌨'],
+['Frost bite','❄ FROSTBITE ❄'],
+['Snowflake big','❄'],
+['Triple snow','❅ ❄ ❆'],
+['Ice path','❄─❄─❄─❄─❄'],
+['Frozen heart 2','❄♥❄'],
+['Whiteout zone','★ WHITEOUT ZONE ★']
   ],
   crowns:[
     ['R5 crown','♛ R5 ♛'],
@@ -141,7 +181,27 @@ const ASCII_DATA = {
     ['Rank 1','★ RANK 1 ★'],
     ['Rank 2','★ RANK 2 ★'],
     ['Commander star','★ Commander ★'],
-    ['Alliance lead','♛ Alliance ♛']
+    ['Alliance lead','♛ Alliance ♛'],
+['R5 only','【R5】'],
+['R4 only','【R4】'],
+['R3 star','★ R3 ★'],
+['Leader only','♔ LEADER'],
+['Co-leader','♕ CO-LEADER'],
+['Officer rank','★ OFFICER'],
+['Member','• MEMBER'],
+['Elite force','◆ ELITE FORCE ◆'],
+['Royal guard','♛ ROYAL GUARD ♛'],
+['War chief','⚔ WAR CHIEF ⚔'],
+['Frost chief','❄ CHIEF ❄'],
+['King of ice','♚ KING OF ICE'],
+['Queen of snow','♕ QUEEN OF SNOW'],
+['Commander R5','♜ R5 COMMANDER'],
+['Top 1','🥇 TOP 1'],
+['Top 10','★ TOP 10 ★'],
+['MVP','★ MVP ★'],
+['Legend rank','✦ LEGEND ✦'],
+['Hero rank','★ HERO ★'],
+['Veteran','★ VETERAN ★']
   ],
   weapons:[
     ['Crossed swords','⚔ ⚔'],
@@ -173,7 +233,27 @@ const ASCII_DATA = {
     ['Storm','🌪 STORM 🌪'],
     ['Fire','🔥 FIRE 🔥'],
     ['Ice attack','❄ ATTACK ❄'],
-    ['Bear trap','🐻 TRAP 🐻']
+    ['Bear trap','🐻 TRAP 🐻'],
+['Swords crossed','⚔'],
+['Battle cry','⚔ BATTLE CRY ⚔'],
+['To war','➤ TO WAR'],
+['Charge','⚔ CHARGE ⚔'],
+['Hold the line','⛨ HOLD THE LINE'],
+['No mercy','⚔ NO MERCY ⚔'],
+['Blood and ice','⚔❄ BLOOD & ICE ❄⚔'],
+['War path','➤ WAR PATH ➤'],
+['Siege','⚔ SIEGE ⚔'],
+['Ambush','⚡ AMBUSH ⚡'],
+['Scout','🔍 SCOUT'],
+['March','➤ MARCH ➤'],
+['Stand ground','⛨ STAND GROUND'],
+['All out','⚔ ALL OUT ⚔'],
+['Victory or death','★ VICTORY OR DEATH ★'],
+['For the alliance','⚔ FOR THE ALLIANCE ⚔'],
+['Burn it','🔥 BURN IT 🔥'],
+['Ice and fire','❄🔥 ICE & FIRE 🔥❄'],
+['Last stand','⚔ LAST STAND ⚔'],
+['War drums','🥁 WAR DRUMS']
   ],
   names:[
     ['Corner brackets','『Name』'],
@@ -218,7 +298,32 @@ const ASCII_DATA = {
     ['Angle','〈 Name 〉'],
     ['Pipe','| Name |'],
     ['Slash','/ Name /'],
-    ['Underline','_Name_']
+    ['Underline','_Name_'],
+['Flower curly','꧁༺Name༻꧂'],
+['Star curly','༺★Name★༻'],
+['Snow curly','༺❄Name❄༻'],
+['Sword frame','⚔【Name】⚔'],
+['Crown frame','♛【Name】♛'],
+['Diamond wings','◈彡Name彡◈'],
+['Star box','【★Name★】'],
+['Ice box','【❄Name❄】'],
+['Fire box','【🔥Name🔥】'],
+['Heart box','【♡Name♡】'],
+['Elite box','【◆Name◆】'],
+['Double quote','「「Name」」'],
+['Triple star','★★★Name★★★'],
+['Wave name 2','～★Name★～'],
+['Bar name','║ Name ║'],
+['Side stars','★ Name ★'],
+['Side snow','❄ Name ❄'],
+['Side swords','⚔ Name ⚔'],
+['Side crowns','♛ Name ♛'],
+['Side diamonds','◆ Name ◆'],
+['Side hearts','♡ Name ♡'],
+['Side sparkles','✦ Name ✦'],
+['Mini frame','‹Name›'],
+['Dot frame','·Name·'],
+['Equals frame','═Name═']
   ],
   faces:[
     ['Shrug',String.raw`¯\_(ツ)_/¯`],
@@ -250,7 +355,27 @@ const ASCII_DATA = {
     ['Blush','(⁄ ⁄•⁄ω⁄•⁄ ⁄)'],
     ['Wave','(￣▽￣)ノ'],
     ['Bow','m(_ _)m'],
-    ['Flex','ᕦ(ò_óˇ)ᕤ']
+    ['Flex','ᕦ(ò_óˇ)ᕤ'],
+['Happy simple','(＾▽＾)'],
+['Sad simple','(T_T)'],
+['Angry simple','(>_<)'],
+['Wink simple','(^_~)'],
+['Love simple','(♥_♥)'],
+['Cool shades','(■_■¬)'],
+['Shrug 2','┐(￣ヘ￣)┌'],
+['Thumbs','d(＾▽＾)b'],
+['Fight 2','(ง^_^)ง'],
+['Sleep 2','(-_-) Zzz'],
+['Cry 2','(;_;)'],
+['Joy 2','ヽ(°▽°)ノ'],
+['Nervous','(;;_)'],
+['Proud','(￣^￣)'],
+['Kiss','(*^3^)/~☆'],
+['Hug 2','⊂(￣▽￣)⊃'],
+['Wave 2','(￣▽￣)/'],
+['Bow 2','m(._.)m'],
+['Flex 2','ᕙ(⇀‸↼‶)ᕗ'],
+['Peek','(/ω＼)']
   ],
   beasts:[
     ['Bear','ʕ•ᴥ•ʔ'],
@@ -292,7 +417,27 @@ const ASCII_DATA = {
         '  🐟          : o ):´; ). ) ¸  {      🐟              🐠\n' +
         '        🐟      `·.¸)`·  ¸.·´\\`·¸)         🐠     🐡\n' +
         ' 🐡     🐠          `\\\\´´\\¸.·´            🐠'],
-    ['Fish line','🐟 🐠 🐡 🐟 🐠 🐡']
+    ['Fish line','🐟 🐠 🐡 🐟 🐠 🐡'],
+['Cat row','🐱 🐱 🐱'],
+['Dog row','🐶 🐶 🐶'],
+['Bear row','🐻 🐻 🐻'],
+['Wolf pack','🐺 🐺 🐺'],
+['Fish swim','🐟🐠🐡🐟🐠'],
+['Bird fly','🕊️ 🕊️ 🕊️'],
+['Dragon roar','🐉 🔥 🐉'],
+['Owl wise','🦉 🦉'],
+['Fox sly','🦊'],
+['Rabbit cute','🐰 🐰'],
+['Penguin cold','🐧 ❄ 🐧'],
+['Snake long','🐍～～～'],
+['Paw prints','🐾 🐾 🐾'],
+['Howl','🐺 HOWL 🐺'],
+['Roar','🐻 ROAR 🐻'],
+['Meow','🐱 MEOW'],
+['Woof','🐶 WOOF'],
+['Beast mode','★ BEAST MODE ★'],
+['Animal pack','🐻🐺🦊🐱🐶'],
+['Sea life','🐟🐠🐡🦈']
   ],
   symbols:[
     ['Stars','★☆★☆★'],
@@ -324,7 +469,27 @@ const ASCII_DATA = {
     ['Shield','⛨'],
     ['Fire','🔥'],
     ['Ice','❄'],
-    ['Star row','★★★★★']
+    ['Star row','★★★★★'],
+['Star5','★★★★★'],
+['Star3','★★★'],
+['Diamond3','◆◆◆'],
+['Heart3','♡♡♡'],
+['Snow3','❄❄❄'],
+['Fire3','🔥🔥🔥'],
+['Sword3','⚔⚔⚔'],
+['Crown3','♛♛♛'],
+['Check3','✔✔✔'],
+['Arrow3','➤➤➤'],
+['Spark3','✦✦✦'],
+['Circle3','●●●'],
+['Square3','■■■'],
+['Tri up','▲▲▲'],
+['Tri down','▼▼▼'],
+['Plus line','＋＋＋＋＋'],
+['Dot3','•••'],
+['Bar3','━━━'],
+['Wave3','～～～'],
+['Star spark','★✦★✦★']
   ],
   banners:[
     ['Alliance banner',`▛▀▀▀▀▀▀▀▀▀▀▀▀▜
@@ -379,7 +544,27 @@ const ASCII_DATA = {
     ['War time','⚔ WAR TIME ⚔'],
     ['Good luck','✦ GOOD LUCK ✦'],
     ['GG','★ GG ★'],
-    ['Nice try','★ NICE TRY ★']
+    ['Nice try','★ NICE TRY ★'],
+['Rally time','⚔ RALLY TIME ⚔'],
+['Bear now','🐻 BEAR TRAP NOW 🐻'],
+['Foundry now','⚔ FOUNDRY NOW ⚔'],
+['SvS fight','★ SVS FIGHT ★'],
+['Shields up','⛨ SHIELDS UP ⛨'],
+['Open borders','★ OPEN BORDERS ★'],
+['Close borders','★ CLOSE BORDERS ★'],
+['Nap active','☮ NAP ACTIVE ☮'],
+['War declared','⚔ WAR DECLARED ⚔'],
+['Peace','☮ PEACE ☮'],
+['Recruit active','♛ RECRUITING ♛'],
+['Need R4','★ NEED R4 ★'],
+['Active check 2','★ WHO IS ACTIVE? ★'],
+['Gift time','🎁 GIFTS READY 🎁'],
+['Event start','★ EVENT START ★'],
+['Event end','★ EVENT END ★'],
+['Good fight','★ GOOD FIGHT ★'],
+['Well done','★ WELL DONE ★'],
+['Try harder','★ TRY HARDER ★'],
+['Never give up','★ NEVER GIVE UP ★']
   ],
   love:[
     ['Flower bouquet',`🌺🌷🌼🌸🌻
@@ -433,7 +618,27 @@ const ASCII_DATA = {
 　💕                              💕
 　   🌸                        🌸
 　　　   ✨         ✨
-                       💞`]
+                       💞`],
+['Heart row 2','♡♡♡♡♡♡♡'],
+['Love stars','★♡★♡★'],
+['Love snow','❄♡❄♡❄'],
+['Love crown','♛♡♛'],
+['Love sword','⚔♡⚔'],
+['Be mine','♡ BE MINE ♡'],
+['Soulmate','♡ SOULMATE ♡'],
+['Bestie','★ BESTIE ★'],
+['Family first','♡ FAMILY FIRST ♡'],
+['Alliance family','♡ ALLIANCE = FAMILY ♡'],
+['Miss you 2','♡ MISS YOU SO MUCH ♡'],
+['Thank you love','♡ THANK YOU ♡'],
+['Stay strong','♡ STAY STRONG ♡'],
+['Together','♡ TOGETHER ♡'],
+['Forever','♡ FOREVER ♡'],
+['XOXO','♡ XOXO ♡'],
+['Hugs','♡ HUGS ♡'],
+['Kisses','♡ KISSES ♡'],
+['Heart fire','🔥♡🔥'],
+['Heart ice','❄♡❄']
   ],
   pixel:[
     // Prefer monochrome / simple blocks for better compatibility
@@ -629,7 +834,524 @@ const ASCII_DATA = {
 🌑💟💟💟🌑💟🌑🌑🌑💟💟💟💟💟🌑🌑
 🌑🌑💟🌑🌑💟🌑🌑🌑🌑💟💟💟🌑🌑🌑
 🌑🌑🌑🌑💟💟💟🌑🌑🌑🌑💟🌑🌑🌑🌑
-🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑`]
+🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑🌑`],
+['Small heart',` ♡
+♡♡♡
+ ♡`],
+['Small star',`  ★
+ ★★★
+★ ★ ★`],
+['Small sword',`  ⚔
+  │
+  │`],
+['Check big',`  ✔
+ ✔✔
+✔  ✔`],
+['Snow big',`  ❄
+ ❄❄❄
+❄ ❄ ❄`],
+    ['Heart block 2',`  ██  ██
+ ████████
+ ████████
+  ██████
+   ████
+    ██`],
+    ['Star block 2',`    █
+   ███
+  █████
+ ███████
+  █ █ █
+ █  █  █`],
+    ['Smile block',` █████
+█     █
+█ █ █ █
+█     █
+█ ███ █
+ █████`],
+    ['Ghost',` █████
+███████
+█ █ █ █
+███████
+███████
+█ █ █ █`],
+    ['Mushroom',`  █████
+ ███████
+█████████
+   ███
+  █████
+ ███████`],
+    ['House',`   █
+  ███
+ █████
+███████
+█ ███ █
+█ ███ █`],
+    ['Tree 2',`   █
+  ███
+ █████
+███████
+   █
+   █`],
+    ['Arrow up',`  █
+ ███
+█████
+  █
+  █
+  █`],
+    ['Arrow down',`  █
+  █
+  █
+█████
+ ███
+  █`],
+    ['Diamond pixel',`  █
+ ███
+█████
+ ███
+  █`],
+    ['Cross pixel',`  █
+  █
+█████
+  █
+  █`],
+    ['Box open',`█████
+█   █
+█   █
+█   █
+█████`],
+    ['Box filled',`█████
+█████
+█████
+█████
+█████`],
+    ['Stairs',`█
+██
+███
+████
+█████`],
+    ['Wave pixel',`█  █  █
+ █  █  █
+█  █  █
+ █  █  █`],
+    ['Checker',`█ █ █ █
+ █ █ █ █
+█ █ █ █
+ █ █ █ █`],
+    ['Border box',`╔═══╗
+║   ║
+║   ║
+╚═══╝`],
+    ['Cat face pixel',`█   █
+█████
+█ █ █
+█████
+ █ █`],
+    ['Alien',`  █ █
+ █████
+█ █ █ █
+█████
+ █   █`],
+    ['Robot',` ████
+█ ██ █
+██████
+ █  █
+ █  █`],
+    ['Sword pixel 2',`    █
+   █
+  █
+ ███
+  █
+ █ █`],
+    ['Shield pixel',` ████
+█    █
+█    █
+ █  █
+  ██`],
+    ['Crown pixel 2',`█ █ █
+█████
+█████
+ ███`],
+    ['Flag pixel',`█
+████
+█
+█
+█`],
+    ['Moon pixel',` ███
+█
+█
+█
+ ███`],
+    ['Sun pixel',`  █
+█ ███ █
+ █████
+█ ███ █
+  █`],
+    ['Music note',`  ██
+ █  █
+ █  █
+███
+█`],
+    ['Coffee pixel',` ███
+█   █
+█████
+ ███
+  █`],
+    ['Ice cream',`  ███
+ █████
+ █████
+  ███
+   █`],
+    ['Candy',`  ██
+ ████
+██████
+ ████
+  ██`],
+    ['Balloon',`  ███
+ █████
+ █████
+  ███
+   █
+   █`],
+    ['Gift box',`  █
+█████
+█ █ █
+█████
+█████`],
+    ['Letter A',`  █
+ █ █
+█████
+█   █
+█   █`],
+    ['Letter B',`████
+█   █
+████
+█   █
+████`],
+    ['Letter S',` ████
+█
+ ███
+    █
+████`],
+    ['Number 1',`  █
+ ██
+  █
+  █
+ ███`],
+    ['Number 5',`████
+█
+ ███
+    █
+████`],
+    ['Heart emoji grid', sqRows([
+      '.RRR...RRR.',
+      'RRRRR.RRRRR',
+      'RRRRRRRRRRR',
+      '.RRRRRRRRR.',
+      '..RRRRRRR..',
+      '...RRRRR...',
+      '....RRR....',
+      '.....R.....'
+    ])],
+    ['Smile emoji grid', sqRows([
+      '..YYYYY..',
+      '.YYYYYYY.',
+      'YYKYYYKY Y'.replace(' ',''),
+      'YYYYYYYYY',
+      'YYKYYY KYY'.replace(' ',''),
+      'YYYKKKYYY',
+      '.YYYYYYY.',
+      '..YYYYY..'
+    ])],
+    ['Fire pixel',`  █
+ █ █
+ █ █ █
+███████
+ █████
+  ███`],
+    ['Snowflake pixel',`  █  █
+█  █  █
+  █████
+█  █  █
+  █  █`],
+    ['Mountain pixel',`    █
+   █ █
+  █   █
+ █     █
+█████████`],
+    ['Wave sea',`~  ~  ~
+ ~  ~  ~
+~  ~  ~
+ ~  ~  ~`],
+    ['Bar chart',`    █
+  █ █
+█ █ █
+█ █ █
+█████`],
+    ['Target',`  ███
+ █   █
+█  █  █
+ █   █
+  ███`],
+    ['Key',` ███
+█   █
+ ███
+  █
+  ██`],
+    ['Lock',`  ██
+ █  █
+██████
+█    █
+ ████`],
+    ['Lightning pixel',`  █
+ ██
+█████
+  ██
+  █`],
+    ['Drop',`  █
+ ███
+█████
+█████
+ ███`],
+    ['Leaf',`   █
+  ███
+ █████
+  ███
+   █`],
+    ['Paw pixel',`█  █  █
+ █████
+███████
+ █████
+  ███`],
+    ['Fish pixel',`  ████
+ █    ██
+█  █    █
+ █    ██
+  ████`],
+    ['Bird pixel',`  █
+ ███
+█████ █
+ ███
+  █ █`],
+    ['Cat sit',`█   █
+█████
+█ █ █
+█████
+█   █`],
+    ['Dog sit',`  ██
+ ████
+█ █ █
+█████
+█   █`],
+    ['Bunny pixel',`█   █
+█   █
+█████
+█ █ █
+█████`],
+    ['Bear pixel 2',`█   █
+█████
+█ █ █
+█████
+ █ █`],
+    ['Owl pixel',` ████
+█ █ █ █
+██████
+ ████
+ █  █`],
+    ['Frog pixel',` █   █
+███████
+█ █ █ █
+███████
+ █   █`],
+    ['Snake pixel',`████
+   █
+ ████
+ █
+████`],
+    ['Cactus',`  █
+█ █ █
+█ █ █
+  █
+  █`],
+    ['Flower pixel',`  █ █
+ █ █ █
+  █ █
+   █
+   █`],
+    ['Star row pixel',`★ ★ ★
+★ ★ ★
+★ ★ ★`],
+    ['Heart row pixel',`♡ ♡ ♡
+♡ ♡ ♡
+♡ ♡ ♡`],
+    ['Snow row pixel',`❄ ❄ ❄
+❄ ❄ ❄
+❄ ❄ ❄`],
+    ['Block pyramid',`    █
+   ███
+  █████
+ ███████
+█████████`],
+    ['Invader 2',` █   █
+  ███
+ █████
+█ █ █ █
+███████
+█ ███ █`],
+    ['Tank',`  █
+█████
+█ ███ █
+███████
+ █   █`],
+    ['Plane',`    █
+    █
+  █████
+    █
+   █ █`],
+    ['Car pixel',`  ████
+ ██████
+█ █  █ █
+ ██████
+  █  █`],
+    ['Boat',`    █
+   ███
+  █████
+ ███████
+█████████`],
+    ['Castle',`█ █ █ █
+███████
+█ ███ █
+█ ███ █
+███████`],
+    ['Bridge',`█     █
+█ ███ █
+███████
+  █ █
+  █ █`],
+    ['Window',`█████
+█ █ █
+█████
+█ █ █
+█████`],
+    ['Door',` ███
+█   █
+█  █ █
+█   █
+█████`],
+    ['Chair',`█
+████
+█  █
+█  █
+█  █`],
+    ['Table',`█████
+█ █ █
+█ █ █`],
+    ['Clock',` ████
+█ █  █
+█  █ █
+█    █
+ ████`],
+    ['Book',`████
+█  █
+█  █
+█  █
+████`],
+    ['Phone',` ███
+█   █
+█ ███
+█   █
+ ███`],
+    ['Controller',` █████
+█ █ █ █
+█████
+ █   █`],
+    ['Trophy',` █ █ █
+ █████
+  ███
+   █
+  ███`],
+    ['Medal',`  █
+ ███
+█████
+ ███
+  █`],
+    ['Gem pixel',`  █
+ ███
+█████
+ ███
+  █`],
+    ['Coin',`  ███
+ █   █
+█  █  █
+ █   █
+  ███`],
+    ['Bomb',`  █
+ ███
+█████
+█████
+ ███`],
+    ['Explosion',`█ █ █
+ █ █ █
+█ █ █
+ █ █ █`],
+    ['Smoke',`  █ █
+ █   █
+█  █  █
+ █   █`],
+    ['Cloud pixel',`  ███
+ █████
+███████
+ █████`],
+    ['Rain',`  █ █ █
+ █ █ █
+█ █ █ █
+ █ █ █`],
+    ['Big X',`█   █
+ █ █
+  █
+ █ █
+█   █`],
+    ['Big O',` ███
+█   █
+█   █
+█   █
+ ███`],
+    ['Plus pixel',`  █
+  █
+█████
+  █
+  █`],
+    ['Minus pixel',`█████`],
+    ['Equal pixel',`█████
+
+█████`],
+    ['Happy square',`████████
+█      █
+█ █  █ █
+█      █
+█ ████ █
+█      █
+████████`],
+    ['Sad square',`████████
+█      █
+█ █  █ █
+█      █
+█ ████ █
+█      █
+████████`.replace('█ ████ █','█ ▀▀▀▀ █')],
+    ['WOS logo text',`W O S
+★ ★ ★
+❄ ❄ ❄`],
+    ['R5 pixel',`████
+█  █
+████
+█ █
+█  █`],
+    ['Alliance pixel',`█   █
+█   █
+█████
+█   █
+█   █`]
+
   ],
   messages:[
     ['Rally','▶ Rally at my city, join now! ◀'],
@@ -671,7 +1393,32 @@ const ASCII_DATA = {
     ['Online','★ ONLINE ★'],
     ['Farming','🌾 FARMING'],
     ['Building','🏗 BUILDING'],
-    ['Research','🔬 RESEARCH']
+    ['Research','🔬 RESEARCH'],
+['Rally my city','▶ RALLY MY CITY ◀'],
+['Join me','▶ JOIN ME ◀'],
+['Need reinforce','⚠ NEED REINFORCE'],
+['Sending help','➤ SENDING HELP'],
+['On the way 2','➤ OTW'],
+['Arrived','✔ ARRIVED'],
+['Done 2','✔ DONE ✓'],
+['Sorry late','★ SORRY IM LATE ★'],
+['Good morning 2','☀ GOOD MORNING ☀'],
+['Good night 2','🌙 GOOD NIGHT 🌙'],
+['Have fun','★ HAVE FUN ★'],
+['Take care','♡ TAKE CARE ♡'],
+['See you later','★ SEE YOU LATER ★'],
+['Welcome back','★ WELCOME BACK ★'],
+['Congrats','★ CONGRATS ★'],
+['Happy birthday','🎂 HAPPY BIRTHDAY'],
+['New member','★ WELCOME NEW MEMBER ★'],
+['Read rules','⚠ PLEASE READ RULES'],
+['Discord link','★ JOIN DISCORD ★'],
+['Check pin','★ CHECK PINNED ★'],
+['Farm open','🌾 FARM OPEN'],
+['Farm closed','🌾 FARM CLOSED'],
+['Rss help','📦 NEED RSS'],
+['Speedup help','⏱ NEED SPEEDUPS'],
+['Gem help','💎 NEED GEMS']
   ],
   general:[
     ['Check / cross','✔ ✘'],
@@ -703,7 +1450,27 @@ const ASCII_DATA = {
     ['Plus','＋'],
     ['Minus','－'],
     ['Equal','＝'],
-    ['Infinity','∞']
+    ['Infinity','∞'],
+    ['Yes','✔ YES'],
+    ['No','✘ NO'],
+    ['OK','★ OK ★'],
+    ['Wait 2','⏳ PLEASE WAIT'],
+    ['Loading','⏳ LOADING...'],
+    ['Online 2','🟢 ONLINE'],
+    ['Offline','🔴 OFFLINE'],
+    ['Busy','🟡 BUSY'],
+    ['AFK','💤 AFK'],
+    ['BRB','➤ BRB'],
+    ['GG 2','★ GG WP ★'],
+    ['WP','★ WP ★'],
+    ['NT','★ NT ★'],
+    ['GLHF','★ GLHF ★'],
+    ['TY','★ TY ★'],
+    ['NP','★ NP ★'],
+    ['YW','★ YW ★'],
+    ['LOL','★ LOL ★'],
+    ['OMG','★ OMG ★'],
+    ['RIP','☠ RIP']
   ]
 };
 
