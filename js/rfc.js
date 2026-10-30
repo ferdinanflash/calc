@@ -1,13 +1,13 @@
 // RFC Simulator: Fire Crystal -> Refined Fire Crystal (Crystal Laboratory "Super Refinement")
 //
 // Data cross-checked (2026-10-04) against:
-//  - https://wostools.net/rfc-simulator                          (reference for this feature)
+//  - Community RFC / Crystal Lab references
 //  - https://www.whiteoutsurvival.wiki/refinement-in-crystal-laboratory/  (full probability tables, T4/T5 up to 12 RFC)
 //  - https://wos.h5joy-games.com/guides/cf-refinement/           (costs, expected RFC, weekly plans; updated 2026-03-30)
 //  - https://heaven-guardian.com/whiteout-survival-fire-crystal-guide/ (50% off = FIRST Super Refinement each day)
-// Costs, probabilities and expected values agree across all sources. WoSTools only prints "6+" for
+// Costs, probabilities and expected values agree across all sources. some guides only print "6+" for
 // T4/T5; the full outcome tables below come from the Whiteout Survival Wiki (they sum to 100% and
-// reproduce WoSTools' expected values 3.44 and 3.71 exactly).
+// match expected values 3.44 and 3.71.
 // Item shape: out = [[rfcAmount, probabilityPercent], ...]
 const RFC_TIERS=[
  {cost:20, out:[[1,65],[2,25],[3,10]]},

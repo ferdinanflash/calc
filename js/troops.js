@@ -1,7 +1,7 @@
 // Training / Promotion Troops Calculator
 
 // Event points / power per troop. Training = full target-tier value. Promotion = difference
-// between target and source tier (wostools.net/wiki/troops: "Promotion awards the difference
+// between target and source tier (community troop tables: "Promotion awards the difference
 // between tiers", e.g. T10->T11 SvS = 75 - 60 = 15). Power for promotion uses the same difference
 // (the source troop's power is already counted).
 function troopPowerPer(troopType,tierKey,fcLevel){

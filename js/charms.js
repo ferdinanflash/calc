@@ -4,7 +4,7 @@
 // 18 independent charm slots: 3 charms per gear piece across 6 pieces
 // (Helmet+Watch = Lancer, Jacket+Pants = Infantry, Ring+Cane = Marksman).
 // Levels/materials come from WOS_DB.charmSteps / WOS_DB.charmCost (database.js),
-// matching https://wostools.net/chief-charms-calculator (checked 2026-09-28):
+// Charm level cost steps:
 // Level 1-18 with sub-levels from Lv.4 onward (4.1-4.3, ..., 16.1-16.8, 17.1-17.8),
 // Jewel Secrets only needed for Lv.12-18, SvS/KoI points = charm score x 70.
 let charmVals = [];
@@ -151,7 +151,7 @@ function renderCharmDB(){
  <details class="bc-collapse" open><summary><i class="bi bi-bar-chart-fill"></i> Total Materials Required</summary><div class="bc-collapse-body"><div id="chTotalResult" class="result-grid"></div></div></details>
  <details class="bc-collapse" open><summary><i class="bi bi-exclamation-triangle-fill"></i> Still Needed (After Available)</summary><div class="bc-collapse-body"><div id="chNeedResult" class="result-grid"></div></div></details>
  <details class="bc-collapse"><summary><i class="bi bi-diagram-3-fill"></i> By Troop Type</summary><div class="bc-collapse-body"><div id="chByType" class="charm-slots"></div></div></details>
- <details class="bc-collapse"><summary><i class="bi bi-collection-fill"></i> Cost Database (per charm, per level)</summary><div class="bc-collapse-body"><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>${CH_GUIDE} Guides</th><th>${CH_DESIGN} Designs</th><th>${CH_SECRET} Secrets</th><th>Score</th></tr></thead><tbody>${WOS_DB.charmSteps.slice(1).map(v=>`<tr><td>${v.label}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td><td>${fmt(v.score)}</td></tr>`).join('')}</tbody></table></div></details><div class="source-note">Cost per charm and level step from wostools.net/chief-charms-calculator (checked September 28, 2026). Score × 70 = SvS/KoI points. Jewel Secrets are only required for Lv.12–18. Lv.11 unlocks Material Exchange.</div></div>
+ <details class="bc-collapse"><summary><i class="bi bi-collection-fill"></i> Cost Database (per charm, per level)</summary><div class="bc-collapse-body"><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>${CH_GUIDE} Guides</th><th>${CH_DESIGN} Designs</th><th>${CH_SECRET} Secrets</th><th>Score</th></tr></thead><tbody>${WOS_DB.charmSteps.slice(1).map(v=>`<tr><td>${v.label}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td><td>${fmt(v.score)}</td></tr>`).join('')}</tbody></table></div></details><div class="source-note">Cost per charm and level step from community charm cost tables. Score × 70 = SvS/KoI points. Jewel Secrets are only required for Lv.12–18. Lv.11 unlocks Material Exchange.</div></div>
  <div class="bc-section"><h3><i class="bi bi-lightbulb-fill"></i> Tips</h3><ul class="tip-list">
    <li><b>Save for events:</b> upgrade during King of Icefield, Officer Project, Armament Competition, or Alliance Mobilization.</li>
    <li><b>Jewel Secrets:</b> are only required for levels 12–18, with costs increasing rapidly (15 at Lv.12 up to 180 at Lv.18 per charm).</li>

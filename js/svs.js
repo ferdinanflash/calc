@@ -20,8 +20,8 @@ function svsTaskLabel(name){
 
 // ---------- SvS PREP PHASE CALCULATOR ----------
 // Point values, per-day tiering (high/medium/low) and activity list verified
-// against https://wostools.net/svs-prep-phase-guide and
-// https://wostools.net/id/svs-calculator (checked 2026-09-28; source data
+// against community SvS prep guides and
+// SvS calculator references (checked 2026-09-28; source data
 // dated October 2025). Item shape: [label, pointsPerUnit, unitType, tier?]
 // tier is 'high' | 'medium' | 'low' | undefined (undefined = no fixed rate,
 // e.g. troop training/promotion which depend on tier — use Import instead).

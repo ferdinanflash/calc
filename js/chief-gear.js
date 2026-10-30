@@ -2,7 +2,7 @@
 
 // ---------- CHIEF GEAR ----------
 // Level table (150 steps, Green 0★ -> Red T6 3★) lives in database.js (WOS_DB.chiefGear),
-// mirroring https://wostools.net/chief-gear-calculator and /wiki/gear/chief-gear.
+// Chief Gear upgrade planner.
 const CG_DEFAULT_TARGET=0; // default: None (Not Started)
 const cgMatImg=(k,nm)=>`<img class="mat-ic" src="images/chief-gear/${{alloy:'hardened-alloy',solution:'polishing-solution',plans:'design-plans',amber:'lunar-amber'}[k]}.webp" alt="${nm}" loading="lazy">`;
 const CG_MATS=[['alloy',cgMatImg('alloy','Hardened Alloy'),'Hardened Alloy'],['solution',cgMatImg('solution','Polishing Solution'),'Polishing Sol.'],['plans',cgMatImg('plans','Design Plans'),'Design Plans'],['amber',cgMatImg('amber','Lunar Amber'),'Lunar Amber']];
@@ -94,7 +94,7 @@ function renderGearDB(){
   <label>Target<select id="cgTar${i}">${opts(cgState.tar[i])}</select></label></div><div id="cgRow${i}" class="notice"></div></div><div class="cg-img" id="cgImgT${i}" title="Target"></div></div>`).join('')}</div></details>
  <details class="bc-collapse" open><summary><i class="bi bi-bag-fill"></i> Available Resources</summary><div class="bc-collapse-body"><div class="bc-grid">${CG_MATS.map(([k,ic,nm])=>`<label>${ic} ${nm}<input id="cgRes_${k}" type="number" min="0" value="${cgState.res[k]||0}"></label>`).join('')}</div></div></details>
  <details class="bc-collapse"><summary><i class="bi bi-arrow-repeat"></i> Enhancement Material Exchange</summary><div class="bc-collapse-body"><div id="cgExNote" class="notice"></div><div class="bc-grid">${G.exchange.map((e,i)=>`<label>${cgMatImg(e[0],exName[e[0]])} ${exName[e[0]]} » ${cgMatImg(e[1],exName[e[1]])} ${exName[e[1]]} <small>(${e[2]}:${e[3]} · limit ${fmt(e[4])}/week)</small><input id="cgEx${i}" type="number" min="0" value="${cgState.ex[i]||0}" placeholder="amount of ${exName[e[0]]} to exchange"></label>`).join('')}</div></details>
-  <div class="source-note">Enter the amount of source material to exchange; the result is added to Available Resources. The weekly limit is shown according to WoSTools but is not enforced here.</div></div>
+  <div class="source-note">Enter the amount of source material to exchange; the result is added to Available Resources. The weekly limit is shown as a weekly guide only (not enforced here).</div></div>
  <details class="bc-collapse" open><summary><i class="bi bi-bar-chart-fill"></i> Total Summary</summary><div class="bc-collapse-body"><div id="cgSummary"></div>
   <h4>Total Gains</h4>
   <div class="bc-grid"><label>Valeria — Well Prepared (+2%/lvl SvS pts)<select id="cgValeria">${Array.from({length:11},(_,i)=>`<option value="${i}" ${i===cgState.valeria?'selected':''}>Lv ${i}</option>`).join('')}</select></label></div>
@@ -103,7 +103,7 @@ function renderGearDB(){
  <details class="bc-collapse"><summary><i class="bi bi-graph-up-arrow"></i> Tier Comparison (per piece, max stars)</summary><div class="bc-collapse-body"><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th>Stat Bonus</th><th>Power</th><th>Deploy Cap.</th></tr></thead><tbody>${maxRows.map(x=>`<tr><td>${x.name}</td><td>+${x.stat.toFixed(2)}%</td><td>${fmt(x.power)}</td><td>${x.deploy?'+'+fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></div></details>
  <div class="bc-section"><details><summary><b><i class="bi bi-collection-fill"></i> Full Cost Database (150 steps per piece)</b></summary><div class="table-scroll"><table class="db-table"><thead><tr><th>Step</th><th>Alloy</th><th>Solution</th><th>Plans</th><th>Amber</th><th>Score</th><th>Power</th><th>Stat</th><th>Deploy</th></tr></thead><tbody>${L.slice(1).map(x=>`<tr><td>${x.name}</td><td>${fmt(x.alloy)}</td><td>${fmt(x.solution)}</td><td>${fmt(x.plans)}</td><td>${fmt(x.amber)}</td><td>${fmt(x.svs)}</td><td>${fmt(x.power)}</td><td>+${x.stat.toFixed(2)}%</td><td>${x.deploy?fmt(x.deploy):'—'}</td></tr>`).join('')}</tbody></table></div></details></div>
  <div class="notice"><i class="bi bi-lightbulb-fill"></i> Tips: keep all six pieces at the same tier for set bonuses (3 pieces = Defense, 6 pieces = Attack). Save upgrades for SvS Prep Day 5 / KoI to maximize points. Hardened Alloy comes from Polar Terror (Lv.3+) &amp; Beast (Lv.22+); Polishing Solution comes from Crazy Joe &amp; Alliance Championship Shop; Design Plans are required starting at Blue 2★; Lunar Amber is only used for Red tiers.</div>
- <div class="source-note">Cost, power, stat &amp; deployment data: wostools.net/wiki/gear/chief-gear (checked September 28, 2026). SvS points = Chief Gear Score × ${G.svsPerScore}. WoSTools features such as Upgrade Suggestions, Alliance Showdown &amp; CSV/Excel export are not included here.</div>`;
+ <div class="source-note">Cost, power, stat and deployment data from community gear tables. SvS points = Chief Gear Score × ${G.svsPerScore}.</div>`;
  for(let i=0;i<6;i++){
   document.getElementById('cgCur'+i).addEventListener('change',e=>{cgState.cur[i]=+e.target.value;cgEnforce();syncGearControls();calcGearDB();});
   document.getElementById('cgTar'+i).addEventListener('change',e=>{cgState.tar[i]=Math.max(+e.target.value,cgState.cur[i]);cgEnforce();syncGearControls();calcGearDB();});

@@ -2,7 +2,7 @@
 
 // ---------- BUILDING CALCULATOR ----------
 // Building names + per-level costs now come from WOS_DB.buildings (database.js),
-// which is transcribed from wostools.net's published per-level tables instead
+// from community per-level building tables instead
 // of an estimated growth curve.
 const buildingNames = WOS_DB.buildings.names;
 let buildingPlans=[], buildingPlanId=0;
@@ -93,15 +93,23 @@ function renderBuildingPlans(){
   }
   el.innerHTML=buildingPlans.map(p=>{
     const optsFrom=levelOptions(p.building,'from',p.from), optsTo=levelOptions(p.building,'to',p.from);
+    const icFrom=fcIconHtml(p.building,p.from);
+    const icTo=fcIconHtml(p.building,p.to);
     return `
     <div class="building-plan">
       <div class="plan-selects">
-        <label>Building<select onchange="updatePlan(${p.id},'building',this.value)">
+        <label class="plan-building">Building
+          <select onchange="updatePlan(${p.id},'building',this.value)">
           ${buildingNames.map(n=>`<option ${n===p.building?'selected':''}>${n}</option>`).join('')}
-        </select></label>
-        <label>Current Level${fcIconHtml(p.building,p.from)}<select onchange="updatePlan(${p.id},'from',this.value)">${optsFrom.replace(`value="${p.from}"`,`value="${p.from}" selected`)}</select></label>
+          </select>
+        </label>
+        <label class="plan-level">Current Level
+          <div class="plan-level-row">${icFrom}<select onchange="updatePlan(${p.id},'from',this.value)">${optsFrom.replace(`value="${p.from}"`,`value="${p.from}" selected`)}</select></div>
+        </label>
         <span class="arrow">→</span>
-        <label>Target Level${fcIconHtml(p.building,p.to)}<select onchange="updatePlan(${p.id},'to',this.value)">${optsTo.replace(`value="${p.to}"`,`value="${p.to}" selected`)}</select></label>
+        <label class="plan-level">Target Level
+          <div class="plan-level-row">${icTo}<select onchange="updatePlan(${p.id},'to',this.value)">${optsTo.replace(`value="${p.to}"`,`value="${p.to}" selected`)}</select></div>
+        </label>
         <button class="rm" onclick="removeBuildingPlan(${p.id})">Remove</button>
       </div>
     </div>`;
@@ -122,7 +130,7 @@ function calcBuilding(){
   totals.levels=stepSeconds.length; // only real upgrade steps
 
   // Construction speed bonuses stack additively and reduce time as
-  // time / (1 + totalBonus%/100) — matching WoSTools' documented formula
+  // time / (1 + totalBonus%/100) — standard formula
   // (e.g. 10h at +50% bonus => 10/1.5 = 6.67h), not a flat percentage cut.
   const bonus=valNum('vipBonus')+valNum('researchBonus')+valNum('allianceBonus')+valNum('islandBonus')+valNum('facilityBonus')+valNum('zinmanBonus')+valNum('hyenaBonus')+valNum('vpBonus')+(document.getElementById('mercantilism')?.checked?10:0);
   // Agnes Project Management shaves a flat number of hours off EACH upgrade step. It is
@@ -157,13 +165,7 @@ function calcBuilding(){
 // ---------- PER-STEP BREAKDOWN ----------
 // Every upgrade is a separate construction (e.g. Furnace FC7 -> FC8 = FC7-1, FC7-2, FC7-3, FC7-4, FC8),
 // so list each one with its own cost and time (time already includes speed bonuses / Agnes / Double Time).
-function fmtShort(n){
-  n=Math.round(Number(n)||0);
-  if(!n) return '-';
-  if(n>=1e6){ const v=n/1e6; return (v>=100?v.toFixed(0):v.toFixed(v%1?1:0))+'M'; }
-  if(n>=1e4){ const v=n/1e3; return (v>=100?v.toFixed(0):v.toFixed(v%1?1:0))+'K'; }
-  return n.toLocaleString('en-US');
-}
+function fmtShort(n){ return fmt(n); }
 function stepTimeText(sec){
   return sec>0&&sec<60 ? secondsText(sec) : formatDuration(sec);
 }

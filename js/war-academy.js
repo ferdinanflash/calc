@@ -1,5 +1,5 @@
 /* War Academy Calculator — T11 Helios + T12 Exalted / Molten I-II-III
-   Data model follows the public WoSTools War Academy structure.
+   Helios (T11) and T12 Exalted/Molten research planner.
 */
 const WA_HELIOS={
  Infantry:[['Flame Squad',5],['Flame Shield',8],['Flame Strike',8],['Flame Tomahawk',12],['Flame Protection',12],['Flame Legion',12],['Helios Infantry',1],['Helios Infantry Training',10],['Helios Infantry Healing',10],['Helios Infantry First Aid',10]],
@@ -42,7 +42,7 @@ function blockRows(kind){
 function gatewayRows(){return [1,2,3].map(()=>waRes(15000000,15000000,750000,750000,200000,50,325,1728000));}
 ['Indomitable Wall','Meridian Phalanx','Starfire'].forEach(n=>WA_T12_COST[n]=gatewayRows());
 WA_T12_COST['Solar Supremacy']=Array.from({length:15},(_,i)=>{const meat=[500,520,550,600,650,700,750,800,850,900,950,1000,1000,1100,1200][i]*1000;const coal=[100,100,110,120,130,140,150,160,170,180,190,200,210,230,250][i]*1000;const iron=[25,26,27,30,32,35,37,40,42,45,47,50,52,57,62][i]*1000;const steel=[25,26.3,27.5,30,32.5,35,37.5,40,40,45,47.5,50,52.5,57.5,62.5][i]*1000;const rfc=[5,5,5,6,6,7,7,8,8,9,9,10,10,11,12][i];const sh=[75,78,82,90,97,105,112,120,127,135,142,150,157,172,187][i];const sec=[720,756,792,864,936,1008,1080,1152,1224,1296,1368,1440,1512,1656,1800][i]*60;return waRes(meat,meat,coal,iron,steel,rfc,sh,sec);});
-// Research Power per level (WoSTools War Academy table): Molten I/II/III 50K, Gateway 350K, Solar Supremacy 60K.
+// Research Power per level (community War Academy table): Molten I/II/III 50K, Gateway 350K, Solar Supremacy 60K.
 // Applied after all cost rows are built; rows that already carry a power (Exalted tracks) are left untouched.
 function waApplyT12Power(){
  Object.keys(WA_T12_COST).forEach(n=>{
@@ -89,7 +89,7 @@ function installHeliosRows(){
  };
  const rows=[];
  // Research Power per level. Exact values from the official Whiteout Survival Wiki (Flame Shield/Protection/Legion, Helios Lancer First Aid);
- // wostools rounds these to 0.1K. Lancer/Marksman share the Infantry curves.
+ // values are rounded to 0.1K. Lancer/Marksman share the Infantry curves.
  const powerOf=new Map([
   [squad,60000],
   [shield,[82500,74250,90750,99000,95700,98175,122925,120450]],

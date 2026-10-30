@@ -14,5 +14,23 @@ function troopIcon(type){
   return `<img class="tr-ic" src="images/troops/${k}.webp" alt="${type}" title="${type}">`;
 }
 
-function fmt(n){return Math.round(Number(n)||0).toLocaleString('en-US');}
+function fmtFull(n){return Math.round(Number(n)||0).toLocaleString('en-US');}
+/** Compact number: 1.2K, 3.5M, 1.2B, 1.5T */
+function fmt(n){
+  n=Number(n)||0;
+  const neg=n<0; n=Math.abs(n);
+  if(n<1000) return (neg?'-':'')+String(Math.round(n));
+  const units=[
+    {v:1e12,s:'T'},{v:1e9,s:'B'},{v:1e6,s:'M'},{v:1e3,s:'K'}
+  ];
+  for(const u of units){
+    if(n>=u.v){
+      // up to 3 decimals, strip trailing zeros — Indonesian comma
+      let x=n/u.v;
+      let t=x.toFixed(3).replace(/\.?0+$/,'').replace('.',',');
+      return (neg?'-':'')+t+u.s;
+    }
+  }
+  return (neg?'-':'')+Math.round(n).toLocaleString('id-ID');
+}
 function secondsText(s){s=Math.max(0,Math.round(s||0));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);const sec=s%60;return (d?d+'d ':'')+(h?h+'h ':'')+(m?m+'m ':'')+(sec?sec+'s':'').trim()||'0s';}
