@@ -1,22 +1,23 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v24-20261030';
+const CACHE_VERSION = 'v25-20261030';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
 const PRECACHE = [
   './',
   './index.html',
-  './style.css?v=17',
+  './style.css?v=18',
   './database.js?v=9',
   './manifest.webmanifest',
   './js/utils.js?v=11',
-  './js/modal.js?v=8',
-  './js/main.js?v=8',
-  './js/building.js?v=11',
-  './js/troops.js?v=9',
-  './js/war-academy.js?v=10',
+  './js/modal.js?v=9',
+  './js/ui-extras.js?v=1',
+  './js/main.js?v=9',
+  './js/building.js?v=12',
+  './js/troops.js?v=10',
+  './js/war-academy.js?v=11',
   './js/charms.js?v=9',
   './js/hero-gear.js?v=9',
   './js/chief-gear.js?v=9',
