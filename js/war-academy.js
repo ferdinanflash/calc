@@ -229,8 +229,9 @@ function renderSelect(name,idx,max,type,group){
  const key=`${type}|${group}|${idx}`,o=waOpts(max);
  return `<div class="research-row"><span>${name}<small>max ${max}</small></span><select data-wa="${key}" data-mode="current" aria-label="${name} current" onchange="waSetLevel('${type}','${group}',${idx},'current',this.value)">${o}</select><span>→</span><select data-wa="${key}" data-mode="target" aria-label="${name} target" onchange="waSetLevel('${type}','${group}',${idx},'target',this.value)">${o}</select></div>`;
 }
-function waSub(title, body, cls=''){
- return `<div class="wa-sub ${cls}"><div class="wa-sub-title">${title}</div><div class="research-list">${body}</div></div>`;
+function waSub(title, body, cls='', open=true){
+ const openAttr = open ? ' open' : '';
+ return `<details class="wa-sub ${cls}"${openAttr}><summary class="wa-sub-title">${title}</summary><div class="research-list">${body}</div></details>`;
 }
 function renderHelios(type, items){
  // items: [name, max][] — group into Flame path / Helios core / Support
@@ -252,7 +253,17 @@ function renderT12(type){
  const moltenIII = m.moltenIII.map((n,i)=>renderSelect(n,15+i,50,type,'t12')).join('');
  const support = m.t12Support.map((n,i)=>renderSelect(n,19+i,10,type,'t12')).join('');
  return `<div class="wa-t12-block">
-  <div class="wa-t12-head"><span>⚔️ T12 Exalted &amp; Molten — ${type}</span><small class="t12-threshold" id="waThreshold-${type}"></small></div>
+  <div class="wa-t12-head">
+    <span>⚔️ T12 Exalted &amp; Molten — ${type}</span>
+    <span class="wa-progress" id="waProgress-${type}" title="Exalted unlock progress">
+      <svg class="wa-ring" viewBox="0 0 36 36" aria-hidden="true">
+        <path class="wa-ring-bg" d="M18 2.5a15.5 15.5 0 1 1 0 31 15.5 15.5 0 1 1 0-31"/>
+        <path class="wa-ring-fg" id="waRing-${type}" stroke-dasharray="0,100" d="M18 2.5a15.5 15.5 0 1 1 0 31 15.5 15.5 0 1 1 0-31"/>
+      </svg>
+      <span class="wa-progress-text" id="waProgressText-${type}">0/5</span>
+    </span>
+    <small class="t12-threshold" id="waThreshold-${type}"></small>
+  </div>
   ${notice}
   ${waSub('Exalted (unlock T12)', exalted, 'wa-exalted')}
   ${waSub('Molten I', moltenI, 'wa-molten')}
@@ -277,7 +288,7 @@ function buildWAControls(){
    </div>
    <div class="wa-tabs" data-wa-tabs="${type}">
     <button type="button" class="wa-tab active" data-tab="helios" onclick="waSwitchTab('${type}','helios',this)">Helios (T11)</button>
-    <button type="button" class="wa-tab" data-tab="t12" onclick="waSwitchTab('${type}','t12',this)">T12 Exalted / Molten</button>
+    <button type="button" class="wa-tab" data-tab="t12" onclick="waSwitchTab('${type}','t12',this)">T12 <span class="wa-tab-prog" id="waTabProg-${type}">0/5</span></button>
    </div>
    <div class="wa-pane wa-pane-helios" data-pane="${type}-helios">${renderHelios(type, items)}</div>
    <div class="wa-pane wa-pane-t12" data-pane="${type}-t12" hidden>${renderT12(type)}</div>
@@ -359,7 +370,21 @@ function calcWarAcademy(){
  const inv={shards:valNum('waShards'),rfc:valNum('waRfc'),steel:valNum('waSteel'),meat:valNum('waMeat'),wood:valNum('waWood'),coal:valNum('waCoal'),iron:valNum('waIron')};
  window._warAcademyTotals={...total};
  const gap={};Object.keys(inv).forEach(k=>gap[k]=Math.max(0,total[k]-inv[k]));
- Object.keys(WA_T12).forEach(type=>{const el=document.getElementById('waThreshold-'+type);if(el){const n=per[type]?.unlock||0;el.textContent=` · ${n}/25 Tier 1 Exalted`;el.className='t12-threshold '+(n>=25?'ok':'warn');}});
+ Object.keys(WA_T12).forEach(type=>{
+  const n=per[type]?.unlock||0; // sum of exalted target levels 0..5 each max 5 = up to 25
+  // Exalted tracks at Lv.5 count: how many of the 5 tracks are fully unlocked
+  const t=waLevels[type]?.t12||[];
+  const full=t.slice(0,5).filter(v=>v>=5).length;
+  const el=document.getElementById('waThreshold-'+type);
+  if(el){el.textContent=` · ${n}/25 Exalted levels · ${full}/5 tracks maxed`;el.className='t12-threshold '+(full>=5?'ok':'warn');}
+  const pct=Math.round((full/5)*100);
+  const ring=document.getElementById('waRing-'+type);
+  if(ring) ring.setAttribute('stroke-dasharray', pct+',100');
+  const pt=document.getElementById('waProgressText-'+type);
+  if(pt) pt.textContent=full+'/5';
+  const tab=document.getElementById('waTabProg-'+type);
+  if(tab){tab.textContent=full+'/5';tab.className='wa-tab-prog'+(full>=5?' done':'');}
+ });
  const result=document.getElementById('waResult');if(!result)return;
  result.innerHTML=[
   [fmt(total.shards),'<img class="res-ic" src="images/resources/fire-crystal-shard.webp" alt="FC Shard"> FC Shards'],
