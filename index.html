@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=18">
+<link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 <div class="wrap">
@@ -228,32 +228,54 @@
       <div class="modal-sub">5-day SvS Prep Phase: City Construction, Research, Beast Slay, Hero Development, and Power Boost.</div>
       <div class="svs-legend"><span class="svs-tier high">High Value</span><span class="svs-tier medium">Medium Value</span><span class="svs-tier low">Low Value</span></div>
 
-      <div class="svs-import">
-        <strong><i class="bi bi-arrow-repeat"></i> Import from Calculator</strong>
-        <button class="mini-btn" onclick="svsImport('building')"><i class="bi bi-building-gear"></i> Building</button>
-        <button class="mini-btn" onclick="svsImport('troops')"><i class="bi bi-people-fill"></i> Troops</button>
-        <button class="mini-btn" onclick="svsImport('war')"><i class="bi bi-mortarboard-fill"></i> War Academy</button>
-        <button class="mini-btn" onclick="svsImport('charm')"><i class="bi bi-gem"></i> Charms</button>
-        <button class="mini-btn" onclick="svsImport('gear')"><i class="bi bi-shield-fill"></i> Chief Gear</button>
-        <button class="mini-btn" onclick="svsImport('hero')"><i class="bi bi-award-fill"></i> Hero Gear</button>
-        <button class="mini-btn" onclick="svsImport('all')"><i class="bi bi-star-fill"></i> Import All</button>
+      <div class="ui-presets">
+        <button type="button" class="ui-preset" onclick="svsPreset('clear')">Clear all days</button>
+        <button type="button" class="ui-preset" onclick="svsPreset('target1m')">Target 1M</button>
+        <button type="button" class="ui-preset" onclick="svsPreset('target5m')">Target 5M</button>
       </div>
 
-      <div class="svs-target bc-section">
-        <label><i class="bi bi-bullseye"></i> Target Score <input id="svsTarget" type="number" min="0" value="1000000" oninput="calcSVS()"></label>
-        <div class="svs-total" id="svsGrandTotal">0 pts</div>
-        <div class="svs-progress"><span id="svsProgressBar"></span></div>
-        <div class="svs-remaining" id="svsRemaining">1,000,000 pts remaining</div>
-      </div>
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-arrow-repeat"></i> Import from Calculator</summary>
+        <div class="bc-collapse-body">
+          <div class="svs-import">
+            <button class="mini-btn" onclick="svsImport('building')"><i class="bi bi-building-gear"></i> Building</button>
+            <button class="mini-btn" onclick="svsImport('troops')"><i class="bi bi-people-fill"></i> Troops</button>
+            <button class="mini-btn" onclick="svsImport('war')"><i class="bi bi-mortarboard-fill"></i> War Academy</button>
+            <button class="mini-btn" onclick="svsImport('charm')"><i class="bi bi-gem"></i> Charms</button>
+            <button class="mini-btn" onclick="svsImport('gear')"><i class="bi bi-shield-fill"></i> Chief Gear</button>
+            <button class="mini-btn" onclick="svsImport('hero')"><i class="bi bi-award-fill"></i> Hero Gear</button>
+            <button class="mini-btn" onclick="svsImport('all')"><i class="bi bi-star-fill"></i> Import All</button>
+          </div>
+        </div>
+      </details>
 
-      <div class="svs-tabs" id="svsTabs"></div>
-      <div class="svs-day-head" id="svsDayHead"></div>
-      <div class="svs-activities" id="svsActivities"></div>
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-bullseye"></i> Target &amp; Progress</summary>
+        <div class="bc-collapse-body">
+          <div class="svs-target">
+            <label><i class="bi bi-bullseye"></i> Target Score <input id="svsTarget" type="number" min="0" value="1000000" oninput="calcSVS()"></label>
+            <div class="svs-total" id="svsGrandTotal">0 pts</div>
+            <div class="svs-progress"><span id="svsProgressBar"></span></div>
+            <div class="svs-remaining" id="svsRemaining">1,000,000 pts remaining</div>
+          </div>
+        </div>
+      </details>
 
-      <div class="bc-section">
-        <h3><i class="bi bi-bar-chart-fill"></i> All Days Breakdown</h3>
-        <div class="svs-breakdown" id="svsBreakdown"></div>
-      </div>
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-calendar-week"></i> Day Planner</summary>
+        <div class="bc-collapse-body">
+          <div class="svs-tabs" id="svsTabs"></div>
+          <div class="svs-day-head" id="svsDayHead"></div>
+          <div class="svs-activities" id="svsActivities"></div>
+        </div>
+      </details>
+
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-bar-chart-fill"></i> All Days Breakdown</summary>
+        <div class="bc-collapse-body">
+          <div class="svs-breakdown" id="svsBreakdown"></div>
+        </div>
+      </details>
       <div class="source-note">Point values and the 5-day SvS prep structure are based on common community data (as of late 2025). Values may change if the game updates event rules.</div>
     </div>
   </div>
@@ -264,40 +286,44 @@
       <button class="modal-close" onclick="closeModal('rfcModal')">×</button>
       <div class="modal-title"><i class="bi bi-fire"></i> RFC Simulator</div>
       <div class="modal-sub">Fire Crystal → Refined Fire Crystal (Crystal Laboratory Super Refinement): 5 tiers of 20 conversions, 100 per week, and 50% off the first conversion of each day.</div>
+      <div class="ui-presets">
+        <button type="button" class="ui-preset" onclick="rfcPreset('day1')">Day-1 heavy</button>
+        <button type="button" class="ui-preset" onclick="rfcPreset('spread')">Spread 1/day</button>
+        <button type="button" class="ui-preset" onclick="rfcPreset('reset')">Reset session</button>
+      </div>
 
-      <div class="bc-section">
-        <h3><i class="bi bi-sliders"></i> Simulator Setup</h3>
+      <details class="bc-collapse" open><summary><i class="bi bi-sliders"></i> Simulator Setup</summary><div class="bc-collapse-body">
         <div class="bc-grid">
           <label>Conversions already done this week (0–99)<input id="rfcStartCount" type="number" min="0" max="99" value="0"></label>
           <label><img class="res-ic" src="images/resources/fire-crystal.webp" alt="FC"> FC Inventory<input id="rfcStartFC" type="number" min="0" value="5000"></label>
           <label class="checkline"><input id="rfcStartDisc" type="checkbox" checked> Today's 50% discount is still available</label>
         </div>
         <div class="bc-toolbar" style="margin:10px 0 0"><button class="mini-btn" onclick="rfcStart()"><i class="bi bi-play-fill"></i>Start Simulation</button></div>
-      </div>
+      </div></details>
 
-      <div class="bc-section"><h3><i class="bi bi-dice-5-fill"></i> Session</h3><div id="rfcSession"></div></div>
+      <details class="bc-collapse" open><summary><i class="bi bi-dice-5-fill"></i> Session</summary><div class="bc-collapse-body"><div id="rfcSession"></div></div></details>
 
-      <div class="bc-section">
-        <h3><i class="bi bi-calendar-week"></i> Weekly Plan</h3>
+      <details class="bc-collapse" open><summary><i class="bi bi-calendar-week"></i> Weekly Plan</summary><div class="bc-collapse-body">
         <div class="modal-sub" style="margin-top:0">Enter a weekly total or edit each day. Day 1 = first day after the weekly reset; each day's first conversion is half price.</div>
         <div id="rfcPlan"></div>
-      </div>
+      </div></details>
 
-      <div class="bc-section"><h3><i class="bi bi-bar-chart-steps"></i> Plan Comparison</h3><div id="rfcCompare"></div></div>
-      <div class="bc-section"><h3><i class="bi bi-table"></i> Tier Overview</h3><div id="rfcOverview"></div></div>
+      <details class="bc-collapse"><summary><i class="bi bi-bar-chart-steps"></i> Plan Comparison</summary><div class="bc-collapse-body"><div id="rfcCompare"></div></div></details>
+      <details class="bc-collapse"><summary><i class="bi bi-table"></i> Tier Overview</summary><div class="bc-collapse-body"><div id="rfcOverview"></div></div></details>
 
-      <div class="bc-section">
-        <h3><i class="bi bi-lightbulb-fill"></i> Strategy Notes</h3>
+      <details class="bc-collapse"><summary><i class="bi bi-lightbulb-fill"></i> Strategy Notes</summary><div class="bc-collapse-body">
         <ul class="tip-list">
           <li><b>Cheapest per RFC:</b> 1 conversion per day, all half price (7/week) - about 6.9 FC per RFC, but only ~10 RFC.</li>
           <li><b>Tier 1 only (20/week):</b> 330 FC for ~29 RFC (11.4 FC/RFC) regardless of how the 20 are split, as long as all 7 daily discounts are used.</li>
           <li><b>Going past Tier 1:</b> do the bulk on Day 1, then 1 per day, so the discounts land on the expensive slots (e.g. 26/week = 540 FC for ~41.9 RFC).</li>
           <li><b>Tiers 4-5</b> cost 2.7-3.1× more FC per RFC than Tier 1 at full price; use them only when you need RFC fast.</li>
         </ul>
-      </div>
+      </div></details>
       <div class="source-note">RFC costs and probabilities are based on Crystal Laboratory community data. Daily pattern uses 50 FC/day. Tier 3–5 cost more FC per RFC than Tier 1. Outcomes are random; results are estimates only.</div>
     </div>
   </div>
+
+  
 
   <!-- EXISTING HERO GEAR -->
   <div class="modal" id="heroGearModal" aria-hidden="true">
@@ -428,8 +454,8 @@
 <script defer src="js/charms.js?v=9"></script>
 <script defer src="js/troops.js?v=10"></script>
 <script defer src="js/chief-gear.js?v=9"></script>
-<script defer src="js/svs.js?v=8"></script>
-<script defer src="js/rfc.js?v=8"></script>
+<script defer src="js/svs.js?v=9"></script>
+<script defer src="js/rfc.js?v=9"></script>
 <script defer src="js/ascii-config.js?v=1"></script>
 <script defer src="js/ascii-art.js?v=12"></script>
 <script defer src="js/ascii-share.js?v=2"></script>
@@ -440,7 +466,7 @@
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=25').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=26').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
