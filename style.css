@@ -444,3 +444,14 @@ footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--border);font-
 
 .ascii-badge.mine{color:#94a3b8;border-color:rgba(148,163,184,.5)}
 .ascii-share-row{margin:2px 0}
+
+/* Building plan level + FC icon alignment */
+.plan-level-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.plan-level-row .fc-ic{width:28px;height:28px;object-fit:contain;flex:0 0 28px;}
+.plan-level-row select{flex:1;min-width:0;margin-top:0 !important;}
+.plan-selects .plan-level{display:flex;flex-direction:column;}
+.plan-selects label.plan-building select{margin-top:4px;}
+.building-plan .plan-selects{align-items:end;}
+@media(max-width:700px){
+  .plan-level-row .fc-ic{width:24px;height:24px;flex-basis:24px;}
+}
