@@ -131,7 +131,7 @@ function renderCharmDB(){
       <select id="chTar${i}" onchange="charmSetTar(${i},this.value)">${lvlOpts}</select>
       <span class="charm-ic-wrap" id="chIcT${i}"></span>
       </div>`).join('');
-   return `<div class="bc-section"><h3>${troopIcon(type)} ${type}</h3><div class="research-list">${rows}</div></div>`;
+   return `<details class="bc-collapse" open><summary>${troopIcon(type)} ${type}</summary><div class="bc-collapse-body"><div class="research-list">${rows}</div></div></details>`;
  }).join('');
 
  b.innerHTML=`<button class="modal-close" onclick="closeModal('charmModal')">×</button><div class="modal-title"><i class="bi bi-gem"></i> Chief Charm</div><div class="modal-sub">18 independent charm slots — 3 charms per gear piece (Helmet+Watch = Lancer, Jacket+Pants = Infantry, Ring+Cane = Marksman). Levels 1–18, with sub-levels starting at Lv.4. Chief Charm unlocks at Furnace Lv.25; Lv.16 requires Gen 7 state.</div>
@@ -143,15 +143,15 @@ function renderCharmDB(){
    <button class="mini-btn" onclick="charmResetAll()">Reset All</button>
  </div>
  ${rowsByType}
- <div class="bc-section"><h3><i class="bi bi-bag-fill"></i> Available Resources</h3><div class="bc-grid">
+ <details class="bc-collapse" open><summary><i class="bi bi-bag-fill"></i> Available Resources</summary><div class="bc-collapse-body"><div class="bc-grid">
    <label>${CH_GUIDE} Charm Guides<input id="chAvailG" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
    <label>${CH_DESIGN} Charm Designs<input id="chAvailD" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
    <label>${CH_SECRET} Jewel Secrets<input id="chAvailS" type="number" min="0" value="0" oninput="calcCharmSummary()"></label>
- </div></div>
- <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Total Materials Required</h3><div id="chTotalResult" class="result-grid"></div></div>
- <div class="bc-section result"><h3><i class="bi bi-exclamation-triangle-fill"></i> Still Needed (After Available)</h3><div id="chNeedResult" class="result-grid"></div></div>
- <div class="bc-section"><h3><i class="bi bi-diagram-3-fill"></i> By Troop Type</h3><div id="chByType" class="charm-slots"></div></div>
- <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Cost Database (per charm, per level)</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>${CH_GUIDE} Guides</th><th>${CH_DESIGN} Designs</th><th>${CH_SECRET} Secrets</th><th>Score</th></tr></thead><tbody>${WOS_DB.charmSteps.slice(1).map(v=>`<tr><td>${v.label}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td><td>${fmt(v.score)}</td></tr>`).join('')}</tbody></table></div><div class="source-note">Cost per charm and level step from wostools.net/chief-charms-calculator (checked September 28, 2026). Score × 70 = SvS/KoI points. Jewel Secrets are only required for Lv.12–18. Lv.11 unlocks Material Exchange.</div></div>
+ </div></div></details>
+ <details class="bc-collapse" open><summary><i class="bi bi-bar-chart-fill"></i> Total Materials Required</summary><div class="bc-collapse-body"><div id="chTotalResult" class="result-grid"></div></div></details>
+ <details class="bc-collapse" open><summary><i class="bi bi-exclamation-triangle-fill"></i> Still Needed (After Available)</summary><div class="bc-collapse-body"><div id="chNeedResult" class="result-grid"></div></div></details>
+ <details class="bc-collapse"><summary><i class="bi bi-diagram-3-fill"></i> By Troop Type</summary><div class="bc-collapse-body"><div id="chByType" class="charm-slots"></div></div></details>
+ <details class="bc-collapse"><summary><i class="bi bi-collection-fill"></i> Cost Database (per charm, per level)</summary><div class="bc-collapse-body"><div class="table-scroll"><table class="db-table"><thead><tr><th>Level</th><th>${CH_GUIDE} Guides</th><th>${CH_DESIGN} Designs</th><th>${CH_SECRET} Secrets</th><th>Score</th></tr></thead><tbody>${WOS_DB.charmSteps.slice(1).map(v=>`<tr><td>${v.label}</td><td>${fmt(v.guides)}</td><td>${fmt(v.designs)}</td><td>${fmt(v.secrets)}</td><td>${fmt(v.score)}</td></tr>`).join('')}</tbody></table></div></details><div class="source-note">Cost per charm and level step from wostools.net/chief-charms-calculator (checked September 28, 2026). Score × 70 = SvS/KoI points. Jewel Secrets are only required for Lv.12–18. Lv.11 unlocks Material Exchange.</div></div>
  <div class="bc-section"><h3><i class="bi bi-lightbulb-fill"></i> Tips</h3><ul class="tip-list">
    <li><b>Save for events:</b> upgrade during King of Icefield, Officer Project, Armament Competition, or Alliance Mobilization.</li>
    <li><b>Jewel Secrets:</b> are only required for levels 12–18, with costs increasing rapidly (15 at Lv.12 up to 180 at Lv.18 per charm).</li>

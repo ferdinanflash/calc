@@ -67,7 +67,7 @@ function renderTroopDB(){
  const tiers=Object.keys(WOS_DB.troops), lastTier=tiers[tiers.length-1], prevTier=tiers[tiers.length-2]||tiers[0];
  b.innerHTML=`<button class="modal-close" onclick="closeModal('troopsModal')">×</button>
  <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion for Infantry, Lancer, and Marksman — T1–T12, FC-adjusted troop power, speed bonuses, resource gaps, and event points.</div>
- <div class="bc-section"><div class="placeholder-grid">
+ <details class="bc-collapse" open><summary><i class="bi bi-sliders"></i> Training Setup</summary><div class="bc-collapse-body"><div class="placeholder-grid">
  <label>Troop Type <span id="dbTroopTypeIc">${troopIcon("Infantry")}</span><select id="dbTroopType"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
  <label>Mode<select id="dbTroopMode"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
  <label id="dbTroopFromWrap" class="hidden">From Tier (Current)<select id="dbTroopFrom">${tierOpts(prevTier)}</select></label>
@@ -78,20 +78,19 @@ function renderTroopDB(){
  <label>Speed Bonus % <input id="dbTroopSpeed" type="number" min="0" value="0"></label>
  <label>Training Queues (parallel)<input id="dbTroopQueues" type="number" min="1" value="1"></label>
  <label class="checkline"><input id="dbTroopAdvanced" type="checkbox"> Advanced Training (-20% time, flat)</label>
- </div></div>
+ </div></div></details>
  <div class="notice"><i class="bi bi-info-circle-fill"></i> Meat/Wood/Coal/Iron costs are the same for Infantry, Lancer &amp; Marksman at the same tier (only combat statistics differ), so the Troop Type selector above does not change the cost values.</div>
  <div id="dbTroopWarn" class="notice hidden"><i class="bi bi-exclamation-triangle-fill"></i> For Promotion mode, From Tier must be lower than Target Tier. Adjust the tier selection to see the results.</div>
- <div class="bc-section">
-   <h3><i class="bi bi-bag-fill"></i> Available Resources</h3>
+ <details class="bc-collapse" open><summary><i class="bi bi-bag-fill"></i> Available Resources</summary><div class="bc-collapse-body">
    <div class="bc-grid">
      <label><img class="res-ic" src="images/resources/meat.webp" alt="Meat"> Meat<input id="dbTroopMeat" type="number" min="0" value="0"></label>
      <label><img class="res-ic" src="images/resources/wood.webp" alt="Wood"> Wood<input id="dbTroopWood" type="number" min="0" value="0"></label>
      <label><img class="res-ic" src="images/resources/coal.webp" alt="Coal"> Coal<input id="dbTroopCoal" type="number" min="0" value="0"></label>
      <label><img class="res-ic" src="images/resources/iron.webp" alt="Iron"> Iron<input id="dbTroopIron" type="number" min="0" value="0"></label>
    </div>
- </div>
- <div class="bc-section result"><h3><i class="bi bi-bar-chart-fill"></i> Calculation</h3><div id="dbTroopResult" class="result-grid"></div></div>
- <div class="bc-section"><h3><i class="bi bi-collection-fill"></i> Database T1–T12</h3><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th><img class="res-ic" src="images/resources/meat.webp" alt=""> Meat</th><th><img class="res-ic" src="images/resources/wood.webp" alt=""> Wood</th><th><img class="res-ic" src="images/resources/coal.webp" alt=""> Coal</th><th><img class="res-ic" src="images/resources/iron.webp" alt=""> Iron</th><th>Time</th><th>Power / Unit (Inf / Lan / Mrk)</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${t==='T3'?'6 / 5 / 5':fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div>
+ </div></details>
+ <details class="bc-collapse" open><summary><i class="bi bi-bar-chart-fill"></i> Calculation</summary><div class="bc-collapse-body"><div id="dbTroopResult" class="result-grid"></div></div></details>
+ <details class="bc-collapse"><summary><i class="bi bi-collection-fill"></i> Database T1–T12</summary><div class="bc-collapse-body"><div class="table-scroll"><table class="db-table"><thead><tr><th>Tier</th><th><img class="res-ic" src="images/resources/meat.webp" alt=""> Meat</th><th><img class="res-ic" src="images/resources/wood.webp" alt=""> Wood</th><th><img class="res-ic" src="images/resources/coal.webp" alt=""> Coal</th><th><img class="res-ic" src="images/resources/iron.webp" alt=""> Iron</th><th>Time</th><th>Power / Unit (Inf / Lan / Mrk)</th><th>HoC</th><th>SvS</th><th>KoI</th></tr></thead><tbody>${Object.entries(WOS_DB.troops).map(([t,v])=>`<tr><td>${t}</td><td>${fmt(v.meat)}</td><td>${fmt(v.wood)}</td><td>${fmt(v.coal)}</td><td>${fmt(v.iron)}</td><td>${secondsText(v.seconds)}</td><td>${t==='T3'?'6 / 5 / 5':fmt(v.power)}</td><td>${fmt(v.hoc)}</td><td>${fmt(v.svs)}</td><td>${fmt(v.koi)}</td></tr>`).join('')}</tbody></table></div></div></details>
  <div class="source-note">Training uses the full cost and event points of the target tier. Troop Power uses the verified per-unit FC table: T10 Base/FC0→FC10 = 66→124, T11 FC0→FC10 = 80→148, T12 FC0→FC10 = 130→235. Promotion uses the difference in cost, time, event points, and actual selected source/target troop power. Base tier data was verified on September 28, 2026; Promotion differences outside T11→T12 are calculated from the cost table differences.</div>`;
  const modeSel=document.getElementById('dbTroopMode');
  const typeSel=document.getElementById('dbTroopType');
