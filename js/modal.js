@@ -7,6 +7,7 @@ function openModal(id){
   m.classList.add('open');
   m.setAttribute('aria-hidden','false');
   document.body.classList.add('modal-open');
+  if(typeof uiPushRecent==='function') uiPushRecent(id);
   if(id==='buildingModal') initBuilding();
   if(id==='troopsModal') renderTroopDB();
   if(id==='warAcademyModal') initWarAcademy();

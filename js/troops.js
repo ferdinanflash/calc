@@ -67,6 +67,12 @@ function renderTroopDB(){
  const tiers=Object.keys(WOS_DB.troops), lastTier=tiers[tiers.length-1], prevTier=tiers[tiers.length-2]||tiers[0];
  b.innerHTML=`<button class="modal-close" onclick="closeModal('troopsModal')">×</button>
  <div class="modal-title"><i class="bi bi-people-fill"></i> Training Troops Calculator</div><div class="modal-sub">Training &amp; promotion for Infantry, Lancer, and Marksman — T1–T12, FC-adjusted troop power, speed bonuses, resource gaps, and event points.</div>
+ <div class="ui-presets">
+  <button type="button" class="ui-preset" onclick="troopPreset('t10')">Train T10 ×100k</button>
+  <button type="button" class="ui-preset" onclick="troopPreset('t11')">Train T11 ×100k</button>
+  <button type="button" class="ui-preset" onclick="troopPreset('t12')">Train T12 ×100k</button>
+  <button type="button" class="ui-preset" onclick="troopPreset('promo')">Promote T11→T12</button>
+ </div>
  <details class="bc-collapse" open><summary><i class="bi bi-sliders"></i> Training Setup</summary><div class="bc-collapse-body"><div class="placeholder-grid">
  <label>Troop Type <span id="dbTroopTypeIc">${troopIcon("Infantry")}</span><select id="dbTroopType"><option>Infantry</option><option>Lancer</option><option>Marksman</option></select></label>
  <label>Mode<select id="dbTroopMode"><option value="train">Training</option><option value="promote">Promotion</option></select></label>
@@ -158,4 +164,33 @@ function calcTroopDB(){
    .map(x=>statCard(x[1],x[0])).join('');
 
  const el=document.getElementById('dbTroopResult'); if(el)el.innerHTML=resCards+otherCards;
+ if(typeof uiSetSticky==='function'){
+   const tmp=document.createElement('div'); tmp.innerHTML=resCards+otherCards;
+   const nums=[...tmp.querySelectorAll('.stat .n')].map(x=>x.textContent.trim());
+   const labs=[...tmp.querySelectorAll('.stat .l')].map(x=>x.textContent.trim().split('·')[0].trim());
+   const parts=[];
+   for(let i=0;i<Math.min(nums.length,6);i++) parts.push(labs[i]+' '+nums[i]);
+   uiSetSticky('troopsModal', parts.join(' · '), parts.join(' | '));
+ }
+}
+
+
+function troopPreset(kind){
+  const mode=document.getElementById('dbTroopMode');
+  const tier=document.getElementById('dbTroopTier');
+  const from=document.getElementById('dbTroopFrom');
+  const qty=document.getElementById('dbTroopQty');
+  if(!mode||!tier) return;
+  if(kind==='promo'){
+    mode.value='promote';
+    if(from) from.value='T11';
+    tier.value='T12';
+  } else {
+    mode.value='train';
+    tier.value=kind==='t10'?'T10':kind==='t11'?'T11':'T12';
+  }
+  if(qty) qty.value='100000';
+  mode.dispatchEvent(new Event('change'));
+  if(typeof syncTroopFcSelectors==='function') syncTroopFcSelectors();
+  calcTroopDB();
 }

@@ -159,6 +159,18 @@ function calcBuilding(){
   cards+=statCard(totalSeconds>0&&totalSeconds<60?secondsText(totalSeconds):formatDuration(totalSeconds),`Total Time · ${bonus.toFixed(1)}% speed bonus`);
   cards+=statCard(fmt(totals.levels),'Upgrade Steps');
   document.getElementById('buildingResult').innerHTML=cards;
+  if(typeof uiSetSticky==='function'){
+    const parts=[];
+    if(totals.meat) parts.push('Meat '+fmt(totals.meat));
+    if(totals.wood) parts.push('Wood '+fmt(totals.wood));
+    if(totals.coal) parts.push('Coal '+fmt(totals.coal));
+    if(totals.iron) parts.push('Iron '+fmt(totals.iron));
+    if(totals.fc) parts.push('FC '+fmt(totals.fc));
+    if(totals.rfc) parts.push('RFC '+fmt(totals.rfc));
+    const timeStr=totalSeconds>0&&totalSeconds<60?secondsText(totalSeconds):formatDuration(totalSeconds);
+    parts.push('Time '+timeStr);
+    uiSetSticky('buildingModal', parts.join(' · '), parts.join(' | '));
+  }
   renderBuildingSteps(planCosts,adjustSec);
 }
 
@@ -199,6 +211,19 @@ function renderBuildingSteps(planCosts,adjustSec){
 }
 function initBuilding(){
   if(!buildingPlans.length) addBuildingPlan();
+  renderBuildingPlans();
+  calcBuilding();
+}
+
+
+function buildingPreset(kind){
+  if(kind==='clear'){ buildingPlans=[]; buildingPlanId=0; addBuildingPlan(); return; }
+  buildingPlans=[]; buildingPlanId=0;
+  if(kind==='fc1-5'){
+    buildingPlans.push({id:++buildingPlanId,building:'Furnace',from:'FC1',to:'FC5'});
+  } else if(kind==='fc5-10'){
+    buildingPlans.push({id:++buildingPlanId,building:'Furnace',from:'FC5',to:'FC10'});
+  }
   renderBuildingPlans();
   calcBuilding();
 }

@@ -1884,10 +1884,14 @@ function renderAsciiArt(){
     const body = multi
       ? `<pre class="ascii-pre${emoji?' emoji':''}${wide?' wide':''}">${escapeAscii(a.art)}</pre>`
       : `<span class="ascii-one${emoji?' emoji':''}">${escapeAscii(a.art)}</span>`;
+    const lines = String(a.art||'').split('\n');
+    const maxW = lines.reduce((m,l)=>Math.max(m, [...l].length), 0);
+    const wideChat = maxW > 28;
+    const wBadge = maxW ? `<span class="ascii-width${wideChat?' warn':''}" title="Max line width in characters">${maxW} ch${wideChat?' · may wrap in chat':''}</span>` : '';
     return `<div class="ascii-card">
       ${a.shared ? '<span class="ascii-badge">COMMUNITY</span>' : (a.custom ? '<span class="ascii-badge mine">MY DESIGN</span>' : '')}
-      <div class="ascii-art">${body}</div>
-      <div class="ascii-name">${escapeAscii(a.name)}</div>
+      <div class="ascii-art ascii-preview-frame">${body}</div>
+      <div class="ascii-name">${escapeAscii(a.name)} ${wBadge}</div>
       ${a.by ? `<div class="ascii-by">by ${escapeAscii(a.by)}</div>` : ''}
       <div class="ascii-actions">
         <button type="button" class="ascii-copy" onclick="copyAscii(${a.i})"><i class="bi bi-copy"></i> COPY</button>

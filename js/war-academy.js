@@ -401,6 +401,16 @@ function calcWarAcademy(){
   [fmt(gap.shards),'<i class="bi bi-exclamation-circle"></i> FC Shards Needed'],
   [fmt(gap.rfc),'<i class="bi bi-exclamation-circle"></i> Refined FC Needed']
  ].map(x=>statCard(x[0],x[1])).join('');
+ if(typeof uiSetSticky==='function' && total){
+   const parts=[
+     'FC Shards '+fmt(total.shards),
+     'Refined FC '+fmt(total.rfc),
+     'Steel '+fmt(total.steel),
+     'Time '+formatDuration(total.seconds/speedFactor())
+   ];
+   uiSetSticky('warAcademyModal', parts.join(' · '), parts.join(' | '));
+ }
+
  const fc=valNum('waFcLevel'),warnings=[];
  Object.entries(per).forEach(([type,p])=>{
   if(p.problems.length)warnings.push(`${type}: ${p.problems.join('; ')}.`);
@@ -411,4 +421,14 @@ function calcWarAcademy(){
  let box=document.getElementById('waWarnings');
  if(!box){box=document.createElement('div');box.id='waWarnings';box.className='notice';result.parentElement.appendChild(box);}
  box.innerHTML=warnings.length?`<b>Requirements:</b> ${warnings.join(' ')}`:`<b>Requirements:</b> all selected research prerequisites and FC gates are satisfied.`;
+}
+
+
+function waPreset(kind){
+  Object.keys(WA_HELIOS).forEach(type=>{
+    if(kind==='reset'){ waSetBranch(type,0,'h'); waSetT12(type,0); }
+    else if(kind==='helios'){ waSetBranch(type, WA_HELIOS[type].length,'h'); }
+    else if(kind==='t12unlock'){ waSetT12(type,5); }
+  });
+  calcWarAcademy();
 }

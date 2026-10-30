@@ -116,8 +116,18 @@ function calcCharmSummary(){
     const b=byType[t]; const pts=b.score*WOS_DB.charmRules.pointsPerScore;
     return `<div class="tree-item"><b>${troopIcon(t)} ${t}</b><span>${fmt(b.guides)} Guides · ${fmt(b.designs)} Designs · ${fmt(b.secrets)} Secrets · ${fmt(pts)} pts</span></div>`;
   }).join('');
+  if(typeof charmStickyFromDom==='function') charmStickyFromDom();
 }
-
+function charmStickyFromDom(){
+  if(typeof uiSetSticky!=='function') return;
+  const req=document.getElementById('chTotalResult');
+  if(!req) return;
+  const nums=[...req.querySelectorAll('.stat .n')].map(x=>x.textContent.trim());
+  const labs=[...req.querySelectorAll('.stat .l')].map(x=>x.textContent.trim());
+  const parts=[];
+  for(let i=0;i<Math.min(nums.length,4);i++) parts.push(labs[i]+' '+nums[i]);
+  if(parts.length) uiSetSticky('charmModal', parts.join(' · '), parts.join(' | '));
+}
 function renderCharmDB(){
  const m=document.getElementById('charmModal'); if(!m)return; const b=m.querySelector('.modal-box');
  ensureCharmVals();
