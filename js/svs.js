@@ -129,6 +129,12 @@ function calcSVS(){
  const bar=document.getElementById('svsProgressBar');if(bar)bar.style.width=pct+'%';
  const rem=document.getElementById('svsRemaining');if(rem)rem.textContent=total>=target?'Target reached!':fmt(target-total)+' pts remaining';
  const bd=document.getElementById('svsBreakdown');if(bd)bd.innerHTML=SVS_DAYS.map((d,i)=>`<div class="svs-bar-row"><div><b>${d.name}</b><small>${d.theme}</small></div><div class="svs-bar"><span style="width:${total?svsDayTotal(i)/total*100:0}%"></span></div><strong>${fmt(svsDayTotal(i))}</strong></div>`).join('');
+ if(typeof uiSetSticky==='function'){
+   const parts=['Total '+fmt(total)+' pts','Target '+fmt(target)+' pts'];
+   if(total<target) parts.push('Need '+fmt(target-total));
+   else parts.push('Target reached');
+   uiSetSticky('svsModal', parts.join(' · '), parts.join(' | '));
+ }
 }
 function saveSVS(){try{localStorage.setItem('calc_svs_values',JSON.stringify(svsValues));localStorage.setItem('calc_svs_target',document.getElementById('svsTarget')?.value||1000000)}catch(e){}}
 function loadSVS(){try{const v=JSON.parse(localStorage.getItem('calc_svs_values'));if(Array.isArray(v)&&v.length===SVS_DAYS.length&&v.every((day,i)=>Array.isArray(day)&&day.length===SVS_DAYS[i].items.length))svsValues=v;const t=localStorage.getItem('calc_svs_target');if(t&&document.getElementById('svsTarget'))document.getElementById('svsTarget').value=t}catch(e){}}
@@ -157,4 +163,19 @@ function svsImport(type){
    added+=hg.essence*4000+hg.widgetTotal*8000+hg.mithril*144000;
  }
  saveSVS(); renderSVS(); alert((type==='all'?'Import All':'Import '+type)+' completed. '+fmt(added)+' pts were added.');
+}
+
+
+function svsPreset(kind){
+  if(kind==='clear'){
+    svsValues=SVS_DAYS.map(d=>d.items.map(()=>0));
+    saveSVS(); renderSVS();
+    if(typeof uiToast==='function') uiToast('SvS cleared');
+    return;
+  }
+  if(kind==='target1m'||kind==='target5m'){
+    const el=document.getElementById('svsTarget');
+    if(el){ el.value=kind==='target1m'?1000000:5000000; }
+    calcSVS(); saveSVS();
+  }
 }

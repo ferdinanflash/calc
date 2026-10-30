@@ -69,6 +69,8 @@ function rfcSetDay(i,v){
  rfcPlanResult();
 }
 function rfcPlanResult(){
+ // sticky updated after render below
+
  const out=document.getElementById('rfcPlanResult'); if(!out)return;
  const p=rfcPlan(rfcDays);
  p.perDay.forEach((c,i)=>{const e=document.getElementById('rfcDayFc'+i);if(e)e.textContent=p.used[i]?fmt(c)+' FC':'-';});
@@ -81,6 +83,12 @@ function rfcPlanResult(){
  const note=document.getElementById('rfcPlanNote');
  if(note)note.innerHTML=p.n?`${p.n} conversions, reaching Tier ${rfcTierIdx(p.n-1)+1}. `+(save>0.5?`<b>Cheaper split available:</b> Day 1 = ${rfcAutoDays(p.n)[0]}, then 1/day costs ${fmt(auto.fc)} FC (saves ${fmt(save)} FC).`:'This split is already the lowest-cost one.'):'Enter conversions to plan.';
 }
+ if(typeof uiSetSticky==='function' && typeof rfcDays!=='undefined'){
+  try{
+   const p=rfcPlan(rfcDays);
+   uiSetSticky('rfcModal', `Plan ${p.n} conv · FC ${fmt(p.fc)} · ~${rfcNum(p.ev,1)} RFC`, `RFC plan: ${p.n} conversions, ${fmt(p.fc)} FC, ~${rfcNum(p.ev,1)} RFC`);
+  }catch(e){}
+ }
 function rfcRenderPlan(){
  const el=document.getElementById('rfcPlan'); if(!el)return;
  el.innerHTML=`<div class="bc-grid"><label>Conversions per week (max ${RFC_WEEK_MAX})<input id="rfcPlanN" type="number" min="0" max="${RFC_WEEK_MAX}" value="${rfcDays.reduce((a,b)=>a+b,0)}" oninput="rfcSetPlanN(this.value)"></label></div>
@@ -152,3 +160,23 @@ function rfcRenderSession(){
  <div class="rfc-hist">${rfc.hist.map(h=>`<span class="r${Math.min(h.r,6)}" title="Tier ${h.t}${h.half?' · 50% off':''}">${h.half?'½ ':''}+${h.r}</span>`).join('')||'<small>No conversions yet.</small>'}</div>`;
 }
 function initRFC(){rfcRenderStatic();rfcRenderPlan();rfcRenderSession();}
+
+
+function rfcPreset(kind){
+  if(kind==='reset'){
+    if(typeof rfcNewWeek==='function') rfcNewWeek();
+    const c=document.getElementById('rfcStartCount'); if(c) c.value=0;
+    if(typeof rfcRenderSession==='function') rfcRenderSession();
+    if(typeof uiToast==='function') uiToast('RFC session reset');
+    return;
+  }
+  if(kind==='day1'){
+    // 20 conversions heavy day-1 plan
+    if(typeof rfcSetPlanN==='function') rfcSetPlanN(20);
+    if(typeof uiToast==='function') uiToast('Plan: 20/week (Day-1 heavy)');
+  }
+  if(kind==='spread'){
+    if(typeof rfcSetPlanN==='function') rfcSetPlanN(7);
+    if(typeof uiToast==='function') uiToast('Plan: 7/week (1 per day)');
+  }
+}
