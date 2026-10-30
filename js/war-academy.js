@@ -229,24 +229,69 @@ function renderSelect(name,idx,max,type,group){
  const key=`${type}|${group}|${idx}`,o=waOpts(max);
  return `<div class="research-row"><span>${name}<small>max ${max}</small></span><select data-wa="${key}" data-mode="current" aria-label="${name} current" onchange="waSetLevel('${type}','${group}',${idx},'current',this.value)">${o}</select><span>→</span><select data-wa="${key}" data-mode="target" aria-label="${name} target" onchange="waSetLevel('${type}','${group}',${idx},'target',this.value)">${o}</select></div>`;
 }
+function waSub(title, body, cls=''){
+ return `<div class="wa-sub ${cls}"><div class="wa-sub-title">${title}</div><div class="research-list">${body}</div></div>`;
+}
+function renderHelios(type, items){
+ // items: [name, max][] — group into Flame path / Helios core / Support
+ const flame = items.slice(0, 6).map((x,i)=>renderSelect(x[0],i,x[1],type,'h')).join('');
+ const core  = items.slice(6, 7).map((x,i)=>renderSelect(x[0],6+i,x[1],type,'h')).join('');
+ const supp  = items.slice(7).map((x,i)=>renderSelect(x[0],7+i,x[1],type,'h')).join('');
+ return waSub('🔥 Helios (T11) — Flame Path', flame, 'wa-helios')
+      + waSub('☀️ Helios Unlock', core, 'wa-helios-core')
+      + waSub('❤️ Helios Support (Training / Heal / First Aid)', supp, 'wa-helios-supp');
+}
 function renderT12(type){
  const m=WA_T12[type];
- return `<div class="bc-section t12-section"><h3>${troopIcon(type)} T12 Exalted &amp; Molten ${type}<small class="t12-threshold" id="waThreshold-${type}"></small></h3><div class="notice">T12 unlocks after all 5 Exalted tracks reach Lv.5. Exalted gates: FC5 → FC7 → FC8 → FC9 → FC10. Molten I/II/III require War Academy FC10. Gateway gates Molten II at Lv.1/2/3; Solar gates Molten III.</div><div class="research-list">`
-  +m.exalted.map((n,i)=>renderSelect(n,i,5,type,'t12')).join('')
-  +m.moltenI.map((n,i)=>renderSelect(n,5+i,20,type,'t12')).join('')
-  +renderSelect(m.gateway,9,3,type,'t12')
-  +m.moltenII.map((n,i)=>renderSelect(n,10+i,50,type,'t12')).join('')
-  +renderSelect(m.solar,14,15,type,'t12')
-  +m.moltenIII.map((n,i)=>renderSelect(n,15+i,50,type,'t12')).join('')
-  +'<div class="research-divider">⚔️ T12 Support Research</div>'
-  +m.t12Support.map((n,i)=>renderSelect(n,19+i,10,type,'t12')).join('')
-  +'</div></div>';
+ const notice=`<div class="notice wa-t12-notice">T12 unlocks after all 5 Exalted tracks reach Lv.5. Exalted FC gates: FC5 → FC7 → FC8 → FC9 → FC10. Molten needs War Academy FC10. Gateway gates Molten II; Solar gates Molten III.</div>`;
+ const exalted = m.exalted.map((n,i)=>renderSelect(n,i,5,type,'t12')).join('');
+ const moltenI = m.moltenI.map((n,i)=>renderSelect(n,5+i,20,type,'t12')).join('');
+ const gateway = renderSelect(m.gateway,9,3,type,'t12');
+ const moltenII = m.moltenII.map((n,i)=>renderSelect(n,10+i,50,type,'t12')).join('');
+ const solar = renderSelect(m.solar,14,15,type,'t12');
+ const moltenIII = m.moltenIII.map((n,i)=>renderSelect(n,15+i,50,type,'t12')).join('');
+ const support = m.t12Support.map((n,i)=>renderSelect(n,19+i,10,type,'t12')).join('');
+ return `<div class="wa-t12-block">
+  <div class="wa-t12-head"><span>⚔️ T12 Exalted &amp; Molten — ${type}</span><small class="t12-threshold" id="waThreshold-${type}"></small></div>
+  ${notice}
+  ${waSub('Exalted (unlock T12)', exalted, 'wa-exalted')}
+  ${waSub('Molten I', moltenI, 'wa-molten')}
+  ${waSub('Gateway', gateway, 'wa-gateway')}
+  ${waSub('Molten II', moltenII, 'wa-molten')}
+  ${waSub('Solar Supremacy', solar, 'wa-solar')}
+  ${waSub('Molten III', moltenIII, 'wa-molten')}
+  ${waSub('T12 Support Research', support, 'wa-t12-supp')}
+ </div>`;
 }
 function buildWAControls(){
  const el=document.getElementById('warBranches');if(!el)return;
  if(el.dataset.built)return;
- el.innerHTML=Object.entries(WA_HELIOS).map(([type,items])=>`<div class="bc-section"><h3>${troopIcon(type)} ${type}</h3><div class="bc-toolbar"><button class="mini-btn" onclick="waSetBranch('${type}',0,'h')">Reset Current</button><button class="mini-btn" onclick="waSetBranch('${type}',${items.length},'h')">Max Helios</button><button class="mini-btn" onclick="waSetT12('${type}',5)">Unlock T12</button><button class="mini-btn" onclick="waSetT12('${type}',999)">Max T12</button></div><div class="research-list">${items.map((x,i)=>renderSelect(x[0],i,x[1],type,'h')).join('')}</div>${renderT12(type)}</div>`).join('');
+ el.innerHTML=Object.entries(WA_HELIOS).map(([type,items])=>`
+  <div class="bc-section wa-troop">
+   <h3>${troopIcon(type)} ${type}</h3>
+   <div class="bc-toolbar">
+    <button class="mini-btn" onclick="waSetBranch('${type}',0,'h')">Reset Current</button>
+    <button class="mini-btn" onclick="waSetBranch('${type}',${items.length},'h')">Max Helios</button>
+    <button class="mini-btn" onclick="waSetT12('${type}',5)">Unlock T12</button>
+    <button class="mini-btn" onclick="waSetT12('${type}',999)">Max T12</button>
+   </div>
+   <div class="wa-tabs" data-wa-tabs="${type}">
+    <button type="button" class="wa-tab active" data-tab="helios" onclick="waSwitchTab('${type}','helios',this)">Helios (T11)</button>
+    <button type="button" class="wa-tab" data-tab="t12" onclick="waSwitchTab('${type}','t12',this)">T12 Exalted / Molten</button>
+   </div>
+   <div class="wa-pane wa-pane-helios" data-pane="${type}-helios">${renderHelios(type, items)}</div>
+   <div class="wa-pane wa-pane-t12" data-pane="${type}-t12" hidden>${renderT12(type)}</div>
+  </div>`).join('');
  el.dataset.built='1';
+}
+function waSwitchTab(type, tab, btn){
+ const root = btn.closest('.wa-troop');
+ if(!root) return;
+ root.querySelectorAll('.wa-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+ root.querySelectorAll('.wa-pane').forEach(p => {
+  const isHelios = p.classList.contains('wa-pane-helios');
+  p.hidden = tab === 'helios' ? !isHelios : isHelios;
+ });
 }
 // Push waLevels into the existing <select>s (no DOM rebuild, keeps focus and scroll position).
 function syncWAControls(){
