@@ -16,7 +16,7 @@
     const targetPoints = num('hcTargetPoints') || 12500;
 
     const kofStages = Math.min(7, Math.floor(num('hcKofStages')));
-    const kofMilestones = Math.min(5, Math.floor(num('hcKofMilestones')));
+    const kofMilestones = kofStages >= 7 ? 0 : Math.min(5, Math.floor(num('hcKofMilestones')));
     const milestoneRewards = [250, 300, 350, 400, 400];
     const kofCandy = kofStages * 1700 + milestoneRewards.slice(0, kofMilestones).reduce((a, b) => a + b, 0);
 
