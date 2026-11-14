@@ -1,7 +1,7 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v37-20261114';
+const CACHE_VERSION = 'v38-20261114';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
