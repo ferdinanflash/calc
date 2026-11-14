@@ -12,7 +12,7 @@
  const packs=[[.99,120,500],[2.99,360,1500],[4.99,500,2500],[9.99,900,4000],[19.99,1700,6000],[49.99,3500,12000],[99.99,6000,20000]];
  let s;
  const weighted=a=>{let r=Math.random()*a.reduce((v,x)=>v+x[1],0);for(const x of a){r-=x[1];if(r<=0)return x[0]}return a[a.length-1][0]};
- function makeBoard(){s.board=Array.from({length:9},()=>{const r=weighted(rarity);return {rarity:r,reward:weighted(tables[r]),opened:false}});s.free=3;s.freeCleared=false;render();}
+ function makeBoard(){s.board=Array.from({length:9},()=>{const r=weighted(rarity);return {rarity:r,reward:weighted(tables[r]),opened:false}});s.freeCleared=false;render();}
  function fresh(){s={day:1,gems:0,opened:0,thorns:0,spent:0,free:3,boards:0,rewards:{},board:[]};makeBoard();message('New event session started.');totals();}
  function budget(){return Math.max(0,Number($('frostBudget').value)||0)}
  function canSpend(n){return !budget()||s.spent+n<=budget()}
@@ -27,7 +27,7 @@
  if(s.free>0){s.free--;makeBoard();message('Free refresh used.');return}
  if(!canSpend(90)){message('Not enough Gems of Enigma for a 90-Gem refresh.');return}
  s.spent+=90;s.gems+=90;makeBoard();message('Paid refresh: 90 Gems of Enigma.');totals();}
- function nextDay(){if(s.day>=7){message('You have reached Day 7. Reset the session to start again.');return}s.day++;makeBoard();render();totals();message('Day '+s.day+' started. Three free refreshes restored.');}
+ function nextDay(){if(s.day>=7){message('You have reached Day 7. Reset the session to start again.');return}s.day++;s.free=3;makeBoard();render();totals();message('Day '+s.day+' started. Three free refreshes restored.');}
  function message(t){$('frostMessage').textContent=t}
  function render(){if(!s)return;$('frostStatus').innerHTML=[['Event day',s.day+' / 7'],['Gems used',fmt(s.gems)],['Free refreshes left',s.free],['Chests opened',s.opened]].map(x=>'<div><span>'+x[0]+'</span><strong>'+x[1]+'</strong></div>').join('');$('frostBoardCount').textContent=s.board.filter(x=>!x.opened).length+'/9 unopened';$('frostBoard').innerHTML=s.board.map((c,i)=>'<button class="frost-chest '+c.rarity.toLowerCase()+' '+(c.opened?'opened':'')+'" data-i="'+i+'" '+(c.opened?'disabled':'')+'><span class="chest-art">'+(c.opened?'🎁':'🧰')+'</span><strong>'+c.rarity+' Chest</strong><small>'+(c.opened?c.reward:'60 Gems · Tap to open')+'</small></button>').join('');$('frostBoard').querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>open(+b.dataset.i)));skinPlan();}
  function totals(){if(!s)return;$('frostTotals').innerHTML=[['Chests opened',fmt(s.opened)],['Gems of Enigma spent',fmt(s.spent)],['Thorns collected',fmt(s.thorns)],['Gems / Thorn',s.thorns?(s.spent/s.thorns).toFixed(1):'—']].map(x=>'<div><span>'+x[0]+'</span><strong>'+x[1]+'</strong></div>').join('');$('frostTally').innerHTML=Object.entries(s.rewards).length?'<div class="frost-head"><span>Reward</span><span>Draws</span><span>Quantity</span></div>'+Object.entries(s.rewards).map(([k,v])=>'<div><span>'+k+'</span><span>'+v+'</span><span>'+fmt(rewardAmount(k)*v)+'</span></div>').join(''):'<div><span>Open a chest to track rewards.</span></div>';render();}
