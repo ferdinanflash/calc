@@ -1,14 +1,14 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v33-20261114';
+const CACHE_VERSION = 'v34-20261114';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
 const PRECACHE = [
   './',
   './index.html',
-  './style.css?v=24',
+  './style.css?v=25',
   './database.js?v=9',
   './manifest.webmanifest',
   './js/utils.js?v=11',
@@ -24,7 +24,16 @@ const PRECACHE = [
   './js/svs.js?v=9',
   './js/rfc.js?v=9',
   './js/halloween-candy.js?v=1',
-  './js/mia-fortune.js?v=5',
+  './js/mia-fortune.js?v=6',
+  './assets/mia-fortune/fortune_token.png',
+  './assets/mia-fortune/essence-stone.5a885e57.webp',
+  './assets/mia-fortune/gem.png',
+  './assets/mia-fortune/multiplier_x2.png',
+  './assets/mia-fortune/multiplier_x3.png',
+  './assets/mia-fortune/multiplier_x4.png',
+  './assets/mia-fortune/multiplier_x5.png',
+  './assets/mia-fortune/vip_points.png',
+  './images/resources/fire-crystal.webp',
   './js/mergeventure.js?v=1',
   './js/frosty-fortune.js?v=1',
   './js/ascii-config.js?v=1',
