@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="style.css?v=21">
 </head>
 <body>
 <div class="wrap">
@@ -70,6 +70,13 @@
       </button>
       <button class="menu-card halloween" onclick="openModal('halloweenCandyModal')">
         <span class="menu-icon"><i class="bi bi-candy"></i></span><span>Halloween Candy Planner</span><small>Candy sources, attacks &amp; event goals</small>
+      </button>
+    </div>
+
+    <h2 class="menu-group"><i class="bi bi-dice-5-fill"></i> Simulators</h2>
+    <div class="menu-grid">
+      <button class="menu-card mia" onclick="openModal('miaFortuneModal')">
+        <span class="menu-icon"><i class="bi bi-stars"></i></span><span>Mia Fortune Simulator</span><small>Crystal Balls, Wish Rewards &amp; Fortune Tokens</small>
       </button>
     </div>
 
@@ -452,6 +459,68 @@
     </div>
   </div>
 
+  <!-- MIA'S FORTUNE HUT SIMULATOR -->
+  <div class="modal" id="miaFortuneModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('miaFortuneModal')">×</button>
+      <div class="modal-title"><i class="bi bi-stars"></i> Mia Fortune Simulator</div>
+      <div class="modal-sub">Try Mia's Fortune Hut, reveal Crystal Balls, track Fortune Tokens and plan your free tokens or pack budget.</div>
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-gem"></i> Crystal Ball Simulator</summary>
+        <div class="bc-collapse-body">
+          <div class="mia-setup">
+            <label>Wish Reward<select id="miaWishType"><option value="fc">Fire Crystal</option><option value="essence">Essence Stone</option><option value="speed">1h General Speedup</option><option value="gems">1,000 Gems</option></select></label>
+            <label>Fire Crystal wish amount<select id="miaFcAmount"><option value="150">150 FC</option><option value="130">130 FC</option><option value="105">105 FC</option><option value="85">85 FC</option><option value="70">70 FC</option><option value="60">60 FC</option></select></label>
+            <label>Fortune Tokens available for this session<input id="miaTokenLimit" type="number" min="0" value="0" placeholder="0 = unlimited"></label>
+          </div>
+          <div class="mia-board-toolbar">
+            <div><span>Next ball cost</span><strong id="miaNextCost">1 Fortune Token</strong></div><div><span>Opened</span><strong id="miaOpenCount">0/10 balls opened</strong></div><div><span>Round spent</span><strong id="miaSpentRound">0</strong></div><div><span>Queued multiplier</span><strong id="miaPendingMultiplier">—</strong></div>
+          </div>
+          <div class="mia-board" id="miaBoard"></div>
+          <div class="mia-actions"><button type="button" class="mini-btn" id="miaOpenUntilBtn"><i class="bi bi-fast-forward-fill"></i> Open until the wish</button><button type="button" class="mini-btn secondary" id="miaResetBtn"><i class="bi bi-arrow-clockwise"></i> Reset board (<span id="miaResetCost">FREE</span>)</button></div>
+          <div id="miaMessage" class="mia-message">Tap any crystal ball to reveal its prize. The next token cost increases with each reveal.</div>
+          <p class="mia-hint">Each new reveal costs 1, 2, 3, 4, 6, 8, 12, 15, 20 and 25 Fortune Tokens. Reset is free after the Wish Reward appears. Resetting early costs tokens.</p>
+        </div>
+      </details>
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-bar-chart-line-fill"></i> Session Summary</summary>
+        <div class="bc-collapse-body">
+          <div class="mia-stat-grid"><div><span>Wish Rewards</span><strong id="miaSessionWishes">0</strong></div><div><span>Rounds completed</span><strong id="miaSessionRounds">0</strong></div><div><span>Fortune Tokens spent</span><strong id="miaSessionSpent">0</strong></div><div><span>Average cost per wish</span><strong id="miaAverageCost">—</strong></div></div>
+          <div class="mia-section-title">Fortune Reward milestones</div><div class="mia-milestones" id="miaMilestones"></div>
+          <div class="mia-section-title">Rewards revealed this session</div><div class="mia-reward-tally" id="miaRewardTally"><div class="mia-empty">Open balls to build your session reward log.</div></div>
+          <button type="button" class="mini-btn secondary" id="miaClearBtn"><i class="bi bi-trash3"></i> Clear session</button>
+        </div>
+      </details>
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-calculator-fill"></i> Fortune Token Planner</summary>
+        <div class="bc-collapse-body">
+          <div class="mia-setup mia-planner-inputs">
+            <label>Fortune Tokens now<input id="miaTokensNow" type="number" min="0" value="0"></label>
+            <label>Already spent this event<input id="miaAlreadySpent" type="number" min="0" value="0"></label>
+            <label>Days left (including today)<input id="miaDaysLeft" type="number" min="0" value="2"></label>
+            <label>Daily Mission chests opened each day<select id="miaDailyChests"><option value="0">0 chests</option><option value="1">1 chest</option><option value="2">2 chests</option><option value="3">3 chests</option><option value="4">4 chests</option><option value="5">5 chests</option><option value="6">6 chests</option><option value="7" selected>All 7 chests</option></select></label>
+            <label>Common Fortune Token Packs planned<input id="miaPacks" type="number" min="0" value="0"></label>
+            <label>Wish chance target<select id="miaChance"><option value="50">50% chance</option><option value="90" selected>90% chance</option><option value="100">Guaranteed</option></select></label>
+          </div>
+          <div class="mia-stat-grid mia-planner-stats"><div><span>Free tokens by event end</span><strong id="miaFreeTokens">0</strong></div><div><span>Total free token balance</span><strong id="miaTokensTotal">0</strong></div><div><span>Average wishes from total free + planned packs</span><strong id="miaExpectedWishes">0.00</strong></div><div><span>Tokens for selected chance</span><strong id="miaChanceTokens">96</strong></div><div><span>Planned pack count</span><strong id="miaPackCount">0</strong></div><div><span>Planned pack cost</span><strong id="miaPackCost">$0.00</strong></div><div><span>Additional packs to reach chance target</span><strong id="miaGoalPackCount">0</strong></div><div><span>Additional pack cost</span><strong id="miaGoalPackCost">$0.00</strong></div></div>
+          <div id="miaPlannerSummary" class="mia-message"></div><p id="miaPackBudget" class="mia-hint">Pack purchases are not included in the free-token total.</p>
+          <p class="mia-hint">Daily Mission chest rewards at 40 / 80 / 120 / 160 / 215 / 270 / 325 activity points: 1 / 1 / 1 / 2 / 2 / 5 / 10 tokens. The free Fortune Token Pack adds 1 token per day. Common packs add 50 tokens and cost $4.99 (limit 1/day). Up to 5 tokens can be returned at the 20-token milestone if it has not already been claimed.</p>
+        </div>
+      </details>
+      <details class="bc-collapse">
+        <summary><i class="bi bi-percent"></i> Wish Odds &amp; Strategy</summary>
+        <div class="bc-collapse-body">
+          <div class="mia-odds-table"><div class="mia-odds-head"><span>Reveal</span><span>Ball cost</span><span>Total spent</span><span>Wish found by now</span></div>
+            <div><span>1</span><span>1</span><span>1</span><strong>1.8%</strong></div><div><span>2</span><span>2</span><span>3</span><strong>3.9%</strong></div><div><span>3</span><span>3</span><span>6</span><strong>6.3%</strong></div><div><span>4</span><span>4</span><span>10</span><strong>9.4%</strong></div><div><span>5</span><span>6</span><span>16</span><strong>13.2%</strong></div><div><span>6</span><span>8</span><span>24</span><strong>18.4%</strong></div><div><span>7</span><span>12</span><span>36</span><strong>25.5%</strong></div><div><span>8</span><span>15</span><span>51</span><strong>36.7%</strong></div><div><span>9</span><span>20</span><span>71</span><strong>56.2%</strong></div><div><span>10</span><span>25</span><span>96</span><strong>100%</strong></div>
+          </div>
+          <div class="mia-callout"><strong>Average Wish cost: 66.6 Fortune Tokens</strong><span>Wish is the last ball 43.8% of the time. Opening all 10 balls guarantees the Wish for 96 tokens. Reset as soon as the Wish appears to start a fresh round at no reset cost.</span></div>
+          <p class="mia-hint">The simulator uses the reference's published Wish-position odds and prize-pool composition. Each run is random; actual game outcomes may differ.</p>
+        </div>
+      </details>
+      <div class="source-note">Based on WoSTools Mia's Fortune Hut Simulator reference. Event schedules, prize pools, reward amounts and pack prices can change. Confirm the live in-game Reward Rates and event rules.</div>
+    </div>
+  </div>
+
   <!-- ASCII ART MODAL -->
   <div class="modal" id="asciiModal" aria-hidden="true">
     <div class="modal-box modal-xl">
@@ -577,12 +646,13 @@
 <script defer src="js/ascii-editor.js?v=3"></script>
 <script defer src="js/ui-extras.js?v=1"></script>
 <script defer src="js/halloween-candy.js?v=1"></script>
+<script defer src="js/mia-fortune.js?v=1"></script>
 <script defer src="js/main.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=27').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=28').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
