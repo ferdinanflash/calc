@@ -1,7 +1,7 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v35-20261114';
+const CACHE_VERSION = 'v36-20261114';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
@@ -24,7 +24,7 @@ const PRECACHE = [
   './js/svs.js?v=9',
   './js/rfc.js?v=9',
   './js/halloween-candy.js?v=1',
-  './js/mia-fortune.js?v=6',
+  './js/mia-fortune.js?v=7',
   './assets/mia-fortune/fortune_token.png',
   './assets/mia-fortune/essence-stone.5a885e57.webp',
   './assets/mia-fortune/gem.png',
@@ -46,7 +46,14 @@ const PRECACHE = [
   './images/speedups/troop-healing.webp',
   './images/speedups/learning.webp',
   './js/mergeventure.js?v=1',
-  './js/frosty-fortune.js?v=1',
+  './js/frosty-fortune.js?v=2',
+  './assets/frosty-fortune/splendid_chest.png',
+  './assets/frosty-fortune/exquisite_chest.png',
+  './assets/frosty-fortune/regular_chest.png',
+  './assets/frosty-fortune/thorn_of_enigma.png',
+  './assets/frosty-fortune/treasure_hunt_chest.png',
+  './assets/frosty-fortune/mythic_general_hero_shard.png',
+  './assets/frosty-fortune/lucky_hero_gear_chest.png',
   './js/ascii-config.js?v=1',
   './js/ascii-art.js?v=12',
   './js/ascii-share.js?v=2',
