@@ -12,6 +12,8 @@
   function calculateHalloweenCandy() {
     const currentCandy = num('hcCurrentCandy');
     const currentPoints = num('hcCurrentPoints');
+    const currentPassPoints = num('hcPassPoints');
+    const finalDay = checked('hcFinalDay');
     const remainingChests = Math.floor(num('hcDailyChests'));
     const targetPoints = num('hcTargetPoints');
 
@@ -68,6 +70,7 @@
     const remainingCandy = totalCandy - candySpend;
     const affordableAttacks = Math.min(totalAttacks, Math.floor(totalCandy / attackCost));
     const projectedPoints = currentPoints + affordableAttacks * 2;
+    const projectedPassPoints = currentPassPoints + (finalDay ? 0 : affordableAttacks * 2);
     const leftoverChests = Math.max(0, Math.floor(remainingCandy));
 
     set('hcEarnedCandy', fmt(earnedCandy));
@@ -78,8 +81,9 @@
     set('hcRemainingCandy', (remainingCandy < 0 ? '-' : '') + fmt(Math.abs(remainingCandy)));
     set('hcDailyChestPoints', fmt(chestPoints));
     set('hcResourceChests', fmt(leftoverChests));
+    set('hcProjectedPassPoints', fmt(projectedPassPoints));
     set('hcGoalStatus', projectedPoints >= targetPoints ? 'Target reached' : 'Not enough candy for target');
-    set('hcLevelStatus', projectedPoints >= 2120 ? '2,120-point level 21 threshold reached' : fmt(2120 - projectedPoints) + ' points to the level 21 threshold');
+    set('hcLevelStatus', projectedPassPoints >= 2120 ? '2,120-point level 21 threshold reached' : fmt(2120 - projectedPassPoints) + ' Pumpkin Points to level 21');
 
     const breakdown = $('hcBreakdown');
     if (breakdown) {
