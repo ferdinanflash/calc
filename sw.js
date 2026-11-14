@@ -1,14 +1,14 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v30-20261114';
+const CACHE_VERSION = 'v31-20261114';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
 const PRECACHE = [
   './',
   './index.html',
-  './style.css?v=21',
+  './style.css?v=22',
   './database.js?v=9',
   './manifest.webmanifest',
   './js/utils.js?v=11',
@@ -25,6 +25,7 @@ const PRECACHE = [
   './js/rfc.js?v=9',
   './js/halloween-candy.js?v=1',
   './js/mia-fortune.js?v=3',
+  './js/mergeventure.js?v=1',
   './js/ascii-config.js?v=1',
   './js/ascii-art.js?v=12',
   './js/ascii-share.js?v=2',
