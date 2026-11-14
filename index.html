@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=21">
+<link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 <div class="wrap">
@@ -75,6 +75,7 @@
 
     <h2 class="menu-group"><i class="bi bi-dice-5-fill"></i> Simulators</h2>
     <div class="menu-grid">
+      <button class="menu-card mergeventure" onclick="openModal('mergeventureModal')"><span class="menu-icon"><i class="bi bi-grid-3x3-gap-fill"></i></span><span>Mergeventure Planner</span><small>Merge Pieces, clear fog &amp; plan Merge Energy</small></button>
       <button class="menu-card mia" onclick="openModal('miaFortuneModal')">
         <span class="menu-icon"><i class="bi bi-stars"></i></span><span>Mia Fortune Simulator</span><small>Crystal Balls, Wish Rewards &amp; Fortune Tokens</small>
       </button>
@@ -459,6 +460,42 @@
     </div>
   </div>
 
+  <div class="modal" id="mergeventureModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('mergeventureModal')">×</button>
+      <div class="modal-title"><i class="bi bi-grid-3x3-gap-fill"></i> Mergeventure Planner</div>
+      <div class="modal-sub">Enter your Pieces and Merge Energy to see the free merges to make now and what each fog patch still costs.</div>
+      <details class="bc-collapse" open><summary><i class="bi bi-map-fill"></i> Your board</summary><div class="bc-collapse-body">
+        <div class="mv-setup">
+          <label>Board<select id="mvBoard"><option value="farm">Jessie's Dream Farm</option><option value="mine">Smith's Snow Mountain Mine</option></select></label>
+          <label>Fog patches cleared<select id="mvCleared"><option value="0">0 patches</option><option value="1">1 patch</option><option value="2">2 patches</option><option value="3">3 patches</option><option value="4">4 patches</option><option value="5">5 patches</option><option value="6">6 patches</option><option value="7">7 patches</option><option value="8">All 8 patches</option></select></label>
+          <label>Fields making Pieces<select id="mvFields"><option value="1">1 field</option><option value="2">2 fields</option><option value="3">3 fields</option><option value="4">4 fields</option><option value="5">5 fields</option></select></label>
+        </div>
+        <p class="mv-hint">Each tap makes one Piece per field: 1 for the generator alone, plus 1 for each Wheat Seedling or Ore Vein you have used.</p>
+      </div></details>
+      <details class="bc-collapse" open><summary><i class="bi bi-lightning-charge-fill"></i> Your Merge Energy</summary><div class="bc-collapse-body">
+        <div class="mv-setup">
+          <label>Merge Energy now<input id="mvEnergy" type="number" min="0" value="0"></label>
+          <label>Merge Energy Drinks to use (5 Energy each)<input id="mvDrinks" type="number" min="0" value="0"></label>
+          <label>Timer refills still to come (15 Energy each)<select id="mvRefills"><option value="0">0 refills</option><option value="1">1 refill</option><option value="2">2 refills</option><option value="3">3 refills</option><option value="4">4 refills</option><option value="5">5 refills</option><option value="6">6 refills</option><option value="7">7 refills</option><option value="8">8 refills</option><option value="9">9 refills</option></select></label>
+        </div>
+        <p class="mv-hint">The timer adds 15 Merge Energy every 8 hours and stops for the last 8 hours of the run. Energy Pieces you merge or use on the board count as Energy now.</p>
+      </div></details>
+      <details class="bc-collapse" open><summary><i class="bi bi-boxes"></i> Main-chain Pieces</summary><div class="bc-collapse-body">
+        <p class="mv-hint">Count the Pieces of the generator's chain on the board and in storage. Buried Pieces cannot be moved; merge a loose Piece of the same level onto them to dig them out.</p>
+        <div class="mv-piece-head" id="mvPieceHead">Piece (Jessie's Dream Farm)</div><div class="mv-piece-rows" id="mvPieceRows"></div>
+      </div></details>
+      <details class="bc-collapse" open><summary><i class="bi bi-arrow-repeat"></i> 1. Merge for free</summary><div class="bc-collapse-body"><div id="mvFreeMerge" class="mv-free-merges"></div></div></details>
+      <details class="bc-collapse" open><summary><i class="bi bi-bullseye"></i> 2. Spend Merge Energy on the next fog patch</summary><div class="bc-collapse-body">
+        <div class="mv-stats"><div><span>Merge Energy available</span><strong id="mvTotalEnergy">0</strong></div><div><span>Energy needed (estimate)</span><strong id="mvEnergyNeeded">0</strong></div><div><span>Fog patches cleared by plan</span><strong id="mvPatchCount">0 / 8</strong></div><div><span>Energy left over</span><strong id="mvEnergyLeft">0</strong></div><div><span>Best Piece with all of it</span><strong id="mvBestPiece">—</strong></div><div><span>Drinks needed if short</span><strong id="mvDrinkNeeded">0</strong></div></div>
+        <div id="mvEnergyBreakdown" class="mv-energy-breakdown"></div><div id="mvPlanRows" class="mv-plan-rows"></div><div id="mvSummary" class="mv-summary"></div>
+        <button type="button" class="mini-btn secondary" id="mvReset"><i class="bi bi-arrow-counterclockwise"></i> Reset planner</button>
+        <p class="mv-hint" id="mvSaveStatus">Saved on this device only.</p>
+      </div></details>
+      <div class="source-note">Based on Mergeventure event mechanics and published Piece costs. Taps can also drop Merge Energy, Merge Coin and branch Pieces; these bonus drops are not included, so actual energy needs may be lower. Local entries stay on this device.</div>
+    </div>
+  </div>
+
   <!-- MIA'S FORTUNE HUT SIMULATOR -->
   <div class="modal" id="miaFortuneModal" aria-hidden="true">
     <div class="modal-box modal-xl">
@@ -647,12 +684,13 @@
 <script defer src="js/ui-extras.js?v=1"></script>
 <script defer src="js/halloween-candy.js?v=1"></script>
 <script defer src="js/mia-fortune.js?v=3"></script>
+<script defer src="js/mergeventure.js?v=1"></script>
 <script defer src="js/main.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=30').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=31').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
