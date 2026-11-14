@@ -54,28 +54,35 @@
   const wishAmounts = {fc:150, essence:18, speed:120, gems:40};
   const TOKEN_ICON = 'assets/mia-fortune/fortune_token.png';
   function assetForReward(label) {
-    const multiplier = String(label || '').match(/Multiplier ×([2-5])/);
+    const text = String(label || '');
+    const multiplier = text.match(/Multiplier ×([2-5])/);
     if (multiplier) return 'assets/mia-fortune/multiplier_x' + multiplier[1] + '.png';
-    if (/Fire Crystal/i.test(label || '')) return 'images/resources/fire-crystal.webp';
-    if (/Essence Stone/i.test(label || '')) return 'assets/mia-fortune/essence-stone.5a885e57.webp';
-    if (/Gems/i.test(label || '')) return 'assets/mia-fortune/gem.png';
-    if (/Fortune Token/i.test(label || '')) return TOKEN_ICON;
-    if (/\bMeat\b/i.test(label || '')) return 'images/resources/meat.webp';
-    if (/\bWood\b/i.test(label || '')) return 'images/resources/wood.webp';
-    if (/\bIron\b/i.test(label || '')) return 'images/resources/iron.webp';
-    if (/\bCoal\b/i.test(label || '')) return 'images/resources/coal.webp';
-    if (/\bSteel\b/i.test(label || '')) return 'images/resources/steel.webp';
-    if (/Construction Speedup/i.test(label || '')) return 'images/speedups/construction.webp';
-    if (/Research Speedup/i.test(label || '')) return 'images/speedups/research.webp';
-    if (/Training Speedup/i.test(label || '')) return 'images/speedups/troop-training.webp';
-    if (/Healing Speedup/i.test(label || '')) return 'images/speedups/troop-healing.webp';
-    if (/Learning Speedup/i.test(label || '')) return 'images/speedups/learning.webp';
-    if (/General Speedup/i.test(label || '')) return 'images/speedups/general.webp';
+    if (/Essence Stone/i.test(text)) return 'assets/mia-fortune/essence-stone.5a885e57.webp';
+    if (/Fortune Token/i.test(text)) return TOKEN_ICON;
+    if (/Fire Crystal/i.test(text)) return 'images/resources/fire-crystal.webp';
+    if (/\bMeat\b/i.test(text)) return 'images/resources/meat.webp';
+    if (/\bWood\b/i.test(text)) return 'images/resources/wood.webp';
+    if (/\bIron\b/i.test(text)) return 'images/resources/iron.webp';
+    if (/\bCoal\b/i.test(text)) return 'images/resources/coal.webp';
+    if (/\bSteel\b/i.test(text)) return 'images/resources/steel.webp';
+    if (/Gems/i.test(text)) return 'assets/mia-fortune/gem.png';
+    if (/Construction Speedup/i.test(text)) return 'images/speedups/construction.webp';
+    if (/Research Speedup/i.test(text)) return 'images/speedups/research.webp';
+    if (/Training Speedup/i.test(text)) return 'images/speedups/troop-training.webp';
+    if (/Healing Speedup/i.test(text)) return 'images/speedups/troop-healing.webp';
+    if (/Learning Speedup/i.test(text)) return 'images/speedups/learning.webp';
+    if (/General Speedup/i.test(text)) return 'images/speedups/general.webp';
     return '';
+  }
+  function rewardFallback(label) {
+    if (/Charm Design/i.test(label)) return '💠';
+    if (/Enhancement XP/i.test(label)) return '✨';
+    if (/Hero XP/i.test(label)) return '📘';
+    return '🎁';
   }
   function rewardIcon(label, extraClass) {
     const src = assetForReward(label);
-    return src ? '<img class="' + (extraClass || 'mia-reward-icon') + '" src="' + src + '" alt="" loading="lazy">' : '';
+    return src ? '<img class="' + (extraClass || 'mia-reward-icon') + '" src="' + src + '" alt="" loading="lazy">' : '<span class="mia-reward-fallback">' + rewardFallback(String(label || '')) + '</span>';
   }
   function renderWishPreview() {
     const el = $('miaWishPreview');
