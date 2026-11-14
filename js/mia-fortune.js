@@ -76,6 +76,12 @@
     if(kind==='speed') return '1h General Speedup ×120';
     return '1,000 Gems ×40';
   }
+  function multiplyReward(label,multiplier) {
+    const match=label.match(/^(.*?)(?: ×([\\d,]+))$/);
+    if(!match)return label+' (×'+multiplier+')';
+    const amount=Number(match[2].replace(/,/g,''))*multiplier;
+    return match[1]+' ×'+fmt(amount);
+  }
   function buildBoard() {
     const wishAt = pickWishPosition();
     const pools = shuffle(['I','I','I','II','II','III','IV','V','VI']);
@@ -104,7 +110,7 @@
     if(ball.type==='wish'){
       const mult=state.pendingMultiplier;
       const wish=wishText();
-      ball.label=mult>1 ? wish+'  (×'+mult+' multiplier)' : wish;
+      ball.label=mult>1 ? multiplyReward(wish,mult) : wish;
       ball.isWish=true;state.wishFound=true;session.wishes++;
       session.rewardCounts[ball.label]=(session.rewardCounts[ball.label]||0)+1;
       session.rounds++;
@@ -116,7 +122,7 @@
         ball.label=label;
         ball.isMultiplier=true;
       } else {
-        ball.label=state.pendingMultiplier>1 ? label+'  (×'+state.pendingMultiplier+')' : label;
+        ball.label=state.pendingMultiplier>1 ? multiplyReward(label,state.pendingMultiplier) : label;
         session.rewardCounts[ball.label]=(session.rewardCounts[ball.label]||0)+1;
         state.pendingMultiplier=1;
       }
