@@ -646,13 +646,13 @@
 <script defer src="js/ascii-editor.js?v=3"></script>
 <script defer src="js/ui-extras.js?v=1"></script>
 <script defer src="js/halloween-candy.js?v=1"></script>
-<script defer src="js/mia-fortune.js?v=2"></script>
+<script defer src="js/mia-fortune.js?v=3"></script>
 <script defer src="js/main.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=29').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=30').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
