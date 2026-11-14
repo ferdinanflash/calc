@@ -60,6 +60,17 @@
     if (/Essence Stone/i.test(label || '')) return 'assets/mia-fortune/essence-stone.5a885e57.webp';
     if (/Gems/i.test(label || '')) return 'assets/mia-fortune/gem.png';
     if (/Fortune Token/i.test(label || '')) return TOKEN_ICON;
+    if (/\bMeat\b/i.test(label || '')) return 'images/resources/meat.webp';
+    if (/\bWood\b/i.test(label || '')) return 'images/resources/wood.webp';
+    if (/\bIron\b/i.test(label || '')) return 'images/resources/iron.webp';
+    if (/\bCoal\b/i.test(label || '')) return 'images/resources/coal.webp';
+    if (/\bSteel\b/i.test(label || '')) return 'images/resources/steel.webp';
+    if (/Construction Speedup/i.test(label || '')) return 'images/speedups/construction.webp';
+    if (/Research Speedup/i.test(label || '')) return 'images/speedups/research.webp';
+    if (/Training Speedup/i.test(label || '')) return 'images/speedups/troop-training.webp';
+    if (/Healing Speedup/i.test(label || '')) return 'images/speedups/troop-healing.webp';
+    if (/Learning Speedup/i.test(label || '')) return 'images/speedups/learning.webp';
+    if (/General Speedup/i.test(label || '')) return 'images/speedups/general.webp';
     return '';
   }
   function rewardIcon(label, extraClass) {
