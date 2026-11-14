@@ -71,7 +71,7 @@
   }
   function wishText() {
     const kind = $('miaWishType').value;
-    if(kind==='fc') return 'Fire Crystal ×'+fmt(wishAmounts.fc);
+    if(kind==='fc') return 'Fire Crystal ×'+fmt(Number($('miaFcAmount').value)||150);
     if(kind==='essence') return 'Essence Stone ×18';
     if(kind==='speed') return '1h General Speedup ×120';
     return '1,000 Gems ×40';
@@ -135,6 +135,8 @@
       return '<button type="button" class="mia-ball '+(b.opened?(b.isWish?'wish':b.isMultiplier?'multiplier':'revealed'):'')+'" data-ball="'+i+'" '+(b.opened||state.wishFound?'disabled':'')+'><span class="mia-ball-num">'+label+'</span><i class="bi '+(b.opened?(b.isWish?'bi-stars':b.isMultiplier?'bi-x-diamond-fill':'bi-gift-fill'):'bi-crystal')+'"></i><small>'+detail+'</small></button>';
     }).join('');
     board.querySelectorAll('[data-ball]').forEach(btn=>btn.addEventListener('click',()=>openBall(Number(btn.dataset.ball))));
+    $('miaWishType').disabled=state.opened>0;
+    $('miaFcAmount').disabled=state.opened>0 || $('miaWishType').value!=='fc';
     $('miaNextCost').textContent=state.wishFound?'Free reset':state.opened>=10?'Round complete':fmt(costs[state.opened])+' Fortune Token'+(costs[state.opened]===1?'':'s');
     $('miaOpenCount').textContent=state.opened+'/10 balls opened';
     $('miaSpentRound').textContent=fmt(state.spent);
@@ -216,6 +218,7 @@
   function bind(){
     const root=$('miaFortuneModal');if(!root||root.dataset.bound)return;root.dataset.bound='1';
     $('miaWishType').addEventListener('change',()=>{if(state&&state.opened===0)buildBoard();});
+    $('miaFcAmount').addEventListener('change',()=>{if(state&&state.opened===0)buildBoard();});
     $('miaTokenLimit').addEventListener('input',()=>{if(state)state.limited=Math.max(0,Number($('miaTokenLimit').value)||0);});
     $('miaResetBtn').addEventListener('click',resetBoard);
     $('miaOpenUntilBtn').addEventListener('click',openUntilWish);
