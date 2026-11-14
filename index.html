@@ -353,10 +353,12 @@
           <div class="hc-grid">
             <label>Current Peculiar Flavored Candy<input id="hcCurrentCandy" type="number" min="0" value="0"></label>
             <label>Current Hunter Points<input id="hcCurrentPoints" type="number" min="0" value="0"></label>
-            <label>Daily Chests remaining<input id="hcDailyChests" type="number" min="0" max="100" value="0"></label>
+            <label>Daily Chests remaining (max 8)<input id="hcDailyChests" type="number" min="0" max="8" value="0"></label>
+            <label>Current Pumpkin Points for Spooky Gathering<input id="hcPassPoints" type="number" min="0" value="0"></label>
             <label>Hunter Points target<input id="hcTargetPoints" type="number" min="0" value="12500"></label>
           </div>
           <label class="hc-check"><input id="hcLuckStrike" type="checkbox"> Include Luck Strike average attack cost (about 16.3 candy instead of 20)</label>
+          <label class="hc-check"><input id="hcFinalDay" type="checkbox"> Planned attacks are on the final Pumpkin Invasion day (they do not add Spooky Gathering Pumpkin Points)</label>
         </div>
       </details>
 
@@ -432,6 +434,7 @@
             <div class="hc-result"><span>Attacks planned</span><strong id="hcAttackCount">0</strong></div>
             <div class="hc-result"><span>Estimated attack cost</span><strong id="hcAttackCost">0</strong></div>
             <div class="hc-result"><span>Projected Hunter Points</span><strong id="hcProjectedPoints">0</strong></div>
+            <div class="hc-result"><span>Projected Spooky Gathering Pumpkin Points</span><strong id="hcProjectedPassPoints">0</strong></div>
             <div class="hc-result"><span>Estimated candy balance</span><strong id="hcRemainingCandy">0</strong></div>
             <div class="hc-result"><span>1K Secured Resource Supply Chests from leftover candy</span><strong id="hcResourceChests">0</strong></div>
           </div>
