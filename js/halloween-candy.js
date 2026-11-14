@@ -14,7 +14,7 @@
     const currentPoints = num('hcCurrentPoints');
     const currentPassPoints = num('hcPassPoints');
     const finalDay = checked('hcFinalDay');
-    const remainingChests = Math.floor(num('hcDailyChests'));
+    const remainingChests = Math.min(8, Math.floor(num('hcDailyChests')));
     const targetPoints = num('hcTargetPoints');
 
     const kofStages = Math.min(7, Math.floor(num('hcKofStages')));
