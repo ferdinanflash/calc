@@ -66,6 +66,9 @@
     if (/\bCoal\b/i.test(text)) return 'images/resources/coal.webp';
     if (/\bSteel\b/i.test(text)) return 'images/resources/steel.webp';
     if (/Gems/i.test(text)) return 'assets/mia-fortune/gem.png';
+    if (/Charm Design/i.test(text)) return 'images/charms/material-design.webp';
+    if (/Enhancement XP/i.test(text)) return 'assets/mia-fortune/enhancement-xp-component.bc25d724.webp';
+    if (/Hero XP/i.test(text)) return 'assets/mia-fortune/hero_xp_10000.png';
     if (/Construction Speedup/i.test(text)) return 'images/speedups/construction.webp';
     if (/Research Speedup/i.test(text)) return 'images/speedups/research.webp';
     if (/Training Speedup/i.test(text)) return 'images/speedups/troop-training.webp';
@@ -75,9 +78,6 @@
     return '';
   }
   function rewardFallback(label) {
-    if (/Charm Design/i.test(label)) return '💠';
-    if (/Enhancement XP/i.test(label)) return '✨';
-    if (/Hero XP/i.test(label)) return '📘';
     return '🎁';
   }
   function rewardIcon(label, extraClass) {
