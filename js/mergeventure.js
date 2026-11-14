@@ -45,9 +45,15 @@
     for(let patch=cleared;patch<8;patch++){
       const target=patch+5;
       const need=energyCost(target);
-      const have=inventory.slice(0,target).reduce((sum,x,i)=>sum+(x.loose+x.buried)*energyCost(i+1),0);
-      const missing=Math.max(0,need-have);
-      const energy=Math.ceil(missing/fieldCount);
+      const readyAt = amount => {
+        const test=inventory.map(x=>({...x}));
+        test[0].loose+=amount*fieldCount;
+        const mergedTest=mergeCounts(test,target).counts;
+        return mergedTest[target-1].loose+mergedTest[target-1].buried>0;
+      };
+      let low=0,high=Math.ceil(need/fieldCount);
+      while(low<high){const mid=Math.floor((low+high)/2);if(readyAt(mid))high=mid;else low=mid+1;}
+      const energy=low;
       const generated=energy*fieldCount;
       inventory[0].loose+=generated;
       energyUsed+=energy;
