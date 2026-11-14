@@ -92,7 +92,7 @@
   }
   function tokenBudgetLeft() {
     if(!state || !state.limited) return Infinity;
-    return Math.max(0,state.limited-state.spent);
+    return Math.max(0,state.limited-session.spent);
   }
   function openBall(i) {
     if(!state || state.wishFound || state.balls[i].opened) return;
