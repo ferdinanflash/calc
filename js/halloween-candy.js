@@ -66,7 +66,9 @@
     const candySpend = totalAttacks * attackCost;
     const totalCandy = currentCandy + earnedCandy;
     const remainingCandy = totalCandy - candySpend;
-    const projectedPoints = currentPoints + chestPoints + extraAttacks * 2;
+    const affordableAttacks = Math.min(totalAttacks, Math.floor(totalCandy / attackCost));
+    const projectedPoints = currentPoints + affordableAttacks * 2;
+    const leftoverChests = Math.max(0, Math.floor(remainingCandy));
 
     set('hcEarnedCandy', fmt(earnedCandy));
     set('hcTotalCandy', fmt(totalCandy));
@@ -75,7 +77,8 @@
     set('hcProjectedPoints', fmt(projectedPoints));
     set('hcRemainingCandy', (remainingCandy < 0 ? '-' : '') + fmt(Math.abs(remainingCandy)));
     set('hcDailyChestPoints', fmt(chestPoints));
-    set('hcGoalStatus', projectedPoints >= targetPoints ? 'Target reached' : 'Target not reached');
+    set('hcResourceChests', fmt(leftoverChests));
+    set('hcGoalStatus', projectedPoints >= targetPoints ? 'Target reached' : 'Not enough candy for target');
     set('hcLevelStatus', projectedPoints >= 2120 ? '2,120-point level 21 threshold reached' : fmt(2120 - projectedPoints) + ' points to the level 21 threshold');
 
     const breakdown = $('hcBreakdown');
