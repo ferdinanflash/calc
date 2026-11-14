@@ -553,7 +553,7 @@
             <label>Fortune Tokens available for this session<input id="miaTokenLimit" type="number" min="0" value="0" placeholder="0 = unlimited"></label>
           </div>
           <div class="mia-board-toolbar">
-            <div><span>Next ball cost</span><strong id="miaNextCost">1 Fortune Token</strong></div><div><span>Opened</span><strong id="miaOpenCount">0/10 balls opened</strong></div><div><span>Round spent</span><strong id="miaSpentRound">0</strong></div><div><span>Queued multiplier</span><strong id="miaPendingMultiplier">—</strong></div>
+            <div><span>Next ball cost <img class="mia-token-icon" src="https://wostools.net/images/items/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaNextCost">1 Fortune Token</strong></div><div><span>Opened</span><strong id="miaOpenCount">0/10 balls opened</strong></div><div><span>Round spent <img class="mia-token-icon" src="https://wostools.net/images/items/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaSpentRound">0</strong></div><div><span>Queued multiplier</span><strong id="miaPendingMultiplier">—</strong></div>
           </div>
           <div class="mia-board" id="miaBoard"></div>
           <div class="mia-actions"><button type="button" class="mini-btn" id="miaOpenUntilBtn"><i class="bi bi-fast-forward-fill"></i> Open until the wish</button><button type="button" class="mini-btn secondary" id="miaResetBtn"><i class="bi bi-arrow-clockwise"></i> Reset board (<span id="miaResetCost">FREE</span>)</button></div>
@@ -564,7 +564,7 @@
       <details class="bc-collapse" open>
         <summary><i class="bi bi-bar-chart-line-fill"></i> Session Summary</summary>
         <div class="bc-collapse-body">
-          <div class="mia-stat-grid"><div><span>Wish Rewards</span><strong id="miaSessionWishes">0</strong></div><div><span>Rounds completed</span><strong id="miaSessionRounds">0</strong></div><div><span>Fortune Tokens spent</span><strong id="miaSessionSpent">0</strong></div><div><span>Average cost per wish</span><strong id="miaAverageCost">—</strong></div></div>
+          <div class="mia-stat-grid"><div><span>Wish Rewards</span><strong id="miaSessionWishes">0</strong></div><div><span>Rounds completed</span><strong id="miaSessionRounds">0</strong></div><div><span>Fortune Tokens spent <img class="mia-token-icon" src="https://wostools.net/images/items/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaSessionSpent">0</strong></div><div><span>Average cost per wish <img class="mia-token-icon" src="https://wostools.net/images/items/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaAverageCost">—</strong></div></div>
           <div class="mia-section-title">Fortune Reward milestones</div><div class="mia-milestones" id="miaMilestones"></div>
           <div class="mia-section-title">Rewards revealed this session</div><div class="mia-reward-tally" id="miaRewardTally"><div class="mia-empty">Open balls to build your session reward log.</div></div>
           <button type="button" class="mini-btn secondary" id="miaClearBtn"><i class="bi bi-trash3"></i> Clear session</button>
@@ -725,7 +725,7 @@
 <script defer src="js/ascii-editor.js?v=3"></script>
 <script defer src="js/ui-extras.js?v=1"></script>
 <script defer src="js/halloween-candy.js?v=1"></script>
-<script defer src="js/mia-fortune.js?v=4"></script>
+<script defer src="js/mia-fortune.js?v=5"></script>
 <script defer src="js/frosty-fortune.js?v=1"></script>
 <script defer src="js/mergeventure.js?v=1"></script>
 <script defer src="js/main.js?v=9"></script>
