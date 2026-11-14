@@ -13,7 +13,7 @@
     const currentCandy = num('hcCurrentCandy');
     const currentPoints = num('hcCurrentPoints');
     const remainingChests = Math.floor(num('hcDailyChests'));
-    const targetPoints = num('hcTargetPoints') || 12500;
+    const targetPoints = num('hcTargetPoints');
 
     const kofStages = Math.min(7, Math.floor(num('hcKofStages')));
     const kofMilestones = kofStages >= 7 ? 0 : Math.min(5, Math.floor(num('hcKofMilestones')));
