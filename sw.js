@@ -1,7 +1,7 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v36-20261114';
+const CACHE_VERSION = 'v37-20261114';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
@@ -33,6 +33,9 @@ const PRECACHE = [
   './assets/mia-fortune/multiplier_x4.png',
   './assets/mia-fortune/multiplier_x5.png',
   './assets/mia-fortune/vip_points.png',
+  './assets/mia-fortune/hero_xp_10000.png',
+  './assets/mia-fortune/enhancement-xp-component.bc25d724.webp',
+  './images/charms/material-design.webp',
   './images/resources/fire-crystal.webp',
   './images/resources/meat.webp',
   './images/resources/wood.webp',
