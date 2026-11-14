@@ -52,6 +52,27 @@
     ]
   };
   const wishAmounts = {fc:150, essence:18, speed:120, gems:40};
+  const TOKEN_ICON = 'assets/mia-fortune/fortune_token.png';
+  function assetForReward(label) {
+    const multiplier = String(label || '').match(/Multiplier ×([2-5])/);
+    if (multiplier) return 'assets/mia-fortune/multiplier_x' + multiplier[1] + '.png';
+    if (/Fire Crystal/i.test(label || '')) return 'images/resources/fire-crystal.webp';
+    if (/Essence Stone/i.test(label || '')) return 'assets/mia-fortune/essence-stone.5a885e57.webp';
+    if (/Gems/i.test(label || '')) return 'assets/mia-fortune/gem.png';
+    if (/Fortune Token/i.test(label || '')) return TOKEN_ICON;
+    return '';
+  }
+  function rewardIcon(label, extraClass) {
+    const src = assetForReward(label);
+    return src ? '<img class="' + (extraClass || 'mia-reward-icon') + '" src="' + src + '" alt="" loading="lazy">' : '';
+  }
+  function renderWishPreview() {
+    const el = $('miaWishPreview');
+    if (!el) return;
+    const kind = $('miaWishType').value;
+    const label = kind === 'fc' ? 'Fire Crystal' : kind === 'essence' ? 'Essence Stone' : kind === 'gems' ? 'Gems' : 'General Speedup';
+    el.innerHTML = rewardIcon(label, 'mia-preview-icon') || '<span>⏱️</span>';
+  }
   let state = null;
   let session = {wishes:0, rounds:0, spent:0, rewardCounts:{}};
 
@@ -138,7 +159,10 @@
     board.innerHTML=state.balls.map((b,i)=>{
       const label=b.opened ? (b.isWish?'WISH':b.isMultiplier?'MULTIPLIER':b.pool+' PRIZE') : 'BALL '+(i+1);
       const detail=b.opened ? b.label : 'Tap to reveal';
-      return '<button type="button" class="mia-ball '+(b.opened?(b.isWish?'wish':b.isMultiplier?'multiplier':'revealed'):'')+'" data-ball="'+i+'" '+(b.opened||state.wishFound?'disabled':'')+'><span class="mia-ball-num">'+label+'</span><i class="bi '+(b.opened?(b.isWish?'bi-stars':b.isMultiplier?'bi-x-diamond-fill':'bi-gift-fill'):'bi-crystal')+'"></i><small>'+detail+'</small></button>';
+      const art = b.opened
+        ? (rewardIcon(b.label) || '<span class="mia-crystal-art">' + (b.isWish ? '✨' : '🎁') + '</span>')
+        : '<span class="mia-crystal-art">🔮</span>';
+      return '<button type="button" class="mia-ball '+(b.opened?(b.isWish?'wish':b.isMultiplier?'multiplier':'revealed'):'')+'" data-ball="'+i+'" '+(b.opened||state.wishFound?'disabled':'')+'><span class="mia-ball-num">'+label+'</span>'+art+'<small>'+detail+'</small></button>';
     }).join('');
     board.querySelectorAll('[data-ball]').forEach(btn=>btn.addEventListener('click',()=>openBall(Number(btn.dataset.ball))));
     $('miaWishType').disabled=state.opened>0;
@@ -184,7 +208,7 @@
     }).join('');
     const tally=$('miaRewardTally');
     tally.innerHTML=Object.keys(session.rewardCounts).length
-      ? Object.entries(session.rewardCounts).map(([k,v])=>'<div><span>'+k+'</span><strong>'+fmt(v)+'</strong></div>').join('')
+      ? Object.entries(session.rewardCounts).map(([k,v])=>'<div><span>'+rewardIcon(k, 'mia-tally-icon')+k+'</span><strong>'+fmt(v)+'</strong></div>').join('')
       : '<div class="mia-empty">Open balls to build your session reward log.</div>';
   }
   function clearSession(){
@@ -226,7 +250,7 @@
   }
   function bind(){
     const root=$('miaFortuneModal');if(!root||root.dataset.bound)return;root.dataset.bound='1';
-    $('miaWishType').addEventListener('change',()=>{if(state&&state.opened===0)buildBoard();});
+    $('miaWishType').addEventListener('change',()=>{renderWishPreview();if(state&&state.opened===0)buildBoard();});
     $('miaFcAmount').addEventListener('change',()=>{if(state&&state.opened===0)buildBoard();});
     $('miaTokenLimit').addEventListener('input',()=>{if(state)state.limited=Math.max(0,Number($('miaTokenLimit').value)||0);});
     $('miaResetBtn').addEventListener('click',resetBoard);
@@ -234,7 +258,7 @@
     $('miaClearBtn').addEventListener('click',clearSession);
     ['miaTokensNow','miaAlreadySpent','miaDaysLeft','miaDailyChests','miaPacks','miaChance'].forEach(id=>$(id).addEventListener('input',updatePlanner));
     ['miaDailyChests','miaPacks','miaChance'].forEach(id=>$(id).addEventListener('change',updatePlanner));
-    buildBoard();renderSession();updatePlanner();
+    renderWishPreview();buildBoard();renderSession();updatePlanner();
   }
   window.miaFortuneNewBoard=()=>{if(!state||state.wishFound||state.opened===0){buildBoard();setMessage('New board ready.','');}else resetBoard();};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
