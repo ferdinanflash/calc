@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
 <div class="wrap">
@@ -548,12 +548,12 @@
         <summary><i class="bi bi-gem"></i> Crystal Ball Simulator</summary>
         <div class="bc-collapse-body">
           <div class="mia-setup">
-            <label>Wish Reward<select id="miaWishType"><option value="fc">Fire Crystal</option><option value="essence">Essence Stone</option><option value="speed">1h General Speedup</option><option value="gems">1,000 Gems</option></select></label>
+            <label>Wish Reward<span id="miaWishPreview" class="mia-wish-preview"><img class="mia-preview-icon" src="images/resources/fire-crystal.webp" alt=""></span><select id="miaWishType"><option value="fc">Fire Crystal</option><option value="essence">Essence Stone</option><option value="speed">1h General Speedup</option><option value="gems">1,000 Gems</option></select></label>
             <label>Fire Crystal wish amount<select id="miaFcAmount"><option value="150">150 FC</option><option value="130">130 FC</option><option value="105">105 FC</option><option value="85">85 FC</option><option value="70">70 FC</option><option value="60">60 FC</option></select></label>
             <label>Fortune Tokens available for this session<input id="miaTokenLimit" type="number" min="0" value="0" placeholder="0 = unlimited"></label>
           </div>
           <div class="mia-board-toolbar">
-            <div><span>Next ball cost <img class="mia-token-icon" src="https://wostools.net/images/items/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaNextCost">1 Fortune Token</strong></div><div><span>Opened</span><strong id="miaOpenCount">0/10 balls opened</strong></div><div><span>Round spent <img class="mia-token-icon" src="https://wostools.net/images/items/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaSpentRound">0</strong></div><div><span>Queued multiplier</span><strong id="miaPendingMultiplier">—</strong></div>
+            <div><span>Next ball cost <img class="mia-token-icon" src="assets/mia-fortune/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaNextCost">1 Fortune Token</strong></div><div><span>Opened</span><strong id="miaOpenCount">0/10 balls opened</strong></div><div><span>Round spent <img class="mia-token-icon" src="assets/mia-fortune/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaSpentRound">0</strong></div><div><span>Queued multiplier</span><strong id="miaPendingMultiplier">—</strong></div>
           </div>
           <div class="mia-board" id="miaBoard"></div>
           <div class="mia-actions"><button type="button" class="mini-btn" id="miaOpenUntilBtn"><i class="bi bi-fast-forward-fill"></i> Open until the wish</button><button type="button" class="mini-btn secondary" id="miaResetBtn"><i class="bi bi-arrow-clockwise"></i> Reset board (<span id="miaResetCost">FREE</span>)</button></div>
@@ -564,7 +564,7 @@
       <details class="bc-collapse" open>
         <summary><i class="bi bi-bar-chart-line-fill"></i> Session Summary</summary>
         <div class="bc-collapse-body">
-          <div class="mia-stat-grid"><div><span>Wish Rewards</span><strong id="miaSessionWishes">0</strong></div><div><span>Rounds completed</span><strong id="miaSessionRounds">0</strong></div><div><span>Fortune Tokens spent <img class="mia-token-icon" src="https://wostools.net/images/items/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaSessionSpent">0</strong></div><div><span>Average cost per wish <img class="mia-token-icon" src="https://wostools.net/images/items/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaAverageCost">—</strong></div></div>
+          <div class="mia-stat-grid"><div><span>Wish Rewards</span><strong id="miaSessionWishes">0</strong></div><div><span>Rounds completed</span><strong id="miaSessionRounds">0</strong></div><div><span>Fortune Tokens spent <img class="mia-token-icon" src="assets/mia-fortune/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaSessionSpent">0</strong></div><div><span>Average cost per wish <img class="mia-token-icon" src="assets/mia-fortune/fortune_token.png" alt="Fortune Token" loading="lazy"></span><strong id="miaAverageCost">—</strong></div></div>
           <div class="mia-section-title">Fortune Reward milestones</div><div class="mia-milestones" id="miaMilestones"></div>
           <div class="mia-section-title">Rewards revealed this session</div><div class="mia-reward-tally" id="miaRewardTally"><div class="mia-empty">Open balls to build your session reward log.</div></div>
           <button type="button" class="mini-btn secondary" id="miaClearBtn"><i class="bi bi-trash3"></i> Clear session</button>
@@ -583,7 +583,7 @@
           </div>
           <div class="mia-stat-grid mia-planner-stats"><div><span>Free tokens by event end</span><strong id="miaFreeTokens">0</strong></div><div><span>Total free token balance</span><strong id="miaTokensTotal">0</strong></div><div><span>Average wishes from total free + planned packs</span><strong id="miaExpectedWishes">0.00</strong></div><div><span>Tokens for selected chance</span><strong id="miaChanceTokens">96</strong></div><div><span>Planned pack count</span><strong id="miaPackCount">0</strong></div><div><span>Planned pack cost</span><strong id="miaPackCost">$0.00</strong></div><div><span>Additional packs to reach chance target</span><strong id="miaGoalPackCount">0</strong></div><div><span>Additional pack cost</span><strong id="miaGoalPackCost">$0.00</strong></div></div>
           <div id="miaPlannerSummary" class="mia-message"></div><p id="miaPackBudget" class="mia-hint">Pack purchases are not included in the free-token total.</p>
-          <p class="mia-hint">Daily Mission chest rewards at 40 / 80 / 120 / 160 / 215 / 270 / 325 activity points: 1 / 1 / 1 / 2 / 2 / 5 / 10 tokens. The free Fortune Token Pack adds 1 token per day. Common packs add 50 tokens and cost $4.99 (limit 1/day). Up to 5 tokens can be returned at the 20-token milestone if it has not already been claimed.</p>
+          <p class="mia-hint">Daily Mission chest rewards at 40 / 80 / 120 / 160 / 215 / 270 / 325 activity points: 1 / 1 / 1 / 2 / 2 / 5 / 10 tokens. The free Fortune Token Pack adds 1 token per day. Common packs add 50 tokens and cost $4.99 (limit 1/day). Up to 5 tokens can be returned at the 20-token milestone if it has not already been claimed.</p><p class="mia-hint mia-pack-assets"><img src="assets/mia-fortune/vip_points.png" alt="VIP Points" loading="lazy"> Fortune Token packs also include VIP Points and resources.</p>
         </div>
       </details>
       <details class="bc-collapse">
@@ -725,7 +725,7 @@
 <script defer src="js/ascii-editor.js?v=3"></script>
 <script defer src="js/ui-extras.js?v=1"></script>
 <script defer src="js/halloween-candy.js?v=1"></script>
-<script defer src="js/mia-fortune.js?v=5"></script>
+<script defer src="js/mia-fortune.js?v=6"></script>
 <script defer src="js/frosty-fortune.js?v=1"></script>
 <script defer src="js/mergeventure.js?v=1"></script>
 <script defer src="js/main.js?v=9"></script>
