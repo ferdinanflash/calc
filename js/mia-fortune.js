@@ -82,7 +82,7 @@
   }
   function rewardIcon(label, extraClass) {
     const src = assetForReward(label);
-    return src ? '<img class="' + (extraClass || 'mia-reward-icon') + '" src="' + src + '" alt="" loading="lazy">' : '<span class="mia-reward-fallback">' + rewardFallback(String(label || '')) + '</span>';
+    return src ? '<img class="' + (extraClass || 'mia-reward-icon') + '" src="' + src + '" alt="" loading="lazy">' : '<span class="' + (extraClass || 'mia-reward-icon') + ' mia-reward-fallback">' + rewardFallback(String(label || '')) + '</span>';
   }
   function renderWishPreview() {
     const el = $('miaWishPreview');
