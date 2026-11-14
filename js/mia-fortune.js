@@ -80,13 +80,14 @@
     const wishAt = pickWishPosition();
     const pools = shuffle(['I','I','I','II','II','III','IV','V','VI']);
     let pi=0;
-    const balls = Array.from({length:10},(_,i)=>{
+    const draws = Array.from({length:10},(_,i)=>{
       if(i===wishAt) return {type:'wish'};
       const pool = pools[pi++];
       const draw = weighted(poolTemplates[pool].map(x=>[x,x[1]]))[0];
       return {type:'prize',pool,draw};
     });
-    state = {balls,opened:0,wishFound:false,pendingMultiplier:1,spent:0,limited:Math.max(0,Number($('miaTokenLimit').value)||0)};
+    const balls = Array.from({length:10},()=>({opened:false}));
+    state = {balls,draws,opened:0,wishFound:false,pendingMultiplier:1,spent:0,limited:Math.max(0,Number($('miaTokenLimit').value)||0)};
     renderBoard();
   }
   function tokenBudgetLeft() {
@@ -99,12 +100,13 @@
     const cost=costs[step];
     if(tokenBudgetLeft()<cost){setMessage('Token limit reached. Increase your limit or clear the session.','warn');return;}
     state.spent+=cost;session.spent+=cost;state.opened++;
-    const ball=state.balls[i];ball.opened=true;
+    const ball=state.balls[i];const draw=state.draws[step];Object.assign(ball,draw);ball.opened=true;
     if(ball.type==='wish'){
       const mult=state.pendingMultiplier;
       const wish=wishText();
       ball.label=mult>1 ? wish+'  (×'+mult+' multiplier)' : wish;
       ball.isWish=true;state.wishFound=true;session.wishes++;
+      session.rewardCounts[ball.label]=(session.rewardCounts[ball.label]||0)+1;
       session.rounds++;
       setMessage('Wish found! Reset is now free. '+ball.label,'good');
     } else {
@@ -115,6 +117,7 @@
         ball.isMultiplier=true;
       } else {
         ball.label=state.pendingMultiplier>1 ? label+'  (×'+state.pendingMultiplier+')' : label;
+        session.rewardCounts[ball.label]=(session.rewardCounts[ball.label]||0)+1;
         state.pendingMultiplier=1;
       }
       if(state.opened===10) session.rounds++;
