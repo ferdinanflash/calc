@@ -143,9 +143,9 @@
     board.querySelectorAll('[data-ball]').forEach(btn=>btn.addEventListener('click',()=>openBall(Number(btn.dataset.ball))));
     $('miaWishType').disabled=state.opened>0;
     $('miaFcAmount').disabled=state.opened>0 || $('miaWishType').value!=='fc';
-    $('miaNextCost').textContent=state.wishFound?'Free reset':state.opened>=10?'Round complete':fmt(costs[state.opened])+' Fortune Token'+(costs[state.opened]===1?'':'s');
+    $('miaNextCost').innerHTML=state.wishFound?'Free reset':state.opened>=10?'Round complete':"<img class=\"mia-token-icon\" src=\"https://wostools.net/images/items/fortune_token.png\" alt=\"Fortune Token\" loading=\"lazy\">"+' '+fmt(costs[state.opened]);
     $('miaOpenCount').textContent=state.opened+'/10 balls opened';
-    $('miaSpentRound').textContent=fmt(state.spent);
+    $('miaSpentRound').innerHTML="<img class=\"mia-token-icon\" src=\"https://wostools.net/images/items/fortune_token.png\" alt=\"Fortune Token\" loading=\"lazy\">"+' '+fmt(state.spent);
     $('miaPendingMultiplier').textContent=state.pendingMultiplier>1?'×'+state.pendingMultiplier:'—';
     $('miaResetCost').textContent=state.wishFound?'FREE':state.opened===0?'FREE':fmt([0,15,14,13,10,6,5,4,3,2,1][state.opened])+' tokens';
     $('miaResetBtn').disabled=state.opened===0&&!state.wishFound;
