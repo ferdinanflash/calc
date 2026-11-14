@@ -199,14 +199,15 @@
     const packCount=Math.max(0,Math.min(days,Math.floor(Number($('miaPacks').value)||0)));
     const daily=1+dailyChestRewards.slice(0,chestCount).reduce((a,b)=>a+b,0);
     const free=days*daily;
-    const milestoneBack=already<20 && already+tokens+free>=20 ? 5 : 0;
+    const milestoneBack=already<20 && already+tokens+free+packCount*50>=20 ? 5 : 0;
     const total=tokens+free+milestoneBack;
     const target=$('miaChance').value;
     const idx=target==='50'?cumulativeOdds.findIndex(x=>x>=50):target==='90'?cumulativeOdds.findIndex(x=>x>=90):9;
     const tokenNeed=costs.slice(0,idx+1).reduce((a,b)=>a+b,0);
     const spendable=total+packCount*50;
     const avgWishes=spendable/66.6;
-    const packNeeded=Math.max(0,Math.ceil((tokenNeed-total)/50));
+    const rawPackNeeded=Math.max(0,Math.ceil((tokenNeed-spendable)/50));
+    const packNeeded=Math.min(rawPackNeeded,Math.max(0,days-packCount));
     const cost=packNeeded*4.99;
     $('miaFreeTokens').textContent=fmt(free+milestoneBack);
     $('miaTokensTotal').textContent=fmt(total);
@@ -216,9 +217,11 @@
     $('miaPackCost').textContent='$'+(packCount*4.99).toFixed(2);
     $('miaGoalPackCount').textContent=fmt(packNeeded);
     $('miaGoalPackCost').textContent='$'+cost.toFixed(2);
-    $('miaPlannerSummary').textContent=packNeeded===0
-      ? 'Your current and estimated free tokens cover the selected chance target.'
-      : 'You need '+fmt(packNeeded)+' Common Fortune Token Pack(s) to reach the selected chance target. Each pack adds 50 tokens and costs $4.99.';
+    $('miaPlannerSummary').textContent=rawPackNeeded===0
+      ? 'Your current tokens, estimated free tokens and planned packs cover the selected chance target.'
+      : packNeeded<rawPackNeeded
+        ? 'You need '+fmt(rawPackNeeded)+' additional pack(s), but only '+fmt(packNeeded)+' daily pack slot(s) remain. The event limit is one Common Fortune Token Pack per day.'
+        : 'You need '+fmt(packNeeded)+' additional Common Fortune Token Pack(s) after your planned packs to reach the selected chance target. Each pack adds 50 tokens and costs $4.99.';
     $('miaPackBudget').textContent=packCount>0?'Including '+packCount+' planned pack(s), you would have '+fmt(spendable)+' tokens and about '+avgWishes.toFixed(2)+' average wishes.':'Pack purchases are not included in the free-token total.';
   }
   function bind(){
