@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=19">
+<link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 <div class="wrap">
@@ -67,6 +67,9 @@
       </button>
       <button class="menu-card rfc" onclick="openModal('rfcModal')">
         <span class="menu-icon"><i class="bi bi-fire"></i></span><span>RFC Simulator</span><small>Fire Crystal → Refined FC</small>
+      </button>
+      <button class="menu-card halloween" onclick="openModal('halloweenCandyModal')">
+        <span class="menu-icon"><i class="bi bi-candy"></i></span><span>Halloween Candy Planner</span><small>Candy sources, attacks &amp; event goals</small>
       </button>
     </div>
 
@@ -337,6 +340,114 @@
       <details class="bc-collapse" open><summary><i class="bi bi-bar-chart-fill"></i> Total Requirements Summary</summary><div class="bc-collapse-body"><div class="summary-grid" id="summary"></div></div></details>
     </div>
   </div>
+  <!-- HALLOWEEN CANDY PLANNER -->
+  <div class="modal" id="halloweenCandyModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('halloweenCandyModal')">×</button>
+      <div class="modal-title"><i class="bi bi-candy"></i> Halloween Candy Planner</div>
+      <div class="modal-sub">Estimate your Peculiar Flavored Candy income, Pumpkin Invasion attacks, Hunter Points and event goals.</div>
+
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-bullseye"></i> Your Progress &amp; Target</summary>
+        <div class="bc-collapse-body">
+          <div class="hc-grid">
+            <label>Current Peculiar Flavored Candy<input id="hcCurrentCandy" type="number" min="0" value="0"></label>
+            <label>Current Hunter Points<input id="hcCurrentPoints" type="number" min="0" value="0"></label>
+            <label>Daily Chests remaining<input id="hcDailyChests" type="number" min="0" max="100" value="0"></label>
+            <label>Hunter Points target<input id="hcTargetPoints" type="number" min="0" value="12500"></label>
+          </div>
+          <label class="hc-check"><input id="hcLuckStrike" type="checkbox"> Include Luck Strike average attack cost (about 16.3 candy instead of 20)</label>
+        </div>
+      </details>
+
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-trophy-fill"></i> King of Phantoms</summary>
+        <div class="bc-collapse-body">
+          <div class="hc-grid">
+            <label>Fully completed stages (0–7)<input id="hcKofStages" type="number" min="0" max="7" value="0"></label>
+            <label>Milestones completed in current stage (0–5)<input id="hcKofMilestones" type="number" min="0" max="5" value="0"></label>
+          </div>
+          <p class="hc-hint">Milestone rewards per stage: 250, 300, 350, 400 and 400 candy. Seven stages maximum.</p>
+        </div>
+      </details>
+
+      <details class="bc-collapse">
+        <summary><i class="bi bi-music-note-beamed"></i> Halloween Tune</summary>
+        <div class="bc-collapse-body">
+          <div class="hc-grid">
+            <label>Completed 1,000-candy rewards<input id="hcTuneRuns" type="number" min="0" value="0"></label>
+            <label>Candy per completed reward<input id="hcTuneCandy" type="number" min="0" value="1000"></label>
+          </div>
+          <label class="hc-check"><input id="hcTunePack" type="checkbox"> Completed the optional pack mission (+1,400 candy)</label>
+        </div>
+      </details>
+
+      <details class="bc-collapse">
+        <summary><i class="bi bi-door-open-fill"></i> Trick or treat!</summary>
+        <div class="bc-collapse-body">
+          <div class="hc-grid">
+            <label>Days you knock on doors<input id="hcDoorDays" type="number" min="0" value="0"></label>
+            <label>Your knocks per day (max 3)<input id="hcOwnKnocks" type="number" min="0" max="3" value="3"></label>
+            <label>Average candy per own knock<input id="hcOwnDoorAvg" type="number" min="0" value="90"></label>
+            <label>Visits to other players' shared doors<input id="hcSharedVisits" type="number" min="0" value="0"></label>
+            <label>Shared-door witch type<select id="hcWitchType"><option value="veteran">Veteran Witch (~157 candy)</option><option value="candy">Candy Witch (~111 candy)</option></select></label>
+            <label>Visitors who knock on your shared doors<input id="hcVisitors" type="number" min="0" value="0"></label>
+          </div>
+          <p class="hc-hint">Own knocks and shared-door visits are averages. Each visitor to your shared door contributes about 20 candy.</p>
+        </div>
+      </details>
+
+      <details class="bc-collapse">
+        <summary><i class="bi bi-cloud-lightning-fill"></i> Sugar Storm</summary>
+        <div class="bc-collapse-body">
+          <div class="hc-grid">
+            <label>Gems spent<input id="hcGems" type="number" min="0" value="0"></label>
+            <label>Speedup hours used<input id="hcSpeedupHours" type="number" min="0" value="0"></label>
+            <label>Gathering hours<input id="hcGatherHours" type="number" min="0" value="0"></label>
+            <label>Average candy per gathering hour<input id="hcGatherRate" type="number" min="0" max="20" value="15"></label>
+            <label>Beasts defeated<input id="hcBeasts" type="number" min="0" value="0"></label>
+          </div>
+          <p class="hc-hint">Estimate: 10 candy per 1,000 gems, 10 per 2 speedup hours, 10–20 per gathering hour (3,000 cap), and 10 per beast (4,000 cap).</p>
+        </div>
+      </details>
+
+      <details class="bc-collapse">
+        <summary><i class="bi bi-ghost"></i> Spooky Gathering &amp; Other Candy</summary>
+        <div class="bc-collapse-body">
+          <div class="hc-grid">
+            <label>Ghoul Baron milestones claimed (0–3)<input id="hcGhoulMilestones" type="number" min="0" max="3" value="0"></label>
+            <label>Scarlet Count milestones claimed (0–4)<input id="hcScarletMilestones" type="number" min="0" max="4" value="0"></label>
+            <label>Other candy sources<input id="hcOtherCandy" type="number" min="0" value="0"></label>
+          </div>
+          <p class="hc-hint">Ghoul Baron: 100 candy at levels 7, 12 and 17. Scarlet Count: +160 at levels 3, 7, 12 and 17.</p>
+        </div>
+      </details>
+
+      <details class="bc-collapse" open>
+        <summary><i class="bi bi-calculator-fill"></i> Planner Results</summary>
+        <div class="bc-collapse-body">
+          <div class="hc-result-grid">
+            <div class="hc-result"><span>Estimated candy earned</span><strong id="hcEarnedCandy">0</strong></div>
+            <div class="hc-result"><span>Total candy available</span><strong id="hcTotalCandy">0</strong></div>
+            <div class="hc-result"><span>Attacks planned</span><strong id="hcAttackCount">0</strong></div>
+            <div class="hc-result"><span>Estimated attack cost</span><strong id="hcAttackCost">0</strong></div>
+            <div class="hc-result"><span>Projected Hunter Points</span><strong id="hcProjectedPoints">0</strong></div>
+            <div class="hc-result"><span>Estimated candy balance</span><strong id="hcRemainingCandy">0</strong></div>
+          </div>
+          <div class="hc-goals">
+            <div><strong id="hcGoalStatus">Target not reached</strong><span>Hunter Points target</span></div>
+            <div><strong id="hcLevelStatus">2,120 points to the level 21 threshold</strong><span>Spooky Gathering level 21 reference</span></div>
+            <div><strong id="hcDailyChestPoints">0</strong><span>Points represented by remaining Daily Chests</span></div>
+          </div>
+          <div id="hcPlannerWarning" class="hc-warning">Enter your progress to calculate.</div>
+          <h3 class="hc-break-title">Candy source breakdown</h3>
+          <div id="hcBreakdown" class="hc-breakdown"></div>
+        </div>
+      </details>
+      <div class="source-note">Planning estimates based on the community reference at WoS Tools. Drop rates, rewards and event mechanics may change; check the live in-game event. Daily Chest estimates assume 300 Hunter Points per chest and 150 attacks per chest. Remaining candy is shown after the attacks needed for your target.</div>
+    </div>
+  </div>
+
   <!-- ASCII ART MODAL -->
   <div class="modal" id="asciiModal" aria-hidden="true">
     <div class="modal-box modal-xl">
@@ -461,6 +572,7 @@
 <script defer src="js/ascii-share.js?v=2"></script>
 <script defer src="js/ascii-editor.js?v=3"></script>
 <script defer src="js/ui-extras.js?v=1"></script>
+<script defer src="js/halloween-candy.js?v=1"></script>
 <script defer src="js/main.js?v=9"></script>
 
 <script>
