@@ -79,6 +79,9 @@
       <button class="menu-card mia" onclick="openModal('miaFortuneModal')">
         <span class="menu-icon"><i class="bi bi-stars"></i></span><span>Mia Fortune Simulator</span><small>Crystal Balls, Wish Rewards &amp; Fortune Tokens</small>
       </button>
+      <button class="menu-card frosty" onclick="openModal('frostyFortuneModal')">
+        <span class="menu-icon"><i class="bi bi-snow2"></i></span><span>Frosty Fortune Simulator</span><small>Open chests, collect Thorns &amp; plan skins</small>
+      </button>
     </div>
 
     <h2 class="menu-group"><i class="bi bi-chat-square-text"></i> Extras</h2>
@@ -496,6 +499,45 @@
     </div>
   </div>
 
+  <!-- FROSTY FORTUNE SIMULATOR -->
+  <div class="modal" id="frostyFortuneModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('frostyFortuneModal')">×</button>
+      <div class="modal-title"><i class="bi bi-snow2"></i> Frosty Fortune Simulator</div>
+      <div class="modal-sub">Open 9-chest boards, spend Gems of Enigma, and plan your Thorn and skin targets.</div>
+      <div class="notice">Drop rates are community-sourced estimates (captured 5 Aug 2026), not verified against the in-game reward-rate screen. Treat projections as estimates.</div>
+      <details class="bc-collapse" open><summary><i class="bi bi-calendar-week"></i> Event Board</summary><div class="bc-collapse-body">
+        <div class="frost-stats" id="frostStatus"></div>
+        <div class="frost-controls">
+          <label>Gems of Enigma budget (0 = unlimited)<input id="frostBudget" type="number" min="0" value="0"></label>
+          <div class="frost-buttons"><button type="button" class="mini-btn" id="frostRefresh">Refresh board</button><button type="button" class="mini-btn secondary" id="frostOpenAll">Open all affordable</button><button type="button" class="mini-btn secondary" id="frostNextDay">Go to next day</button><button type="button" class="mini-btn secondary" id="frostReset">Reset session</button></div>
+        </div>
+        <div class="frost-board-head"><strong id="frostBoardCount">0/9 unopened</strong><span>Each chest costs 60 Gems of Enigma</span></div>
+        <div class="frost-board" id="frostBoard"></div>
+        <p class="mia-hint">Chest rarity is visible before spending. Rewards are rolled when the board is generated; opening a chest reveals the stored result. Three free refreshes per day; after that, refresh costs 90 Gems. Clearing all 9 chests refreshes for free.</p>
+        <div class="mia-message" id="frostMessage">Open a chest to begin. Use free refreshes if the board has poor rarities.</div>
+      </div></details>
+      <details class="bc-collapse" open><summary><i class="bi bi-bar-chart-line-fill"></i> Session Totals</summary><div class="bc-collapse-body">
+        <div class="frost-stats" id="frostTotals"></div><div class="frost-tally" id="frostTally"></div>
+        <p class="mia-hint">Expected average: about 3.33 Thorns per chest, or 18 Gems of Enigma per Thorn, based on the published community tables.</p>
+      </div></details>
+      <details class="bc-collapse" open><summary><i class="bi bi-award-fill"></i> Skin Planner</summary><div class="bc-collapse-body">
+        <div class="frost-planner">
+          <label>Skin target<select id="frostSkin"><option value="snowmobile">Snowmobile</option><option value="mammoth">Mammoth</option><option value="furnace">Any Furnace Skin</option></select></label>
+          <label>Gems of Enigma available<input id="frostSkinBudget" type="number" min="0" value="4800"></label>
+        </div>
+        <div class="frost-stats" id="frostSkinResult"></div>
+        <div class="frost-table" id="frostSkinTable"></div>
+        <div class="frost-pack-table" id="frostPackTable"></div>
+        <p class="mia-hint">Gems of Enigma carry over between event runs. Thorns of Enigma do not; spend them in the Emporium before the event ends. Skin odds are community-simulated and may differ from the game.</p>
+      </div></details>
+      <details class="bc-collapse"><summary><i class="bi bi-gift-fill"></i> Drop Rates &amp; Reward Tables</summary><div class="bc-collapse-body">
+        <div class="frost-table" id="frostOdds"></div>
+      </div></details>
+      <div class="source-note">Reference: WoSTools Frosty Fortune Simulator. Chest rarity and reward data are community-sourced, captured 2026-08-05; not official game rates.</div>
+    </div>
+  </div>
+
   <!-- MIA'S FORTUNE HUT SIMULATOR -->
   <div class="modal" id="miaFortuneModal" aria-hidden="true">
     <div class="modal-box modal-xl">
@@ -683,14 +725,15 @@
 <script defer src="js/ascii-editor.js?v=3"></script>
 <script defer src="js/ui-extras.js?v=1"></script>
 <script defer src="js/halloween-candy.js?v=1"></script>
-<script defer src="js/mia-fortune.js?v=3"></script>
+<script defer src="js/mia-fortune.js?v=4"></script>
+<script defer src="js/frosty-fortune.js?v=1"></script>
 <script defer src="js/mergeventure.js?v=1"></script>
 <script defer src="js/main.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=31').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=32').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
