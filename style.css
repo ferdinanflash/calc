@@ -520,3 +520,62 @@ body.modal-open .ui-bottom-nav{opacity:.35;pointer-events:none;}
 .hc-break-row span{color:var(--muted);}
 .hc-break-row strong{white-space:nowrap;font-variant-numeric:tabular-nums;}
 @media(max-width:480px){.hc-grid{grid-template-columns:1fr;}.hc-goals{grid-template-columns:1fr;}.hc-result strong{font-size:1.1rem;}}
+
+
+/* ---------- Mia's Fortune Hut Simulator ---------- */
+.menu-card.mia .menu-icon{background:linear-gradient(135deg,#4338ca,#a855f7);color:#f5f3ff;}
+.mia-setup{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.mia-setup label{display:flex;flex-direction:column;gap:5px;min-width:0;color:var(--muted);font-size:.78rem;font-weight:600;}
+.mia-setup input,.mia-setup select{box-sizing:border-box;width:100%;min-width:0;padding:10px 11px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text);font:inherit;font-size:.9rem;}
+.mia-board-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0;}
+.mia-board-toolbar>div,.mia-stat-grid>div{display:flex;flex-direction:column;gap:5px;min-width:0;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);}
+.mia-board-toolbar span,.mia-stat-grid span{font-size:.69rem;color:var(--muted);line-height:1.3;}
+.mia-board-toolbar strong,.mia-stat-grid strong{font-size:1rem;line-height:1.25;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;}
+.mia-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:12px 0;}
+.mia-ball{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:112px;padding:9px 5px;border:1px solid var(--border);border-radius:13px;background:linear-gradient(155deg,rgba(99,102,241,.16),rgba(168,85,247,.08));color:var(--text);cursor:pointer;transition:transform .12s,border-color .12s;}
+.mia-ball:not(:disabled):active{transform:scale(.96);}
+.mia-ball:disabled{cursor:default;opacity:1;}
+.mia-ball i{font-size:1.65rem;color:#a78bfa;}
+.mia-ball-num{font-size:.6rem;font-weight:800;letter-spacing:.04em;color:var(--muted);}
+.mia-ball small{font-size:.64rem;line-height:1.3;text-align:center;overflow-wrap:anywhere;}
+.mia-ball.revealed{background:rgba(148,163,184,.1);border-color:rgba(148,163,184,.35);}
+.mia-ball.wish{background:rgba(234,179,8,.13);border-color:#eab308;}
+.mia-ball.wish i{color:#facc15;}
+.mia-ball.multiplier{background:rgba(168,85,247,.14);border-color:#a855f7;}
+.mia-ball.multiplier i{color:#c084fc;}
+.mia-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;}
+.mia-message{margin-top:10px;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text);font-size:.8rem;line-height:1.45;}
+.mia-message.good{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.08);}
+.mia-message.warn{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.08);}
+.mia-hint{margin:10px 0 0;color:var(--muted);font-size:.74rem;line-height:1.55;}
+.mia-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.mia-section-title{margin:16px 0 8px;font-size:.86rem;font-weight:750;}
+.mia-milestones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.mia-milestone{display:flex;flex-direction:column;gap:4px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);}
+.mia-milestone strong{font-size:1rem;}
+.mia-milestone span,.mia-milestone small{font-size:.68rem;color:var(--muted);}
+.mia-milestone.done{border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.08);}
+.mia-reward-tally{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.mia-reward-tally>div{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-bottom:1px solid var(--border);font-size:.75rem;}
+.mia-reward-tally>div:last-child{border-bottom:0;}
+.mia-reward-tally span{color:var(--muted);}
+.mia-empty{color:var(--muted);padding:10px;}
+.mia-odds-table{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.mia-odds-table>div{display:grid;grid-template-columns:.6fr .8fr .9fr 1.1fr;gap:6px;padding:8px 9px;border-bottom:1px solid var(--border);font-size:.73rem;text-align:right;font-variant-numeric:tabular-nums;}
+.mia-odds-table>div:last-child{border-bottom:0;}
+.mia-odds-table>div span:first-child,.mia-odds-head span:first-child{text-align:left;}
+.mia-odds-head{font-weight:750;background:var(--panel2);}
+.mia-callout{display:flex;flex-direction:column;gap:6px;margin-top:12px;padding:12px;border:1px solid rgba(168,85,247,.45);border-radius:10px;background:rgba(168,85,247,.08);}
+.mia-callout strong{font-size:.9rem;}
+.mia-callout span{font-size:.76rem;color:var(--muted);line-height:1.5;}
+@media(max-width:560px){
+ .mia-setup{grid-template-columns:1fr;}
+ .mia-board{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;}
+ .mia-ball{min-height:94px;padding:6px 3px;}
+ .mia-ball i{font-size:1.35rem;}
+ .mia-ball small{font-size:.57rem;}
+ .mia-board-toolbar{grid-template-columns:repeat(2,minmax(0,1fr));}
+ .mia-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+ .mia-milestones{grid-template-columns:repeat(2,minmax(0,1fr));}
+ .mia-odds-table>div{font-size:.66rem;padding:7px 5px;}
+}
