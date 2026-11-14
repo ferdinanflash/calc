@@ -87,7 +87,7 @@
     $('mvEnergyNeeded').textContent=fmt(p.energyUsed);
     $('mvEnergyLeft').textContent=fmt(p.left);
     $('mvDrinkNeeded').textContent=fmt(Math.ceil(Math.max(0,p.energyUsed-p.energyNow-p.timerCount*15)/5));
-    $('mvPatchCount').textContent=fmt(p.rows.filter(x=>x.energy===0).length)+' / '+p.rows.length;
+    let energyBudget=p.totalEnergy, reachable=0;\n    for(const row of p.rows){if(row.energy<=energyBudget){energyBudget-=row.energy;reachable++;}else break;}\n    $('mvPatchCount').textContent=fmt(reachable)+' / '+p.rows.length;
     $('mvBestPiece').textContent=p.bestLevel?'Lv. '+p.bestLevel+' '+names[p.board][p.bestLevel-1]:'—';
     $('mvEnergyBreakdown').textContent=fmt(p.energyNow)+' now + '+fmt(p.drinkCount*5)+' from Drinks + '+fmt(p.timerCount*15)+' from timer';
     $('mvSummary').textContent=p.energyUsed<=p.totalEnergy
