@@ -1,7 +1,7 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v73-20261117';
+const CACHE_VERSION = 'v74-20261117';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
@@ -15,7 +15,7 @@ const PRECACHE = [
   './js/modal.js?v=9',
   './js/ui-extras.js?v=2',
   './js/marvelous-fantasia.js?v=1',
-  './js/dreamscape-data.js?v=1',
+  './js/dreamscape-data.js?v=2',
   './js/dreamscape-memory.js?v=13',
   './images/dreamscape/cropped/garden-s5-stage-1.jpg',
   './images/dreamscape/cropped/garden-s5-stage-2.jpg',
@@ -33,7 +33,7 @@ const PRECACHE = [
   './js/svs.js?v=9',
   './js/rfc.js?v=9',
   './js/halloween-candy.js?v=1',
-  './js/mia-fortune.js?v=7',
+  './js/mia-fortune.js?v=6',
   './assets/mia-fortune/fortune_token.png',
   './assets/mia-fortune/essence-stone.5a885e57.webp',
   './assets/mia-fortune/gem.png',
@@ -58,7 +58,7 @@ const PRECACHE = [
   './images/speedups/troop-healing.webp',
   './images/speedups/learning.webp',
   './js/mergeventure.js?v=1',
-  './js/frosty-fortune.js?v=2',
+  './js/frosty-fortune.js?v=1',
   './assets/frosty-fortune/splendid_chest.png',
   './assets/frosty-fortune/exquisite_chest.png',
   './assets/frosty-fortune/regular_chest.png',
@@ -82,7 +82,13 @@ const PRECACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE.map((u) => new Request(u, { cache: 'reload' }))))
+      .then(async (cache) => {
+      const results = await Promise.allSettled(
+        PRECACHE.map((u) => cache.add(new Request(u, { cache: 'reload' })))
+      );
+      const failed = results.filter((r) => r.status === 'rejected').length;
+      if (failed) console.warn('[SW] Some offline assets could not be cached:', failed);
+    })
       .then(() => self.skipWaiting())
       .catch((err) => console.warn('[SW] precache failed', err))
   );
@@ -138,6 +144,13 @@ self.addEventListener('fetch', (event) => {
     }
   }
 
+  // External static assets (hero portraits, image libraries, fonts): keep a local copy
+  // after first successful online load. API/data requests remain network-only.
+  if (!sameOrigin && /\\.(png|jpg|jpeg|webp|gif|svg|ico|woff2?|css)$/i.test(url.pathname)) {
+    event.respondWith(cacheFirst(req));
+    return;
+  }
+
   // CDN (bootstrap-icons etc.): stale-while-revalidate
   if (url.hostname.includes('cdn.jsdelivr.net') || url.hostname.includes('unpkg.com')) {
     event.respondWith(staleWhileRevalidate(req));
@@ -149,7 +162,7 @@ async function networkFirst(req) {
   const cache = await caches.open(CACHE_NAME);
   try {
     const fresh = await fetch(req);
-    if (fresh && fresh.ok) cache.put(req, fresh.clone());
+    if (fresh && (fresh.ok || fresh.type === 'opaque')) cache.put(req, fresh.clone());
     return fresh;
   } catch (e) {
     const cached = await cache.match(req) || await cache.match('./index.html') || await cache.match('./');
