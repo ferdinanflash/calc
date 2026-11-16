@@ -3,15 +3,22 @@
 const UI_FAV_KEY = 'wos3475_favs';
 const UI_RECENT_KEY = 'wos3475_recent';
 const UI_TOOLS = [
-  { id: 'buildingModal', label: 'Building', icon: 'bi-building-gear', group: 'calc' },
-  { id: 'troopsModal', label: 'Troops', icon: 'bi-people-fill', group: 'calc' },
-  { id: 'warAcademyModal', label: 'War Acad.', icon: 'bi-mortarboard-fill', group: 'calc' },
-  { id: 'charmModal', label: 'Charm', icon: 'bi-gem', group: 'calc' },
-  { id: 'chiefGearModal', label: 'Chief Gear', icon: 'bi-shield-fill', group: 'calc' },
-  { id: 'heroGearModal', label: 'Hero Gear', icon: 'bi-award-fill', group: 'calc' },
-  { id: 'svsModal', label: 'SvS', icon: 'bi-trophy-fill', group: 'event' },
-  { id: 'rfcModal', label: 'RFC', icon: 'bi-fire', group: 'event' },
-  { id: 'asciiModal', label: 'ASCII', icon: 'bi-palette-fill', group: 'extra' }
+  { id: 'buildingModal', label: 'Building Calculator', icon: 'bi-building-gear' },
+  { id: 'troopsModal', label: 'Training Troops', icon: 'bi-people-fill' },
+  { id: 'warAcademyModal', label: 'War Academy', icon: 'bi-mortarboard-fill' },
+  { id: 'charmModal', label: 'Chief Charm', icon: 'bi-gem' },
+  { id: 'chiefGearModal', label: 'Chief Gear', icon: 'bi-shield-fill' },
+  { id: 'heroGearModal', label: 'Hero Gear', icon: 'bi-shield-fill-check' },
+  { id: 'svsModal', label: 'SvS Calculator', icon: 'bi-trophy-fill' },
+  { id: 'rfcModal', label: 'RFC Simulator', icon: 'bi-fire' },
+  { id: 'halloweenCandyModal', label: 'Halloween Candy', icon: 'bi-candy' },
+  { id: 'mergeventureModal', label: 'Mergeventure', icon: 'bi-grid-3x3-gap-fill' },
+  { id: 'miaFortuneModal', label: 'Mia Fortune', icon: 'bi-stars' },
+  { id: 'frostyFortuneModal', label: 'Frosty Fortune', icon: 'bi-snow2' },
+  { id: 'marvelousFantasiaModal', label: 'Marvelous Fantasia', icon: 'bi-puzzle-fill' },
+  { id: 'dreamscapeMemoryModal', label: 'Dreamscape Memory', icon: 'bi-eye-fill' },
+  { id: 'heroHubModal', label: 'Hero Hub', icon: 'bi-person-badge-fill' },
+  { id: 'asciiModal', label: 'ASCII Art', icon: 'bi-braces-asterisk' }
 ];
 
 function uiLoadList(key) {
@@ -189,12 +196,20 @@ function uiEnhanceMenuCards() {
     if (!m) return;
     const id = m[1];
     if (card.querySelector('[data-fav-for]')) return;
-    const star = document.createElement('button');
-    star.type = 'button';
+    const star = document.createElement('span');
+    star.setAttribute('role', 'button');
+    star.setAttribute('tabindex', '0');
     star.className = 'ui-fav-btn';
     star.setAttribute('data-fav-for', id);
     star.setAttribute('aria-label', 'Favorite');
     star.onclick = (e) => uiToggleFav(id, e);
+    star.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        e.stopPropagation();
+        uiToggleFav(id, e);
+      }
+    };
     card.style.position = 'relative';
     card.appendChild(star);
   });
