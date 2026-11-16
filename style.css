@@ -670,3 +670,21 @@ body.modal-open .ui-bottom-nav{opacity:.35;pointer-events:none;}
 .mia-reward-fallback{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;font-size:1.55rem;line-height:1;}
 .mia-tally-icon.mia-reward-fallback{width:21px;height:21px;font-size:1rem;vertical-align:middle;margin-right:7px;}
 .mia-preview-icon.mia-reward-fallback{width:28px;height:28px;font-size:1.25rem;}
+
+/* Marvelous Fantasia — local tile-match practice game */
+.menu-card.fantasia{border-color:rgba(167,139,250,.42);background:linear-gradient(145deg,rgba(124,58,237,.16),rgba(255,255,255,.035))}
+.mf-topbar{display:flex;align-items:center;gap:12px;margin:12px 0;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+.mf-topbar>div{display:flex;flex-direction:column;min-width:65px}.mf-topbar span,.mf-storage-heading span{font-size:.72rem;color:var(--muted)}.mf-topbar strong{font-size:1.15rem}.mf-topbar button{margin-left:auto}
+.mf-game-status{padding:9px 12px;margin-bottom:10px;border-radius:10px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);font-size:.84rem;color:#dbeafe}
+.mf-game-status.good{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:#a7f3d0}.mf-game-status.bad{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3);color:#fecaca}
+.mf-board-wrap{overflow-x:auto;padding:8px 4px 14px;border-radius:14px;background:linear-gradient(160deg,rgba(148,163,184,.09),rgba(15,23,42,.45));border:1px solid var(--border);overscroll-behavior-x:contain}
+.mf-board{position:relative;width:100%;min-width:440px;height:330px;margin:auto}
+.mf-tile{position:absolute;width:48px;height:54px;border-radius:9px;border:1px solid #dbeafe;background:linear-gradient(145deg,#fff,#dbeafe 65%,#94a3b8);box-shadow:0 4px 0 #64748b,0 6px 10px rgba(0,0,0,.28);color:#172033;font-size:25px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;transition:filter .12s,transform .12s,opacity .12s;padding:0}
+.mf-tile:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #64748b}.mf-tile:disabled{cursor:not-allowed;filter:brightness(.48) saturate(.55);opacity:.82}.mf-tile.mf-covered{filter:brightness(.42) saturate(.45);opacity:.82}
+.mf-storage-panel{margin-top:14px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+.mf-storage-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.mf-storage{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.mf-slot{height:54px;min-width:0;border:1px dashed rgba(255,255,255,.25);border-radius:8px;background:rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;font-size:24px;color:rgba(255,255,255,.25)}
+.mf-slot.filled{background:linear-gradient(145deg,#fff,#dbeafe);border:1px solid #dbeafe;box-shadow:0 3px 0 #64748b;color:#172033}
+.mf-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.mf-tools button{white-space:normal;min-height:42px}.mf-tools b{margin-left:4px}
+.mf-help{padding:12px 14px;margin-top:10px;border-radius:12px;background:var(--panel);border:1px solid var(--border);font-size:.84rem;color:var(--muted)}.mf-help strong{color:var(--text)}.mf-help p{margin:6px 0}
+@media(max-width:520px){.mf-board{height:300px}.mf-tile{width:42px;height:48px;font-size:22px}.mf-tools{grid-template-columns:1fr}.mf-tools button{min-height:38px}.mf-storage{gap:4px}.mf-slot{height:46px;font-size:21px}.mf-topbar{gap:8px}}
