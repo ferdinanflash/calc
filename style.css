@@ -733,3 +733,15 @@ body.modal-open .ui-bottom-nav{opacity:.35;pointer-events:none;}
 
 .dm-modebar{display:flex;gap:8px;margin:12px 0}.dm-modebar .active{background:var(--accent,#3b82f6);color:#fff}
 .dm-guide-panel{margin:14px 0}.dm-guide-toolbar{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:12px}.dm-guide-toolbar label{display:grid;gap:5px;flex:1}.dm-guide-toolbar input{width:100%;padding:10px;border-radius:9px;border:1px solid var(--border-color,#555);background:var(--card-bg,#222);color:inherit}.dm-guide-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(220px,1fr);gap:14px;align-items:start}.dm-guide-map{background:#111;border-radius:12px;overflow:hidden}.dm-guide-map img{display:block;width:100%;height:auto}.dm-guide-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:65vh;overflow:auto}.dm-guide-item{display:flex;align-items:center;gap:7px;padding:7px;border-radius:8px;background:var(--card-bg,rgba(128,128,128,.12));font-size:.86rem}.dm-guide-item span{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:50%;background:var(--accent,#3b82f6);color:#fff;font-size:.72rem;font-weight:700}.dm-guide-note{font-size:.8rem;opacity:.72;margin-top:10px}@media(max-width:700px){.dm-guide-layout{grid-template-columns:1fr}.dm-guide-items{grid-template-columns:repeat(2,minmax(0,1fr));max-height:32vh}}
+
+/* Dreamscape map guide hit areas */
+.dm-guide-map-title{font-weight:700;margin:0 0 8px}
+.dm-guide-map-size{position:relative;width:100%;height:auto;overflow:hidden;background:#111}
+.dm-guide-map-size>img{display:block;width:100%;height:100%;object-fit:contain}
+.dm-guide-overlay{position:absolute;inset:0;pointer-events:none}
+.dm-guide-marker{position:absolute;display:grid;place-items:center;padding:0;border:1px solid rgba(255,210,65,.95);background:rgba(255,190,0,.12);border-radius:3px;pointer-events:auto;cursor:pointer;min-width:5px;min-height:5px}
+.dm-guide-marker span{font-size:9px;line-height:1;color:#fff;background:rgba(0,0,0,.78);border-radius:10px;padding:2px 4px;transform:rotate(0deg)}
+.dm-guide-marker:hover,.dm-guide-marker.selected{z-index:4;background:rgba(0,190,255,.32);border:2px solid #16c5ff}
+.dm-guide-item{width:100%;border:0;text-align:left;color:inherit;cursor:pointer}
+.dm-guide-item.selected{outline:2px solid var(--accent,#3b82f6)}
+.dm-guide-toolbar select{max-width:100%}
