@@ -630,10 +630,12 @@
       <button class="modal-close" onclick="closeModal('dreamscapeMemoryModal')">×</button>
       <div class="modal-title"><i class="bi bi-binoculars-fill"></i> Dreamscape Memory</div>
       <div class="modal-sub">Garden · Season 5 — find each requested object by tapping it directly on the scene.</div>
+      <div class="dm-modebar"><button type="button" class="mini-btn secondary" id="dmPlayMode">▶ Play</button><button type="button" class="mini-btn secondary" id="dmGuideToggle">🗺️ Map Guide</button></div>
+      <div id="dmGuidePanel" class="dm-guide-panel" hidden><div class="dm-guide-toolbar"><label>Search item<input id="dmGuideSearch" type="search" placeholder="Search item name..."></label><span id="dmGuideCount"></span></div><div class="dm-guide-layout"><div class="dm-guide-map"><img id="dmGuideImage" src="" alt="Dreamscape map guide"></div><div class="dm-guide-items" id="dmGuideItems"></div></div><p class="dm-guide-note">Map reference and complete item catalogue. Exact item markers are being verified; this guide does not place guessed coordinates.</p></div>
       <div class="dm-toolbar">
         <label>Stage<select id="dmScene">
           <option value="garden-1">Garden · Stage 1</option><option value="garden-2">Garden · Stage 2</option><option value="garden-3">Garden · Stage 3</option><option value="garden-4">Garden · Stage 4</option><option value="garden-5">Garden · Stage 5</option>
-          <option value="windmill">Windmill · Season 5</option><option value="farmhouse">Farmhouse · Season 5</option><option value="cityhall">City Hall · Season 5</option>
+          <option value="windmill">Windmill · Season 5</option><option value="hangar">Hangar · Season 5</option><option value="farmhouse">Farmhouse · Season 5</option><option value="kitchen">Kitchen · Season 5</option><option value="cityhall">City Hall · Season 5</option><option value="hospital">Hospital · Season 5</option><option value="bedroom">Bedroom · Season 5</option><option value="court">Court · Season 5</option><option value="mine">Mine · Season 5</option>
         </select></label>
         <div><span>Time</span><strong id="dmTime">60s</strong></div>
         <div><span>Found</span><strong id="dmFound">0 / 3</strong></div>
