@@ -1,85 +1,73 @@
-/* Dreamscape Memory — local timed scene-reference practice. */
+/* Dreamscape Memory — Garden S5 direct-tap practice + legacy reference scenes. */
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const scenes = {
-    garden: {name:'Garden · Season 5', image:'https://wostools.net/images/dreamscape/garden-s5-wm.webp', items:['Map','Corn','Feather','Butterfly','Balloon','Camera','Rubber duck','Starfish','Sunflower','Wing','Drifting bottle','Spider web','Scarf','Ball']},
-    windmill: {name:'Windmill · Season 5', image:'https://wostools.net/images/dreamscape/windmill-wm.webp', items:['Windmill','Blueprint','Mailbox','Windsock','Toolbox','Flare','Axe','Watchtower','Scarf','Snowmobile','Arrow sign','Hook','Shovel','Heart','Wheat','Hot air balloon','Whip','Waterbag','Giant elk','Sign post','Lantern','Pouch','Ladder','Flower bed','Rifle','Stool','Skis','Birds','Horse','Snowman','Plane']},
-    farmhouse: {name:'Farmhouse · Season 5', image:'https://wostools.net/images/dreamscape/farmhouse-s5-wm.webp', items:['Airship','Balloons','Chimney','Earmuffs','Fence','Flower basket','Fork knife','Glass bottle','Glove','Hanging rug','Iron axe','Megaphone','Pine tree','Potatoes','Shovel','Skylight','Spiked flail','Sword','Turkey','Fur mantle','Yak','Eggs','Patch','Ladle','Apple','Chestplate','Fish','Iron pot','Mushroom','Pigeon','Pumpkin','Shield','Corn','Crossbow']},
-    cityhall: {name:'City Hall · Season 5', image:'https://wostools.net/images/dreamscape/city-hall-s5-wm.webp', items:['Air drop','Airship','Balloons','Bowknot','Butterfly','Clock','Compass','Diamond','Envelope','Flag garland','Flowers','Globe','Keys','Lightning','Newspaper','Number plate','Pipe','Shield','Spring','Sun','Swan','Camera','Cat','Chandelier','Chimney','Cogwheel','Crack','Crow','Four leaf clover','Giftbox','Goggles','Harp','Ladder','Medal','Motorcycle','Pine tree','Scarf','Searchlight','Star','Tower','Twin swords','Vines','Walking stick','Wrench','8','Scroll','N','Paper windmill']}
+  const legacyScenes = {
+    windmill:{name:'Windmill · Season 5',image:'https://wostools.net/images/dreamscape/windmill-wm.webp',items:['Windmill','Blueprint','Mailbox','Windsock','Toolbox','Flare','Axe','Watchtower','Scarf','Snowmobile','Arrow sign','Hook','Shovel','Heart','Wheat','Hot air balloon','Whip','Waterbag','Giant elk','Sign post','Lantern','Pouch','Ladder','Flower bed','Rifle','Stool','Skis','Birds','Horse','Snowman','Plane']},
+    farmhouse:{name:'Farmhouse · Season 5',image:'https://wostools.net/images/dreamscape/farmhouse-s5-wm.webp',items:['Airship','Balloons','Chimney','Earmuffs','Fence','Flower basket','Fork knife','Glass bottle','Glove','Hanging rug','Iron axe','Megaphone','Pine tree','Potatoes','Shovel','Skylight','Spiked flail','Sword','Turkey','Fur mantle','Yak','Eggs','Patch','Ladle','Apple','Chestplate','Fish','Iron pot','Mushroom','Pigeon','Pumpkin','Shield','Corn','Crossbow']},
+    cityhall:{name:'City Hall · Season 5',image:'https://wostools.net/images/dreamscape/city-hall-s5-wm.webp',items:['Air drop','Airship','Balloons','Bowknot','Butterfly','Clock','Compass','Diamond','Envelope','Flag garland','Flowers','Globe','Keys','Lightning','Newspaper','Number plate','Pipe','Shield','Spring','Sun','Swan','Camera','Cat','Chandelier','Chimney','Cogwheel','Crack','Crow','Four leaf clover','Giftbox','Goggles','Harp','Ladder','Medal','Motorcycle','Pine tree','Scarf','Searchlight','Star','Tower','Twin swords','Vines','Walking stick','Wrench','8','Scroll','N','Paper windmill']}
   };
-  let currentScene='garden';
-  let items = scenes[currentScene].items;
-  const state={time:60,found:new Set(),queue:[],active:[],running:false,timer:null,hints:0};
+  const gardenStages = {
+    'garden-1':{name:'Garden · Stage 1',image:'images/dreamscape/cropped/garden-s5-stage-1.jpg',targets:[['Corn',65,70],['Feather',43,80],['Ball',35,64]]},
+    'garden-2':{name:'Garden · Stage 2',image:'images/dreamscape/cropped/garden-s5-stage-2.jpg',targets:[['Butterfly',97,58],['Rubber duck',28,74],['Corn',67,70]]},
+    'garden-3':{name:'Garden · Stage 3',image:'images/dreamscape/cropped/garden-s5-stage-3.jpg',targets:[['Butterfly',97,58],['Starfish',18,61],['Rubber duck',28,74]]},
+    'garden-4':{name:'Garden · Stage 4',image:'images/dreamscape/cropped/garden-s5-stage-4.jpg',targets:[['Spider web',80,27]]},
+    'garden-5':{name:'Garden · Stage 5',image:'images/dreamscape/cropped/garden-s5-stage-5.jpg',targets:[['Scarf',70,70]]}
+  };
+  let currentScene='garden-1', legacyItems=[], activeTargets=[];
+  const state={time:60,found:new Set(),running:false,timer:null,hints:0};
+  const isGarden=()=>!!gardenStages[currentScene];
+  const currentTargets=()=>isGarden()?gardenStages[currentScene].targets:legacyItems.map((name,i)=>[name,i+1,0]);
   const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;};
   const status=(s,k='')=>{const el=$('dmStatus');if(el){el.textContent=s;el.className='dm-status'+(k?' '+k:'');}};
   const render=()=>{
-    $('dmTime').textContent=state.time+'s';
-    $('dmFound').textContent=state.found.size+' / '+items.length;
-    $('dmTargets').innerHTML=state.active.length?state.active.map(i=>'<div class="dm-target '+(state.found.has(i)?'done':'')+'">'+(state.found.has(i)?'✓ ':'')+items[i-1]+'</div>').join(''):'<p class="dm-muted">Round complete.</p>';
-    $('dmChoices').innerHTML=items.map((name,i)=>'<button type="button" class="dm-choice" data-num="'+(i+1)+'" '+(!state.running||state.found.has(i+1)?'disabled':'')+'>'+String(i+1).padStart(2,'0')+'</button>').join('');
-    $('dmChoices').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>choose(Number(b.dataset.num))));
+    const total=isGarden()?activeTargets.length:legacyItems.length;
+    $('dmTime').textContent=state.time+'s';$('dmFound').textContent=state.found.size+' / '+total;
+    $('dmTargets').innerHTML=activeTargets.length?activeTargets.map((t,i)=>'<div class="dm-target '+(state.found.has(i)?'done':'')+'">'+(state.found.has(i)?'✓ ':'')+t[0]+'</div>').join(''):'<p class="dm-muted">Press Start to show the targets.</p>';
+    $('dmChoices').innerHTML=isGarden()?'':legacyItems.map((name,i)=>'<button type="button" class="dm-choice" data-num="'+(i+1)+'" '+(!state.running||state.found.has(i+1)?'disabled':'')+'>'+String(i+1).padStart(2,'0')+'</button>').join('');
+    $('dmChoiceTitle').textContent=isGarden()?'Tap the object directly on the map':'Tap the matching number';
+    $('dmMapHotspots').innerHTML='';
+    if(isGarden()&&state.running){
+      activeTargets.forEach((t,i)=>{if(state.found.has(i))return;const b=document.createElement('button');b.type='button';b.className='dm-hotspot';b.style.left=t[1]+'%';b.style.top=t[2]+'%';b.setAttribute('aria-label','Found '+t[0]);b.title='Tap '+t[0];b.addEventListener('click',()=>foundTarget(i));$('dmMapHotspots').appendChild(b);});
+    }
+    $('dmChoices').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>chooseLegacy(Number(b.dataset.num))));
   };
-  const finish=(won)=>{
-    state.running=false;if(state.timer)clearInterval(state.timer);state.timer=null;
-    render();status(won?'Scene cleared! You found all '+items.length+' objects.':'Time is up! Press Start to try again.',won?'good':'bad');
+  const finish=won=>{state.running=false;if(state.timer)clearInterval(state.timer);state.timer=null;render();status(won?'Stage cleared! All requested objects found.':'Time is up! Press Start to try again.',won?'good':'bad');};
+  const foundTarget=i=>{
+    if(!state.running||state.found.has(i))return;
+    state.found.add(i);
+    if(state.found.size===activeTargets.length){finish(true);return;}
+    render();status('Nice find! Keep looking for the remaining object(s).','good');
   };
-  const nextRound=()=>{
-    if(state.found.size===items.length){finish(true);return;}
-    state.active=state.queue.splice(0,3);
-    if(!state.active.length)state.active=items.map((_,i)=>i+1).filter(i=>!state.found.has(i)).slice(0,3);
-    render();
-  };
-  const choose=n=>{
+  const chooseLegacy=n=>{
     if(!state.running||state.found.has(n))return;
-    if(!state.active.includes(n)){status('Not one of the current targets — check the map number again.');return;}
-    state.found.add(n);
-    if(state.active.every(i=>state.found.has(i)))nextRound();else render();
-    if(state.found.size===items.length)finish(true);
+    state.found.add(n);render();
+    if(state.found.size===legacyItems.length)finish(true);
   };
   const start=()=>{
     if(state.timer)clearInterval(state.timer);
-    items=scenes[currentScene].items;state.time=60;state.found=new Set();state.queue=shuffle(items.map((_,i)=>i+1));state.active=[];state.running=true;state.hints=0;
-    nextRound();status('Go! Find the numbered objects before the timer runs out.','good');
+    state.time=60;state.found=new Set();state.running=true;state.hints=0;
+    if(isGarden()){activeTargets=gardenStages[currentScene].targets;render();status('Go! Tap each requested object directly on the scene.','good');}
+    else{legacyItems=legacyScenes[currentScene].items;activeTargets=legacyItems.map((name,i)=>[name]);render();status('Go! Find the numbered objects on the reference map.','good');}
     state.timer=setInterval(()=>{state.time--;render();if(state.time<=0)finish(false);},1000);
   };
   const hint=()=>{
-    if(!state.running||!state.active.length)return;
-    const left=state.active.filter(i=>!state.found.has(i));
-    if(!left.length)return;
-    const target=left[0];state.hints++;
-    status('Hint: look for '+items[target-1]+' — it is marked as number '+target+'.','good');
+    if(!state.running)return;
+    if(isGarden()){const i=activeTargets.findIndex((_,n)=>!state.found.has(n));if(i<0)return;status('Hint: look closely for '+activeTargets[i][0]+'.','good');}
+    else{const n=legacyItems.findIndex((_,i)=>!state.found.has(i+1));if(n>=0)status('Hint: look for '+legacyItems[n]+' — number '+(n+1)+'.','good');}
+  };
+  const changeScene=()=>{
+    currentScene=$('dmScene').value;const data=gardenStages[currentScene]||legacyScenes[currentScene];
+    $('dmSceneImage').src=data.image;$('dmSceneImage').alt='Dreamscape Memory '+data.name;
+    if(state.timer)clearInterval(state.timer);state.timer=null;state.running=false;state.found=new Set();activeTargets=[];legacyItems=[];
+    $('dmTime').textContent='60s';$('dmFound').textContent='0 / '+(gardenStages[currentScene]?.targets.length||legacyScenes[currentScene].items.length);
+    $('dmTargets').innerHTML='<p class="dm-muted">Targets will appear here when you start.</p>';$('dmChoices').innerHTML='';$('dmMapHotspots').innerHTML='';$('dmChoiceTitle').textContent=isGarden()?'Tap the object directly on the map':'Tap the matching number';
+    status('Selected '+data.name+'. Press Start to play.');
   };
   const init=()=>{
     if(!$('dmStart')||$('dmStart').dataset.ready)return;
-    $('dmStart').dataset.ready='1';
-    $('dmStart').addEventListener('click',start);
-    $('dmScene').addEventListener('change',()=>{currentScene=$('dmScene').value;items=scenes[currentScene].items;$('dmSceneImage').src=scenes[currentScene].image;$('dmSceneImage').alt='Dreamscape Memory '+scenes[currentScene].name+' annotated scene';if(state.timer)clearInterval(state.timer);state.timer=null;state.running=false;state.found=new Set();state.active=[];state.queue=[];$('dmTime').textContent='60s';$('dmFound').textContent='0 / '+items.length;$('dmTargets').innerHTML='<p class="dm-muted">Targets will appear here when you start.</p>';$('dmChoices').innerHTML='';status('Selected '+scenes[currentScene].name+'. Press Start to play.');});
-    $('dmHint').addEventListener('click',hint);
-    const sceneImage=$('dmSceneImage');
-    sceneImage.tabIndex=0;
-    sceneImage.setAttribute('role','button');
-    sceneImage.setAttribute('aria-label','Tap to enlarge the Dreamscape map');
-    sceneImage.title='Tap to enlarge map';
-    const openMapZoom=()=>{
-      if($('dmImageZoom'))return;
-      const overlay=document.createElement('div');
-      overlay.id='dmImageZoom';
-      overlay.className='dm-image-zoom';
-      overlay.setAttribute('role','dialog');
-      overlay.setAttribute('aria-modal','true');
-      overlay.setAttribute('aria-label','Enlarged Dreamscape map');
-      overlay.innerHTML='<button type="button" class="dm-image-zoom-close" aria-label="Close enlarged map">×</button><img alt="">';
-      overlay.querySelector('img').src=sceneImage.currentSrc||sceneImage.src;
-      overlay.querySelector('img').alt=sceneImage.alt;
-      const close=()=>overlay.remove();
-      overlay.addEventListener('click',e=>{if(e.target===overlay||e.target.classList.contains('dm-image-zoom-close'))close();});
-      document.addEventListener('keydown',function onKey(e){if(e.key==='Escape'&&$('dmImageZoom')){close();document.removeEventListener('keydown',onKey);}});
-      document.body.appendChild(overlay);
-      overlay.querySelector('.dm-image-zoom-close').focus();
-    };
-    sceneImage.addEventListener('click',openMapZoom);
-    sceneImage.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openMapZoom();}});
+    $('dmStart').dataset.ready='1';$('dmStart').addEventListener('click',start);$('dmScene').addEventListener('change',changeScene);$('dmHint').addEventListener('click',hint);
+    $('dmSceneImage').removeAttribute('tabindex');$('dmSceneImage').removeAttribute('role');$('dmSceneImage').style.cursor='default';
     render();
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
