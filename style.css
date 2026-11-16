@@ -748,3 +748,5 @@ body.modal-open .ui-bottom-nav{opacity:.35;pointer-events:none;}
 
 /* Dreamscape guide: item numbers available in the selected stage */
 .dm-guide-item.stage-active span{background:#16a34a;color:#fff;box-shadow:0 0 0 1px rgba(22,163,74,.35)}
+
+.dm-guide-marker.stage-active span{color:#22c55e}
