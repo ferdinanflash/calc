@@ -1,0 +1,37 @@
+name: Crop Dreamscape Garden maps
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/crop-dreamscape.yml'
+      - 'scripts/crop_dreamscape.py'
+      - 'images/dreamscape/Screenshot_2026-11-16-23-03-50-259_com.android.chrome.jpg'
+      - 'images/dreamscape/Screenshot_2026-11-16-23-03-57-654_com.android.chrome.jpg'
+      - 'images/dreamscape/Screenshot_2026-11-16-23-04-06-950_com.android.chrome.jpg'
+      - 'images/dreamscape/Screenshot_2026-11-16-23-04-19-458_com.android.chrome.jpg'
+      - 'images/dreamscape/Screenshot_2026-11-16-23-04-31-457_com.android.chrome.jpg'
+permissions:
+  contents: write
+jobs:
+  crop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python -m pip install Pillow
+      - run: python scripts/crop_dreamscape.py
+      - name: Commit cropped maps
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/dreamscape/cropped/
+          if git diff --cached --quiet; then
+            echo "No cropped image changes."
+          else
+            git commit -m "Add cropped Dreamscape Garden stage maps"
+            git push
+          fi
