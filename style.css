@@ -1134,7 +1134,7 @@ a{color:#8de9ed}
 .state-banner .publisher-typewrite{
  display:inline-block;max-width:100%;overflow:hidden;white-space:nowrap;
  vertical-align:bottom;border-right:2px solid #70e6df;padding-right:3px;
- width:9ch;animation:publisherTypewrite 1.7s steps(9,end) both,
+ width:9ch;animation:publisherTypewrite 1.7s steps(9,end) infinite alternate,
  publisherCaret .78s step-end infinite;
  text-shadow:0 0 9px rgba(112,230,223,.34);
 }
