@@ -1,7 +1,7 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v63-20261117';
+const CACHE_VERSION = 'v64-20261117';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
@@ -22,7 +22,7 @@ const PRECACHE = [
   './images/dreamscape/cropped/garden-s5-stage-3.jpg',
   './images/dreamscape/cropped/garden-s5-stage-4.jpg',
   './images/dreamscape/cropped/garden-s5-stage-5.jpg',
-  './js/hero-hub.js?v=3',
+  './js/hero-hub.js?v=4',
   './js/main.js?v=9',
   './js/building.js?v=12',
   './js/troops.js?v=10',
