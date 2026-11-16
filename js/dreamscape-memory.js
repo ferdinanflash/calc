@@ -3,9 +3,15 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const legacyScenes = {
-    windmill:{name:'Windmill · Season 5',image:'https://wostools.net/images/dreamscape/windmill-wm.webp',items:['Windmill','Blueprint','Mailbox','Windsock','Toolbox','Flare','Axe','Watchtower','Scarf','Snowmobile','Arrow sign','Hook','Shovel','Heart','Wheat','Hot air balloon','Whip','Waterbag','Giant elk','Sign post','Lantern','Pouch','Ladder','Flower bed','Rifle','Stool','Skis','Birds','Horse','Snowman','Plane']},
-    farmhouse:{name:'Farmhouse · Season 5',image:'https://wostools.net/images/dreamscape/farmhouse-s5-wm.webp',items:['Airship','Balloons','Chimney','Earmuffs','Fence','Flower basket','Fork knife','Glass bottle','Glove','Hanging rug','Iron axe','Megaphone','Pine tree','Potatoes','Shovel','Skylight','Spiked flail','Sword','Turkey','Fur mantle','Yak','Eggs','Patch','Ladle','Apple','Chestplate','Fish','Iron pot','Mushroom','Pigeon','Pumpkin','Shield','Corn','Crossbow']},
-    cityhall:{name:'City Hall · Season 5',image:'https://wostools.net/images/dreamscape/city-hall-s5-wm.webp',items:['Air drop','Airship','Balloons','Bowknot','Butterfly','Clock','Compass','Diamond','Envelope','Flag garland','Flowers','Globe','Keys','Lightning','Newspaper','Number plate','Pipe','Shield','Spring','Sun','Swan','Camera','Cat','Chandelier','Chimney','Cogwheel','Crack','Crow','Four leaf clover','Giftbox','Goggles','Harp','Ladder','Medal','Motorcycle','Pine tree','Scarf','Searchlight','Star','Tower','Twin swords','Vines','Walking stick','Wrench','8','Scroll','N','Paper windmill']}
+    windmill:{name:'Windmill · Season 5',image:'https://wostools.net/images/dreamscape/windmill-wm.webp',items:'Windmill|Blueprint|Mailbox|Windsock|Toolbox|Flare|Axe|Watchtower|Scarf|Snowmobile|Arrow sign|Hook|Shovel|Heart|Wheat|Hot air balloon|Whip|Water bag|Giant elk|Sign post|Lantern|Pouch|Ladder|Flower bed|Rifle|Stool|Skis|Birds|Horse|Snowman|Plane|Bell|Haystack|Bedroll|Boomerang|Hammer|Barrel|Glove|Wooden brush|Hand saw|Triangle|Apple|Bone|F|Carrot|Headwear|Beast trap'.split('|')},
+    hangar:{name:'Hangar · Season 5',image:'https://wostools.net/images/dreamscape/hangar-s5-wm.webp',items:'Air pump|Arrow sign|Blueprint|Brush|Clock|Exhaust fan|Fire alarm|Fuel canister|Glass bottle|Goggles|Hammer|Hook|Kettle|Key|Lighthouse|Lock|Magnet|Medkit|Oil puddle|Oxygen tank|Paint bucket|Paper bag|Pipe|Projector|Scissors|Screwdriver|Searchlight|Spring|Tea set|Triangle|Mop|Wrench|Seagull|Cart|Cogwheel|Moon|Medal|Road cone|Chain|Tape|Tree|Plant|Ladder|Blackboard|Mouse|Scarf|Backpack|Barrel|Paint blob|Paw mark'.split('|')},
+    farmhouse:{name:'Farmhouse · Season 5',image:'https://wostools.net/images/dreamscape/farmhouse-s5-wm.webp',items:'Airship|Balloons|Chimney|Earmuffs|Fence|Flower basket|Fork knife|Glass bottle|Glove|Hanging rug|Iron axe|Megaphone|Pine tree|Potatoes|Shovel|Skylight|Spiked flail|Sword|Turkey|Fur mantle|Yak|Eggs|Patch|Ladle|Apple|Chestplate|Fish|Iron pot|Mushroom|Pigeon|Pumpkin|Shield|Corn|Crossbow'.split('|')},
+    kitchen:{name:'Kitchen · Season 5',image:'https://wostools.net/images/dreamscape/kitchen-s5-wm.webp',items:'Apple|Backpack|Barrel|Basket|Bird|Book|Bread|Broom|Brush|Cheese|Corn|Curtain|Fish bone|Flame|Footprints|Fork|Garlic|Gloves|Gold coins|Ladle|Lantern|Maple leaf|Milk|Mouse|Pipe|Plant|Pouch|Pumpkin|Rolling pin|Sausage|Scissors|Spatula|Spider web|Stain|Tomatoes|Turkey|Vase|Whisk|Wood pile|Moose antlers|Snowflake|Candles|Tea set|Lamb chops|Bell|Apple pie|Hole|Jam'.split('|')},
+    cityhall:{name:'City Hall · Season 5',image:'https://wostools.net/images/dreamscape/city-hall-s5-wm.webp',items:'Air drop|Airship|Balloons|Bowknot|Butterfly|Clock|Compass|Diamond|Envelope|Flag garland|Flowers|Globe|Keys|Lightning|Newspaper|Number plate|Pipe|Shield|Spring|Sun|Swan|Camera|Cat|Chandelier|Chimney|Cogwheel|Crack|Crow|Four leaf clover|Giftbox|Goggles|Harp|Ladder|Medal|Motorcycle|Pine tree|Scarf|Searchlight|Star|Tower|Twin swords|Vines|Walking stick|Wrench|8|Scroll|N|Paper windmill'.split('|')},
+    hospital:{name:'Hospital · Season 5',image:'https://wostools.net/images/dreamscape/hospital-s5-wm.webp',items:'Apple|Bandage roll|Book|Bucket|Button|Cane|Clock|Comb|Duffle bag|First aid kit|Hanging banner|IV drip|Mirror|Mortar & pestle|Obelisk|Paper bag|Patch|Pipe|Pliers|Scissors|Slippers|Stethoscope|Thermometer|Towel|Weighing scale|Kettle|Clipboard|Bell|Lamp|Coat rack|Test tubes|Flower vase|Tweezers'.split('|')},
+    bedroom:{name:'Bedroom · Season 5',image:'https://wostools.net/images/dreamscape/bedroom-s5-wm.webp',items:'Bucket|Calendar|Cheese|Clock|Clothes hanger|Curtain|Diary|Easter egg|Frying pan|Gift box|Gold coins|Guitar|Headwear|Key|Mask|Mouse|Mug|Painting|Plant|Pouch|Rifle|Rope|Rubber ball|Scroll|Snowflake|Spider|Spring|Towel|Vent|Brush|Camera|Candle|Coat|Comb|Glass bottle|Goggles|Hand drum|Hourglass|Lion wall art|Plate|Slippers|Stain|Teddy|Tree|E'.split('|')},
+    court:{name:'Court · Season 5',image:'https://wostools.net/images/dreamscape/court-s5-wm.webp',items:[]},
+    mine:{name:'Mine · Season 5',image:'https://wostools.net/images/dreamscape/mine-s5-wm.webp',items:[]}
   };
   const gardenStages = {
     'garden-1':{name:'Garden · Stage 1',image:'images/dreamscape/cropped/garden-s5-stage-1.jpg',targets:[['Corn',70,69],['Feather',43,72],['Ball',86,98]]},
@@ -64,9 +70,30 @@
     $('dmTargets').innerHTML='<p class="dm-muted">Targets will appear here when you start.</p>';$('dmChoices').innerHTML='';$('dmMapHotspots').innerHTML='';$('dmChoiceTitle').textContent=isGarden()?'Tap the object directly on the map':'Tap the matching number';
     status('Selected '+data.name+'. Press Start to play.');
   };
+
+  const guideRender=()=>{
+    const scene=legacyScenes[currentScene]||gardenStages[currentScene];
+    const data=legacyScenes[currentScene]||{name:gardenStages[currentScene].name,image:gardenStages[currentScene].image,items:gardenStages[currentScene].targets.map(x=>x[0])};
+    $('dmGuideImage').src=data.image;$('dmGuideImage').alt=data.name+' map';
+    const q=($('dmGuideSearch').value||'').trim().toLowerCase();
+    const filtered=data.items.filter(x=>x.toLowerCase().includes(q));
+    $('dmGuideCount').textContent=filtered.length+' / '+data.items.length+' items';
+    $('dmGuideItems').innerHTML=filtered.map((x,i)=>'<div class="dm-guide-item"><span>'+(data.items.indexOf(x)+1)+'</span>'+x+'</div>').join('')||'<p class="dm-muted">No matching items.</p>';
+  };
+  const setMode=guide=>{
+    $('dmGuidePanel').hidden=!guide;
+    document.querySelector('.dm-toolbar').hidden=guide;
+    document.querySelector('.dm-status').hidden=guide;
+    document.querySelector('.dm-layout').hidden=guide;
+    document.querySelector('.dm-help').hidden=guide;
+    $('dmGuideToggle').classList.toggle('active',guide);
+    $('dmPlayMode').classList.toggle('active',!guide);
+    if(guide)guideRender();
+  };
   const init=()=>{
     if(!$('dmStart')||$('dmStart').dataset.ready)return;
-    $('dmStart').dataset.ready='1';$('dmStart').addEventListener('click',start);$('dmScene').addEventListener('change',changeScene);$('dmHint').addEventListener('click',hint);
+    $('dmStart').dataset.ready='1';
+    $('dmGuideToggle').addEventListener('click',()=>setMode(true));$('dmPlayMode').addEventListener('click',()=>setMode(false));$('dmGuideSearch').addEventListener('input',guideRender);$('dmStart').addEventListener('click',start);$('dmScene').addEventListener('change',()=>{changeScene();if(!$('dmGuidePanel').hidden)guideRender();});$('dmHint').addEventListener('click',hint);
     $('dmSceneImage').removeAttribute('tabindex');$('dmSceneImage').removeAttribute('role');$('dmSceneImage').style.cursor='default';
     render();
   };
