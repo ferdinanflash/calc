@@ -8,7 +8,7 @@
     cityhall:{name:'City Hall · Season 5',image:'https://wostools.net/images/dreamscape/city-hall-s5-wm.webp',items:['Air drop','Airship','Balloons','Bowknot','Butterfly','Clock','Compass','Diamond','Envelope','Flag garland','Flowers','Globe','Keys','Lightning','Newspaper','Number plate','Pipe','Shield','Spring','Sun','Swan','Camera','Cat','Chandelier','Chimney','Cogwheel','Crack','Crow','Four leaf clover','Giftbox','Goggles','Harp','Ladder','Medal','Motorcycle','Pine tree','Scarf','Searchlight','Star','Tower','Twin swords','Vines','Walking stick','Wrench','8','Scroll','N','Paper windmill']}
   };
   const gardenStages = {
-    'garden-1':{name:'Garden · Stage 1',image:'images/dreamscape/cropped/garden-s5-stage-1.jpg',targets:[['Corn',65,70],['Feather',43,80],['Ball',35,64]]},
+    'garden-1':{name:'Garden · Stage 1',image:'images/dreamscape/cropped/garden-s5-stage-1.jpg',targets:[['Corn',70,69],['Feather',43,72],['Ball',35,66]]},
     'garden-2':{name:'Garden · Stage 2',image:'images/dreamscape/cropped/garden-s5-stage-2.jpg',targets:[['Butterfly',97,58],['Rubber duck',28,74],['Corn',67,70]]},
     'garden-3':{name:'Garden · Stage 3',image:'images/dreamscape/cropped/garden-s5-stage-3.jpg',targets:[['Butterfly',97,58],['Starfish',18,61],['Rubber duck',28,74]]},
     'garden-4':{name:'Garden · Stage 4',image:'images/dreamscape/cropped/garden-s5-stage-4.jpg',targets:[['Spider web',80,27]]},
