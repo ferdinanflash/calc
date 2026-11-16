@@ -12,8 +12,7 @@
   const stopTimer=()=>{if(state.timer)clearInterval(state.timer);state.timer=null;};
   const stageObjects=()=>{
     const m=currentMap();
-    const eligible=(m.coords||[]).filter(c=>c.stages?.includes(stageNo));
-    return eligible.length?eligible:((m.coords||[]).length?(m.coords||[]):(m.items||[]).map((item,i)=>({n:i+1,item})));
+    return (m.coords||[]).filter(c=>c.stages?.includes(stageNo));
   };
   const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;};
   const pickBatch=()=>{
@@ -74,8 +73,16 @@
   };
   const updateStages=()=>{
     const m=currentMap(),sel=$('dmStage');
-    sel.innerHTML=(m.stages||[m.image]).map((_,i)=>'<option value="'+(i+1)+'">Stage '+(i+1)+'</option>').join('');
-    stageNo=1;sel.value='1';setImage();
+    sel.innerHTML=(m.stages||[m.image]).map((_,i)=>{
+      const stage=i+1, count=(m.coords||[]).filter(c=>c.stages?.includes(stage)).length;
+      return '<option value="'+stage+'" '+(!count?'disabled':'')+'>Stage '+stage+(!count?' (no target data)':'')+'</option>';
+    }).join('');
+    stageNo=1;
+    if(sel.options[0]?.disabled){
+      const firstAvailable=[...sel.options].find(o=>!o.disabled);
+      if(firstAvailable)stageNo=Number(firstAvailable.value);
+    }
+    sel.value=String(stageNo);setImage();
   };
   const changeMap=()=>{
     mapId=$('dmScene').value;updateStages();resetGame();
