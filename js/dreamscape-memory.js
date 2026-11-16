@@ -1,133 +1,137 @@
-/* Dreamscape Memory — Garden S5 direct-tap practice + legacy reference scenes. */
+/* Dreamscape Memory — playable stages for every available map. */
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const legacyScenes = {
-    windmill:{name:'Windmill · Season 5',image:'https://wostools.net/images/dreamscape/windmill-wm.webp',items:'Windmill|Blueprint|Mailbox|Windsock|Toolbox|Flare|Axe|Watchtower|Scarf|Snowmobile|Arrow sign|Hook|Shovel|Heart|Wheat|Hot air balloon|Whip|Water bag|Giant elk|Sign post|Lantern|Pouch|Ladder|Flower bed|Rifle|Stool|Skis|Birds|Horse|Snowman|Plane|Bell|Haystack|Bedroll|Boomerang|Hammer|Barrel|Glove|Wooden brush|Hand saw|Triangle|Apple|Bone|F|Carrot|Headwear|Beast trap'.split('|')},
-    hangar:{name:'Hangar · Season 5',image:'https://wostools.net/images/dreamscape/hangar-s5-wm.webp',items:'Air pump|Arrow sign|Blueprint|Brush|Clock|Exhaust fan|Fire alarm|Fuel canister|Glass bottle|Goggles|Hammer|Hook|Kettle|Key|Lighthouse|Lock|Magnet|Medkit|Oil puddle|Oxygen tank|Paint bucket|Paper bag|Pipe|Projector|Scissors|Screwdriver|Searchlight|Spring|Tea set|Triangle|Mop|Wrench|Seagull|Cart|Cogwheel|Moon|Medal|Road cone|Chain|Tape|Tree|Plant|Ladder|Blackboard|Mouse|Scarf|Backpack|Barrel|Paint blob|Paw mark'.split('|')},
-    farmhouse:{name:'Farmhouse · Season 5',image:'https://wostools.net/images/dreamscape/farmhouse-s5-wm.webp',items:'Airship|Balloons|Chimney|Earmuffs|Fence|Flower basket|Fork knife|Glass bottle|Glove|Hanging rug|Iron axe|Megaphone|Pine tree|Potatoes|Shovel|Skylight|Spiked flail|Sword|Turkey|Fur mantle|Yak|Eggs|Patch|Ladle|Apple|Chestplate|Fish|Iron pot|Mushroom|Pigeon|Pumpkin|Shield|Corn|Crossbow'.split('|')},
-    kitchen:{name:'Kitchen · Season 5',image:'https://wostools.net/images/dreamscape/kitchen-s5-wm.webp',items:'Apple|Backpack|Barrel|Basket|Bird|Book|Bread|Broom|Brush|Cheese|Corn|Curtain|Fish bone|Flame|Footprints|Fork|Garlic|Gloves|Gold coins|Ladle|Lantern|Maple leaf|Milk|Mouse|Pipe|Plant|Pouch|Pumpkin|Rolling pin|Sausage|Scissors|Spatula|Spider web|Stain|Tomatoes|Turkey|Vase|Whisk|Wood pile|Moose antlers|Snowflake|Candles|Tea set|Lamb chops|Bell|Apple pie|Hole|Jam'.split('|')},
-    cityhall:{name:'City Hall · Season 5',image:'https://wostools.net/images/dreamscape/city-hall-s5-wm.webp',items:'Air drop|Airship|Balloons|Bowknot|Butterfly|Clock|Compass|Diamond|Envelope|Flag garland|Flowers|Globe|Keys|Lightning|Newspaper|Number plate|Pipe|Shield|Spring|Sun|Swan|Camera|Cat|Chandelier|Chimney|Cogwheel|Crack|Crow|Four leaf clover|Giftbox|Goggles|Harp|Ladder|Medal|Motorcycle|Pine tree|Scarf|Searchlight|Star|Tower|Twin swords|Vines|Walking stick|Wrench|8|Scroll|N|Paper windmill'.split('|')},
-    hospital:{name:'Hospital · Season 5',image:'https://wostools.net/images/dreamscape/hospital-s5-wm.webp',items:'Apple|Bandage roll|Book|Bucket|Button|Cane|Clock|Comb|Duffle bag|First aid kit|Hanging banner|IV drip|Mirror|Mortar & pestle|Obelisk|Paper bag|Patch|Pipe|Pliers|Scissors|Slippers|Stethoscope|Thermometer|Towel|Weighing scale|Kettle|Clipboard|Bell|Lamp|Coat rack|Test tubes|Flower vase|Tweezers'.split('|')},
-    bedroom:{name:'Bedroom · Season 5',image:'https://wostools.net/images/dreamscape/bedroom-s5-wm.webp',items:'Bucket|Calendar|Cheese|Clock|Clothes hanger|Curtain|Diary|Easter egg|Frying pan|Gift box|Gold coins|Guitar|Headwear|Key|Mask|Mouse|Mug|Painting|Plant|Pouch|Rifle|Rope|Rubber ball|Scroll|Snowflake|Spider|Spring|Towel|Vent|Brush|Camera|Candle|Coat|Comb|Glass bottle|Goggles|Hand drum|Hourglass|Lion wall art|Plate|Slippers|Stain|Teddy|Tree|E'.split('|')},
-    court:{name:'Court · Season 5',image:'https://wostools.net/images/dreamscape/court-s5-wm.webp',items:'Backpack|Bandage roll|Binoculars|Branch|Cane|Clock|Coat|Compass|Curtain|Dagger|Diamond|Footprints|Globe|Gold coins|Handcuff|Hanging banner|Hourglass|Ink bottle|Key|Ladder|Magnifier|Mask|Paper plane|Photo frame|Pigeon|Wheat|Plant|Pouch|Scroll|Shield|Ship|Shoe|Snowflake|Stamp|Statue|Sun|Sword|Thermometer|Tie|Trophy|Typewriter|Umbrella|Wall light|Water bag|Weighing scale|Wrench|Top hat|Judge’s gavel'.split('|')},
-    mine:{name:'Mine · Season 5',image:'https://wostools.net/images/dreamscape/mine-s5-wm.webp',items:'Arrow sign|Barrel|Broom|Bucket|Canned food|Cart|Chain|Chest|Chimney|Cogwheel|Crystal|Flame|Footprints|Glass bottle|Hammer|Hanging banner|Iron pot|Key|Ladder|Mailbox|Megaphone|Motorcycle|Music note|Oxygen tank|Parcel|Pickaxe|Pipe|Plane|Plant|Pliers|Pouch|Safety helmet|Shovel|Sign post|Ski|Snowman|Spider|Tower|Wheel|Withered branch|Wrench|Icicles|Spider web|6|A|Lamp|Carriage|Birds|Mushroom'.split('|')}
+  const gardenTargets = {
+    1:[['Corn',70,69],['Feather',43,72],['Ball',86,98]],
+    2:[['Butterfly',97,58],['Rubber duck',28,74],['Corn',67,70]],
+    3:[['Butterfly',97,58],['Starfish',18,61],['Rubber duck',28,74]],
+    4:[['Spider web',80,27]],
+    5:[['Scarf',70,70]]
   };
-  const gardenStages = {
-    'garden-1':{name:'Garden · Stage 1',image:'images/dreamscape/cropped/garden-s5-stage-1.jpg',targets:[['Corn',70,69],['Feather',43,72],['Ball',86,98]]},
-    'garden-2':{name:'Garden · Stage 2',image:'images/dreamscape/cropped/garden-s5-stage-2.jpg',targets:[['Butterfly',97,58],['Rubber duck',28,74],['Corn',67,70]]},
-    'garden-3':{name:'Garden · Stage 3',image:'images/dreamscape/cropped/garden-s5-stage-3.jpg',targets:[['Butterfly',97,58],['Starfish',18,61],['Rubber duck',28,74]]},
-    'garden-4':{name:'Garden · Stage 4',image:'images/dreamscape/cropped/garden-s5-stage-4.jpg',targets:[['Spider web',80,27]]},
-    'garden-5':{name:'Garden · Stage 5',image:'images/dreamscape/cropped/garden-s5-stage-5.jpg',targets:[['Scarf',70,70]]}
-  };
-  let currentScene='garden-1', legacyItems=[], activeTargets=[];
-  const state={time:60,found:new Set(),running:false,timer:null,hints:0};
-  const isGarden=()=>!!gardenStages[currentScene];
-  const currentTargets=()=>isGarden()?gardenStages[currentScene].targets:legacyItems.map((name,i)=>[name,i+1,0]);
-  const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;};
+  const data = () => window.DREAMSCAPE_MAP_DATA || [];
+  let mapId='garden-s5', stageNo=1, pool=[], batch=[], currentImage='';
+  const state={time:60,found:new Set(),running:false,timer:null,completed:0,hints:0};
+  const currentMap=()=>data().find(m=>m.id===mapId)||data()[0];
+  const isGarden=()=>mapId==='garden-s5';
+  const assetUrl=p=>p?(p.startsWith('http')?p:'https://wostools.net'+p):'';
   const status=(s,k='')=>{const el=$('dmStatus');if(el){el.textContent=s;el.className='dm-status'+(k?' '+k:'');}};
+  const stopTimer=()=>{if(state.timer)clearInterval(state.timer);state.timer=null;};
+  const stageObjects=()=>{
+    if(isGarden()&&gardenTargets[stageNo]) return gardenTargets[stageNo].map((t,i)=>({n:i+1,item:t[0],x:t[1]/100,y:t[2]/100,w:.055,h:.055,rot:0}));
+    const m=currentMap();
+    const eligible=(m.coords||[]).filter(c=>!c.stages?.length||c.stages.includes(stageNo));
+    return eligible.length?eligible:(m.coords||[]);
+  };
+  const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;};
+  const pickBatch=()=>{
+    batch=pool.splice(0,Math.min(3,pool.length));
+    state.found=new Set();state.time=60;state.hints=0;
+    render();
+    if(batch.length)status('New targets! Find all '+batch.length+' object(s) on the map.','good');
+    else finish(true);
+  };
   const render=()=>{
-    const total=isGarden()?activeTargets.length:legacyItems.length;
-    $('dmTime').textContent=state.time+'s';$('dmFound').textContent=state.found.size+' / '+total;
-    $('dmTargets').innerHTML=activeTargets.length?activeTargets.map((t,i)=>'<div class="dm-target '+(state.found.has(isGarden()?i:i+1)?'done':'')+'">'+(state.found.has(isGarden()?i:i+1)?'✓ ':'')+t[0]+'</div>').join(''):'<p class="dm-muted">Press Start to show the targets.</p>';
-    $('dmChoices').innerHTML=isGarden()?'':legacyItems.map((name,i)=>'<button type="button" class="dm-choice" data-num="'+(i+1)+'" '+(!state.running||state.found.has(i+1)?'disabled':'')+'>'+String(i+1).padStart(2,'0')+'</button>').join('');
-    $('dmChoiceTitle').textContent=isGarden()?'Tap the object directly on the map':'Tap the matching number';
+    const total=pool.length+batch.length;
+    $('dmTime').textContent=state.time+'s';
+    $('dmFound').textContent=state.completed+' / '+(state.completed+total);
+    $('dmTargets').innerHTML=batch.map((c,i)=>'<div class="dm-target '+(state.found.has(c.n)?'done':'')+'">'+(state.found.has(c.n)?'✓ ':'')+c.item+'</div>').join('')||'<p class="dm-muted">Press Start to show the targets.</p>';
+    const hasCoords=(currentMap().coords||[]).length>0;
+    $('dmChoiceTitle').textContent=hasCoords?'Tap the object directly on the map':'Tap the matching number on the reference map';
+    $('dmChoices').innerHTML=hasCoords?'':batch.map(c=>'<button type="button" class="dm-choice" data-num="'+c.n+'" '+(!state.running||state.found.has(c.n)?'disabled':'')+'>'+String(c.n).padStart(2,'0')+'</button>').join('');
     $('dmMapHotspots').innerHTML='';
-    if(isGarden()&&state.running){
-      activeTargets.forEach((t,i)=>{if(state.found.has(i))return;const b=document.createElement('button');b.type='button';b.className='dm-hotspot';b.style.left=t[1]+'%';b.style.top=t[2]+'%';b.setAttribute('aria-label','Found '+t[0]);b.title='Tap '+t[0];b.addEventListener('click',()=>foundTarget(i));$('dmMapHotspots').appendChild(b);});
+    if(hasCoords&&state.running){
+      batch.forEach(c=>{if(state.found.has(c.n))return;const b=document.createElement('button');b.type='button';b.className='dm-hotspot';b.style.left=(c.x*100)+'%';b.style.top=(c.y*100)+'%';b.style.width=Math.max(3,c.w*100)+'%';b.style.height=Math.max(3,c.h*100)+'%';b.style.transform='translate(-50%,-50%) rotate('+(c.rot||0)+'deg)';b.setAttribute('aria-label','Find '+c.item);b.title='Tap '+c.item;b.addEventListener('click',()=>foundTarget(c.n));$('dmMapHotspots').appendChild(b);});
     }
-    $('dmChoices').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>chooseLegacy(Number(b.dataset.num))));
+    $('dmChoices').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>foundTarget(Number(b.dataset.num))));
   };
-  const finish=won=>{state.running=false;if(state.timer)clearInterval(state.timer);state.timer=null;render();status(won?'Stage cleared! All requested objects found.':'Time is up! Press Start to try again.',won?'good':'bad');};
-  const foundTarget=i=>{
-    if(!state.running||state.found.has(i))return;
-    state.found.add(i);
-    if(state.found.size===activeTargets.length){finish(true);return;}
-    render();status('Nice find! Keep looking for the remaining object(s).','good');
-  };
-  const chooseLegacy=n=>{
+  const finish=won=>{state.running=false;stopTimer();render();status(won?'Map cleared! All objects found.':'Time is up! Press Start to try this round again.',won?'good':'bad');};
+  const foundTarget=n=>{
     if(!state.running||state.found.has(n))return;
-    state.found.add(n);render();
-    if(state.found.size===legacyItems.length)finish(true);
+    state.found.add(n);state.completed++;render();
+    if(state.found.size===batch.length){
+      if(pool.length){pickBatch();}
+      else finish(true);
+    } else status('Great! '+(batch.length-state.found.size)+' target(s) left in this set.','good');
   };
   const start=()=>{
-    if(state.timer)clearInterval(state.timer);
-    state.time=60;state.found=new Set();state.running=true;state.hints=0;
-    if(isGarden()){activeTargets=gardenStages[currentScene].targets;render();status('Go! Tap each requested object directly on the scene.','good');}
-    else{legacyItems=legacyScenes[currentScene].items;activeTargets=legacyItems.map((name,i)=>[name]);render();status('Go! Find the numbered objects on the reference map.','good');}
-    state.timer=setInterval(()=>{state.time--;render();if(state.time<=0)finish(false);},1000);
+    stopTimer();state.completed=0;state.found=new Set();state.running=true;
+    const objects=stageObjects();
+    if(!objects.length){state.running=false;status('This map has no object coordinates yet. Use Map Guide to view the map.','bad');return;}
+    pool=shuffle(objects.map(c=>({...c})));pickBatch();
+    state.timer=setInterval(()=>{state.time--;if(state.time<=0){state.time=0;finish(false);}else render();},1000);
   };
   const hint=()=>{
     if(!state.running)return;
-    if(isGarden()){const i=activeTargets.findIndex((_,n)=>!state.found.has(n));if(i<0)return;status('Hint: look closely for '+activeTargets[i][0]+'.','good');}
-    else{const n=legacyItems.findIndex((_,i)=>!state.found.has(i+1));if(n>=0)status('Hint: look for '+legacyItems[n]+' — number '+(n+1)+'.','good');}
+    const c=batch.find(x=>!state.found.has(x.n));
+    if(c)status('Hint: find '+c.item+'. Look for the highlighted tap area on the map.','good');
   };
-  const changeScene=()=>{
-    currentScene=$('dmScene').value;const data=gardenStages[currentScene]||legacyScenes[currentScene];
-    $('dmSceneImage').src=data.image;$('dmSceneImage').alt='Dreamscape Memory '+data.name;
-    if(state.timer)clearInterval(state.timer);state.timer=null;state.running=false;state.found=new Set();activeTargets=[];legacyItems=[];
-    $('dmTime').textContent='60s';$('dmFound').textContent='0 / '+(gardenStages[currentScene]?.targets.length||legacyScenes[currentScene].items.length);
-    $('dmTargets').innerHTML='<p class="dm-muted">Targets will appear here when you start.</p>';$('dmChoices').innerHTML='';$('dmMapHotspots').innerHTML='';$('dmChoiceTitle').textContent=isGarden()?'Tap the object directly on the map':'Tap the matching number';
-    status('Selected '+data.name+'. Press Start to play.');
+  const setImage=()=>{
+    const m=currentMap();
+    const stageImage=isGarden()?'images/dreamscape/cropped/garden-s5-stage-'+stageNo+'.jpg':(m.stages?.[stageNo-1]||m.image);
+    currentImage=assetUrl(stageImage);
+    $('dmSceneImage').src=currentImage;
+    $('dmSceneImage').alt=m.name+' · Stage '+stageNo;
+    $('dmSceneImage').onerror=()=>{if($('dmSceneImage').src!==assetUrl(m.image))$('dmSceneImage').src=assetUrl(m.image);};
+    $('dmSceneImage').style.aspectRatio=(m.width||523)+' / '+(m.height||858);
   };
-
+  const resetGame=()=>{
+    stopTimer();state.running=false;state.found=new Set();state.completed=0;pool=[];batch=[];
+    $('dmTime').textContent='60s';$('dmFound').textContent='0 / 0';$('dmTargets').innerHTML='<p class="dm-muted">Targets will appear here when you start.</p>';$('dmChoices').innerHTML='';$('dmMapHotspots').innerHTML='';
+  };
+  const updateStages=()=>{
+    const m=currentMap(),sel=$('dmStage');
+    sel.innerHTML=(m.stages||[m.image]).map((_,i)=>'<option value="'+(i+1)+'">Stage '+(i+1)+'</option>').join('');
+    stageNo=1;sel.value='1';setImage();
+  };
+  const changeMap=()=>{
+    mapId=$('dmScene').value;updateStages();resetGame();
+    $('dmChoiceTitle').textContent=(currentMap().coords||[]).length?'Tap the object directly on the map':'Tap the matching number';
+    status(currentMap().name+' selected. Choose a stage and press Start.');
+  };
   let currentGuideMap='garden-s5';
   const guideRender=()=>{
-    const maps=window.DREAMSCAPE_MAP_DATA||[];
-    const sceneSelect=$('dmGuideScene');
-    if(sceneSelect.options.length!==maps.length){
-      sceneSelect.innerHTML=maps.map(m=>'<option value="'+m.id+'">S'+m.season+' · '+m.name+(m.multiplayer?' · Co-op':'')+'</option>').join('');
-    }
+    const maps=data(),sceneSelect=$('dmGuideScene');
+    if(sceneSelect.options.length!==maps.length)sceneSelect.innerHTML=maps.map(m=>'<option value="'+m.id+'">S'+m.season+' · '+m.name+(m.multiplayer?' · Co-op':'')+'</option>').join('');
     sceneSelect.value=currentGuideMap;
-    const map=maps.find(m=>m.id===currentGuideMap)||maps.find(m=>m.id==='garden-s5');
-    if(!map)return;
+    const map=maps.find(m=>m.id===currentGuideMap)||maps[0];if(!map)return;
     const stageSelect=$('dmGuideStage');
+    if(stageSelect.dataset.map!==map.id){stageSelect.dataset.map=map.id;stageSelect.innerHTML=map.stages.map((_,i)=>'<option value="'+(i+1)+'">Stage '+(i+1)+'</option>').join('');stageSelect.value='1';}
     const stage=Math.min(Math.max(1,Number(stageSelect.value)||1),map.stages.length);
-    if(stageSelect.dataset.map!==map.id){
-      stageSelect.dataset.map=map.id;
-      stageSelect.innerHTML=map.stages.map((_,i)=>'<option value="'+(i+1)+'">Stage '+(i+1)+'</option>').join('');
-      stageSelect.value='1';
-    }
-    const activeStage=Number(stageSelect.value)||1;
-    const imageUrl=map.stages[activeStage-1]||map.image;
-    $('dmGuideImage').src=imageUrl.startsWith('http')?imageUrl:'https://wostools.net'+imageUrl;
-    $('dmGuideImage').alt=map.name+' · Stage '+activeStage;
-    $('dmGuideMapSize').style.aspectRatio=(map.width||523)+' / '+(map.height||852);
+    const imageUrl=map.stages[stage-1]||map.image;
+    $('dmGuideImage').src=assetUrl(imageUrl);$('dmGuideImage').alt=map.name+' · Stage '+stage;
+    $('dmGuideMapSize').style.aspectRatio=(map.width||523)+' / '+(map.height||858);
     const q=($('dmGuideSearch').value||'').trim().toLowerCase();
-    const visible=map.coords.filter(c=>(!c.stages.length||c.stages.includes(activeStage))&&(!q||c.item.toLowerCase().includes(q)));
-    $('dmGuideOverlay').innerHTML=visible.map(c=>{
-      const title=String(c.n).padStart(2,'0')+' · '+c.item;
-      return '<button type="button" class="dm-guide-marker" data-item="'+c.n+'" title="'+title.replace(/"/g,'&quot;')+'" aria-label="'+title.replace(/"/g,'&quot;')+'" style="left:'+(c.x*100)+'%;top:'+(c.y*100)+'%;width:'+(c.w*100)+'%;height:'+(c.h*100)+'%;transform:translate(-50%,-50%) rotate('+c.rot+'deg)"><span>'+c.n+'</span></button>';
-    }).join('');
+    const visible=(map.coords||[]).filter(c=>(!c.stages.length||c.stages.includes(stage))&&(!q||c.item.toLowerCase().includes(q)));
+    $('dmGuideOverlay').innerHTML=visible.map(c=>{const title=String(c.n).padStart(2,'0')+' · '+c.item;return '<button type="button" class="dm-guide-marker" data-item="'+c.n+'" title="'+title.replace(/"/g,'&quot;')+'" aria-label="'+title.replace(/"/g,'&quot;')+'" style="left:'+(c.x*100)+'%;top:'+(c.y*100)+'%;width:'+(c.w*100)+'%;height:'+(c.h*100)+'%;transform:translate(-50%,-50%) rotate('+c.rot+'deg)"><span>'+c.n+'</span></button>';}).join('');
     const filtered=map.items.map((name,i)=>({name,n:i+1})).filter(x=>!q||x.name.toLowerCase().includes(q));
     $('dmGuideCount').textContent=filtered.length+' / '+map.items.length+' items · '+visible.length+' markers on stage';
     $('dmGuideItems').innerHTML=filtered.map(x=>'<button type="button" class="dm-guide-item" data-item="'+x.n+'"><span>'+String(x.n).padStart(2,'0')+'</span>'+x.name+'</button>').join('')||'<p class="dm-muted">No matching items.</p>';
-    const selectItem=n=>{
-      $('dmGuideItems').querySelectorAll('[data-item]').forEach(el=>el.classList.toggle('selected',Number(el.dataset.item)===n));
-      $('dmGuideOverlay').querySelectorAll('[data-item]').forEach(el=>el.classList.toggle('selected',Number(el.dataset.item)===n));
-    };
+    const selectItem=n=>{ $('dmGuideItems').querySelectorAll('[data-item]').forEach(el=>el.classList.toggle('selected',Number(el.dataset.item)===n));$('dmGuideOverlay').querySelectorAll('[data-item]').forEach(el=>el.classList.toggle('selected',Number(el.dataset.item)===n));};
     $('dmGuideOverlay').querySelectorAll('[data-item]').forEach(el=>el.addEventListener('click',()=>selectItem(Number(el.dataset.item))));
     $('dmGuideItems').querySelectorAll('[data-item]').forEach(el=>el.addEventListener('click',()=>selectItem(Number(el.dataset.item))));
     $('dmGuideMapTitle').textContent=map.name+' · Season '+map.season+(map.multiplayer?' · Co-op':'');
   };
   const setMode=guide=>{
-    $('dmGuidePanel').hidden=!guide;
-    document.querySelector('.dm-toolbar').hidden=guide;
-    document.querySelector('.dm-status').hidden=guide;
-    document.querySelector('.dm-layout').hidden=guide;
-    document.querySelector('.dm-help').hidden=guide;
-    $('dmGuideToggle').classList.toggle('active',guide);
-    $('dmPlayMode').classList.toggle('active',!guide);
-    if(guide){currentGuideMap=currentScene.startsWith('garden-')?'garden-s5':(currentScene==='cityhall'?'city-hall-s5':currentScene+'-s5');$('dmGuideScene').value=currentGuideMap;guideRender();}
+    $('dmGuidePanel').hidden=!guide;document.querySelector('.dm-toolbar').hidden=guide;document.querySelector('.dm-status').hidden=guide;document.querySelector('.dm-layout').hidden=guide;document.querySelector('.dm-help').hidden=guide;
+    $('dmGuideToggle').classList.toggle('active',guide);$('dmPlayMode').classList.toggle('active',!guide);
+    if(guide){currentGuideMap=mapId;$('dmGuideScene').value=currentGuideMap;guideRender();}
   };
   const init=()=>{
     if(!$('dmStart')||$('dmStart').dataset.ready)return;
     $('dmStart').dataset.ready='1';
-    $('dmGuideToggle').addEventListener('click',()=>setMode(true));$('dmPlayMode').addEventListener('click',()=>setMode(false));$('dmGuideSearch').addEventListener('input',guideRender);
+    const maps=data();
+    $('dmScene').innerHTML=maps.map(m=>'<option value="'+m.id+'">S'+m.season+' · '+m.name+(m.multiplayer?' · Co-op':'')+'</option>').join('');
+    $('dmScene').value=mapId;updateStages();
+    $('dmGuideToggle').addEventListener('click',()=>setMode(true));$('dmPlayMode').addEventListener('click',()=>setMode(false));
+    $('dmGuideSearch').addEventListener('input',guideRender);
     $('dmGuideScene').addEventListener('change',()=>{currentGuideMap=$('dmGuideScene').value;$('dmGuideStage').dataset.map='';guideRender();});
-    $('dmGuideStage').addEventListener('change',guideRender);$('dmStart').addEventListener('click',start);$('dmScene').addEventListener('change',()=>{changeScene();if(!$('dmGuidePanel').hidden)guideRender();});$('dmHint').addEventListener('click',hint);
+    $('dmGuideStage').addEventListener('change',guideRender);
+    $('dmScene').addEventListener('change',changeMap);
+    $('dmStage').addEventListener('change',()=>{stageNo=Number($('dmStage').value)||1;setImage();resetGame();status('Stage '+stageNo+' selected. Press Start to play.');});
+    $('dmStart').addEventListener('click',start);$('dmHint').addEventListener('click',hint);
     $('dmSceneImage').removeAttribute('tabindex');$('dmSceneImage').removeAttribute('role');$('dmSceneImage').style.cursor='default';
-    render();
+    resetGame();
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
