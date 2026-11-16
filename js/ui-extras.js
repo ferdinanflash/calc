@@ -224,3 +224,34 @@ function uiInit() {
 
 document.addEventListener('DOMContentLoaded', uiInit);
 if (document.readyState !== 'loading') uiInit();
+
+
+// Main-menu navigation and live tool search.
+function uiScrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function uiFilterTools(query) {
+  const q = String(query || '').trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll('.menu-card').forEach(card => {
+    const match = !q || card.textContent.toLowerCase().includes(q);
+    card.hidden = !match;
+    if (match) shown++;
+  });
+  document.querySelectorAll('.main-menu .menu-group').forEach(heading => {
+    const next = heading.nextElementSibling;
+    if (next && next.classList.contains('menu-grid')) {
+      heading.hidden = !Array.from(next.querySelectorAll('.menu-card')).some(card => !card.hidden);
+    }
+  });
+  let empty = document.getElementById('uiSearchEmpty');
+  if (!empty) {
+    empty = document.createElement('div');
+    empty.id = 'uiSearchEmpty';
+    empty.className = 'ui-search-empty';
+    empty.innerHTML = '<i class="bi bi-search"></i><strong>No tools found</strong><span>Try another keyword.</span>';
+    document.querySelector('.main-menu').appendChild(empty);
+  }
+  empty.hidden = shown > 0;
+}
