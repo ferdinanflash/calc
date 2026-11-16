@@ -23,7 +23,7 @@
   const render=()=>{
     const total=isGarden()?activeTargets.length:legacyItems.length;
     $('dmTime').textContent=state.time+'s';$('dmFound').textContent=state.found.size+' / '+total;
-    $('dmTargets').innerHTML=activeTargets.length?activeTargets.map((t,i)=>'<div class="dm-target '+(state.found.has(i)?'done':'')+'">'+(state.found.has(i)?'✓ ':'')+t[0]+'</div>').join(''):'<p class="dm-muted">Press Start to show the targets.</p>';
+    $('dmTargets').innerHTML=activeTargets.length?activeTargets.map((t,i)=>'<div class="dm-target '+(state.found.has(isGarden()?i:i+1)?'done':'')+'">'+(state.found.has(isGarden()?i:i+1)?'✓ ':'')+t[0]+'</div>').join(''):'<p class="dm-muted">Press Start to show the targets.</p>';
     $('dmChoices').innerHTML=isGarden()?'':legacyItems.map((name,i)=>'<button type="button" class="dm-choice" data-num="'+(i+1)+'" '+(!state.running||state.found.has(i+1)?'disabled':'')+'>'+String(i+1).padStart(2,'0')+'</button>').join('');
     $('dmChoiceTitle').textContent=isGarden()?'Tap the object directly on the map':'Tap the matching number';
     $('dmMapHotspots').innerHTML='';
