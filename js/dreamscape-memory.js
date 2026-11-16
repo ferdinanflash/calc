@@ -131,6 +131,17 @@
     $('dmScene').addEventListener('change',changeMap);
     $('dmStage').addEventListener('change',()=>{stageNo=Number($('dmStage').value)||1;setImage();resetGame();status('Stage '+stageNo+' selected. Press Start to play.');});
     $('dmStart').addEventListener('click',start);$('dmHint').addEventListener('click',hint);
+    const playMapStage=document.querySelector('.dm-map-stage');
+    playMapStage.addEventListener('pointerdown',event=>{
+      if(!state.running||$('dmGuidePanel').hidden===false)return;
+      const rect=playMapStage.getBoundingClientRect();
+      const mark=document.createElement('span');
+      mark.className='dm-tap-pulse';
+      mark.style.left=((event.clientX-rect.left)/rect.width*100)+'%';
+      mark.style.top=((event.clientY-rect.top)/rect.height*100)+'%';
+      playMapStage.appendChild(mark);
+      mark.addEventListener('animationend',()=>mark.remove(),{once:true});
+    },{passive:true});
     $('dmSceneImage').removeAttribute('tabindex');$('dmSceneImage').removeAttribute('role');$('dmSceneImage').style.cursor='default';
     resetGame();
   };
