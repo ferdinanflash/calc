@@ -1,7 +1,7 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v74-20261117';
+const CACHE_VERSION = 'v75-20261117';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
@@ -12,7 +12,7 @@ const PRECACHE = [
   './database.js?v=9',
   './manifest.webmanifest',
   './js/utils.js?v=11',
-  './js/modal.js?v=9',
+  './js/modal.js?v=10',
   './js/ui-extras.js?v=2',
   './js/marvelous-fantasia.js?v=1',
   './js/dreamscape-data.js?v=2',
@@ -199,4 +199,25 @@ async function staleWhileRevalidate(req) {
 // Allow page to force update
 self.addEventListener('message', (event) => {
   if (event.data === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data && event.data.type === 'CACHE_URLS' && Array.isArray(event.data.urls)) {
+    event.waitUntil((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      await Promise.allSettled(event.data.urls.slice(0, 500).map(async (value) => {
+        try {
+          const url = new URL(value, self.location.href);
+          if (!/^https?:$/.test(url.protocol)) return;
+          const request = new Request(url.href, {
+            mode: url.origin === self.location.origin ? 'same-origin' : 'no-cors',
+            credentials: url.origin === self.location.origin ? 'same-origin' : 'omit'
+          });
+          const response = await fetch(request);
+          if (response && (response.ok || response.type === 'opaque')) {
+            await cache.put(request, response.clone());
+          }
+        } catch (error) {
+          // One unavailable image must not interrupt caching the remaining assets.
+        }
+      }));
+    })());
+  }
 });
