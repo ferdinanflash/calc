@@ -2,10 +2,14 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const items = [
-    'Map','Corn','Feather','Butterfly','Balloon','Camera','Rubber duck',
-    'Starfish','Sunflower','Wing','Drifting bottle','Spider web','Scarf','Ball'
-  ];
+  const scenes = {
+    garden: {name:'Garden · Season 5', image:'https://wostools.net/images/dreamscape/garden-s5-wm.webp', items:['Map','Corn','Feather','Butterfly','Balloon','Camera','Rubber duck','Starfish','Sunflower','Wing','Drifting bottle','Spider web','Scarf','Ball']},
+    windmill: {name:'Windmill · Season 5', image:'https://wostools.net/images/dreamscape/windmill-wm.webp', items:['Windmill','Blueprint','Mailbox','Windsock','Toolbox','Flare','Axe','Watchtower','Scarf','Snowmobile','Arrow sign','Hook','Shovel','Heart','Wheat','Hot air balloon','Whip','Waterbag','Giant elk','Sign post','Lantern','Pouch','Ladder','Flower bed','Rifle','Stool','Skis','Birds','Horse','Snowman','Plane']},
+    farmhouse: {name:'Farmhouse · Season 5', image:'https://wostools.net/images/dreamscape/farmhouse-s5-wm.webp', items:['Airship','Balloons','Chimney','Earmuffs','Fence','Flower basket','Fork knife','Glass bottle','Glove','Hanging rug','Iron axe','Megaphone','Pine tree','Potatoes','Shovel','Skylight','Spiked flail','Sword','Turkey','Fur mantle','Yak','Eggs','Patch','Ladle','Apple','Chestplate','Fish','Iron pot','Mushroom','Pigeon','Pumpkin','Shield','Corn','Crossbow']},
+    cityhall: {name:'City Hall · Season 5', image:'https://wostools.net/images/dreamscape/city-hall-s5-wm.webp', items:['Air drop','Airship','Balloons','Bowknot','Butterfly','Clock','Compass','Diamond','Envelope','Flag garland','Flowers','Globe','Keys','Lightning','Newspaper','Number plate','Pipe','Shield','Spring','Sun','Swan','Camera','Cat','Chandelier','Chimney','Cogwheel','Crack','Crow','Four leaf clover','Giftbox','Goggles','Harp','Ladder','Medal','Motorcycle','Pine tree','Scarf','Searchlight','Star','Tower','Twin swords','Vines','Walking stick','Wrench','8','Scroll','N','Paper windmill']}
+  };
+  let currentScene='garden';
+  let items = scenes[currentScene].items;
   const state={time:60,found:new Set(),queue:[],active:[],running:false,timer:null,hints:0};
   const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;};
   const status=(s,k='')=>{const el=$('dmStatus');if(el){el.textContent=s;el.className='dm-status'+(k?' '+k:'');}};
@@ -35,7 +39,7 @@
   };
   const start=()=>{
     if(state.timer)clearInterval(state.timer);
-    state.time=60;state.found=new Set();state.queue=shuffle(items.map((_,i)=>i+1));state.active=[];state.running=true;state.hints=0;
+    items=scenes[currentScene].items;state.time=60;state.found=new Set();state.queue=shuffle(items.map((_,i)=>i+1));state.active=[];state.running=true;state.hints=0;
     nextRound();status('Go! Find the numbered objects before the timer runs out.','good');
     state.timer=setInterval(()=>{state.time--;render();if(state.time<=0)finish(false);},1000);
   };
@@ -50,6 +54,7 @@
     if(!$('dmStart')||$('dmStart').dataset.ready)return;
     $('dmStart').dataset.ready='1';
     $('dmStart').addEventListener('click',start);
+    $('dmScene').addEventListener('change',()=>{currentScene=$('dmScene').value;items=scenes[currentScene].items;$('dmSceneImage').src=scenes[currentScene].image;$('dmSceneImage').alt='Dreamscape Memory '+scenes[currentScene].name+' annotated scene';if(state.timer)clearInterval(state.timer);state.timer=null;state.running=false;state.found=new Set();state.active=[];state.queue=[];$('dmTime').textContent='60s';$('dmFound').textContent='0 / '+items.length;$('dmTargets').innerHTML='<p class="dm-muted">Targets will appear here when you start.</p>';$('dmChoices').innerHTML='';status('Selected '+scenes[currentScene].name+'. Press Start to play.');});
     $('dmHint').addEventListener('click',hint);
     render();
   };
