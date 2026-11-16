@@ -1103,33 +1103,39 @@ a{color:#8de9ed}
 @media(prefers-reduced-motion:reduce){.state-banner:after{animation:none;opacity:0}}
 
 
-/* AURORA ICON GLOW — every main menu icon */
+/* AURORA ICON GLOW — subtle, continuously breathing */
 .menu-card .menu-icon{
  position:relative;
  isolation:isolate;
- box-shadow:0 0 12px color-mix(in srgb,var(--c,#8b7cff) 24%,transparent),
-            0 0 24px color-mix(in srgb,var(--c,#8b7cff) 15%,transparent),
-            inset 0 0 14px color-mix(in srgb,var(--c,#8b7cff) 12%,transparent);
- transition:box-shadow .22s ease,filter .22s ease,transform .22s ease;
+ animation:menuIconGlow 3.6s ease-in-out infinite;
+ box-shadow:0 0 5px color-mix(in srgb,var(--c,#8b7cff) 13%,transparent),
+            0 0 10px color-mix(in srgb,var(--c,#8b7cff) 8%,transparent),
+            inset 0 0 5px color-mix(in srgb,var(--c,#8b7cff) 5%,transparent);
+ transition:transform .22s ease;
 }
 .menu-card .menu-icon i.bi{
- text-shadow:0 0 5px currentColor,0 0 12px color-mix(in srgb,var(--c,#8b7cff) 72%,transparent),
-             0 0 22px color-mix(in srgb,var(--c,#8b7cff) 42%,transparent);
- filter:drop-shadow(0 0 5px color-mix(in srgb,var(--c,#8b7cff) 52%,transparent));
+ text-shadow:0 0 3px color-mix(in srgb,var(--c,#8b7cff) 30%,transparent);
+ filter:drop-shadow(0 0 2px color-mix(in srgb,var(--c,#8b7cff) 22%,transparent));
 }
 .menu-card:hover .menu-icon,.menu-card:focus-visible .menu-icon{
- transform:translateY(-2px);
- box-shadow:0 0 16px color-mix(in srgb,var(--c,#8b7cff) 38%,transparent),
-            0 0 32px color-mix(in srgb,var(--c,#8b7cff) 25%,transparent),
-            inset 0 0 18px color-mix(in srgb,var(--c,#8b7cff) 18%,transparent);
+ transform:translateY(-1px);
 }
-.menu-card:hover .menu-icon i.bi,.menu-card:focus-visible .menu-icon i.bi{
- text-shadow:0 0 7px currentColor,0 0 16px color-mix(in srgb,var(--c,#8b7cff) 90%,transparent),
-             0 0 28px color-mix(in srgb,var(--c,#8b7cff) 62%,transparent);
+@keyframes menuIconGlow{
+ 0%,100%{
+  box-shadow:0 0 4px color-mix(in srgb,var(--c,#8b7cff) 10%,transparent),
+             0 0 8px color-mix(in srgb,var(--c,#8b7cff) 6%,transparent),
+             inset 0 0 4px color-mix(in srgb,var(--c,#8b7cff) 4%,transparent);
+ }
+ 50%{
+  box-shadow:0 0 8px color-mix(in srgb,var(--c,#8b7cff) 20%,transparent),
+             0 0 15px color-mix(in srgb,var(--c,#8b7cff) 12%,transparent),
+             inset 0 0 7px color-mix(in srgb,var(--c,#8b7cff) 7%,transparent);
+ }
 }
-@media(prefers-reduced-motion:reduce){.menu-card .menu-icon{transition:none}}
-
-
+@media(prefers-reduced-motion:reduce){
+ .menu-card .menu-icon{animation:none}
+}
+ 
 /* Typewriter reveal for the State 3475 publisher signature */
 .state-banner .publisher-typewrite{
  display:inline-block;max-width:100%;overflow:hidden;white-space:nowrap;
