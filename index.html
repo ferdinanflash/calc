@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=26">
+<link rel="stylesheet" href="style.css?v=27">
 </head>
 <body>
 <div class="wrap">
@@ -84,6 +84,12 @@
       </button>
       <button class="menu-card fantasia" onclick="openModal('marvelousFantasiaModal')">
         <span class="menu-icon"><i class="bi bi-puzzle-fill"></i></span><span>Marvelous Fantasia</span><small>Match three tiles · layered board practice</small>
+      </button>
+      <button class="menu-card dreamscape" onclick="openModal('dreamscapeMemoryModal')">
+        <span class="menu-icon"><i class="bi bi-binoculars-fill"></i></span><span>Dreamscape Memory</span><small>Timed hidden-object scene practice</small>
+      </button>
+      <button class="menu-card hero-hub" onclick="openModal('heroHubModal')">
+        <span class="menu-icon"><i class="bi bi-person-badge-fill"></i></span><span>Hero Hub</span><small>Browse heroes by generation and troop type</small>
       </button>
     </div>
 
@@ -618,6 +624,47 @@
       <div class="source-note">Unofficial fan-made practice game inspired by the Whiteout Survival Honor Festival mini-game. Boards are procedurally generated and do not reproduce the exact in-game layouts. Not affiliated with Century Games.</div>
     </div>
   </div>
+  <!-- DREAMSCAPE MEMORY LOCAL PRACTICE -->
+  <div class="modal" id="dreamscapeMemoryModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('dreamscapeMemoryModal')">×</button>
+      <div class="modal-title"><i class="bi bi-binoculars-fill"></i> Dreamscape Memory</div>
+      <div class="modal-sub">Local timed practice using the Garden (Season 5) reference scene. Find the requested object number on the annotated map.</div>
+      <div class="dm-toolbar">
+        <label>Scene<select id="dmScene"><option value="garden">Garden · Season 5</option></select></label>
+        <div><span>Time</span><strong id="dmTime">60s</strong></div>
+        <div><span>Found</span><strong id="dmFound">0 / 14</strong></div>
+        <button type="button" class="mini-btn secondary" id="dmStart">Start / Restart</button>
+      </div>
+      <div class="dm-status" id="dmStatus" role="status" aria-live="polite">Press Start to begin a 60-second practice round.</div>
+      <div class="dm-layout">
+        <div class="dm-scene-wrap"><img id="dmSceneImage" src="https://wostools.net/images/dreamscape/garden-s5-wm.webp" alt="Dreamscape Memory Garden Season 5 annotated scene" loading="lazy"></div>
+        <div class="dm-play-panel"><div class="dm-target-title">Find these objects</div><div id="dmTargets" class="dm-targets"><p class="dm-muted">Targets will appear here when you start.</p></div><div class="dm-choice-title">Tap the matching number</div><div id="dmChoices" class="dm-choices"></div><button type="button" class="mini-btn secondary" id="dmHint">Hint</button></div>
+      </div>
+      <div class="dm-help"><strong>How to play</strong><p>Three target objects appear at a time. Find each object on the numbered scene reference and tap its number. Clear all 14 targets before the timer reaches zero.</p><p>This local practice mode uses the published annotated map as a visual reference; it does not reproduce the live event's exact hitboxes, chapter progression, co-op, or rewards.</p></div>
+      <div class="source-note">Unofficial fan-made practice tool. Scene reference image is loaded from WoSTools. Not affiliated with Century Games.</div>
+    </div>
+  </div>
+
+  <!-- HERO HUB LOCAL ROSTER -->
+  <div class="modal" id="heroHubModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal('heroHubModal')">×</button>
+      <div class="modal-title"><i class="bi bi-person-badge-fill"></i> Hero Hub</div>
+      <div class="modal-sub">Browse Whiteout Survival heroes by generation, troop type, and name. Tap a hero for a larger portrait and details.</div>
+      <div class="hh-toolbar">
+        <input id="hhSearch" type="search" placeholder="Search hero..." aria-label="Search hero">
+        <select id="hhGeneration" aria-label="Filter generation"><option value="all">All generations</option></select>
+        <select id="hhClass" aria-label="Filter troop type"><option value="all">All troop types</option><option value="Infantry">Infantry</option><option value="Lancer">Lancer</option><option value="Marksman">Marksman</option></select>
+        <select id="hhRarity" aria-label="Filter rarity"><option value="all">All rarities</option><option value="Legendary">Legendary</option><option value="Epic">Epic</option><option value="Rare">Rare</option></select>
+      </div>
+      <div class="hh-count" id="hhCount">Loading heroes…</div>
+      <div class="hh-grid" id="hhGrid"></div>
+      <div class="hh-detail" id="hhDetail" hidden></div>
+      <div class="source-note">Hero portraits are loaded from WoSTools image assets. Roster and generation labels are based on the reference Hero Hub; stats, skills, gear planning, and profile sync are not included in this local roster version.</div>
+    </div>
+  </div>
+
   <!-- ASCII ART MODAL -->
   <div class="modal" id="asciiModal" aria-hidden="true">
     <div class="modal-box modal-xl">
@@ -746,13 +793,13 @@
 <script defer src="js/mia-fortune.js?v=6"></script>
 <script defer src="js/frosty-fortune.js?v=1"></script>
 <script defer src="js/mergeventure.js?v=1"></script>
-<script defer src="js/marvelous-fantasia.js?v=1"></script>
+<script defer src="js/marvelous-fantasia.js?v=1"></script>\n<script defer src="js/dreamscape-memory.js?v=1"></script>\n<script defer src="js/hero-hub.js?v=1"></script>
 <script defer src="js/main.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=33').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=34').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
