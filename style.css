@@ -1140,11 +1140,16 @@ a{color:#8de9ed}
 .state-banner .publisher-typewrite{
  display:inline-block;max-width:100%;overflow:hidden;white-space:nowrap;
  vertical-align:bottom;border-right:2px solid #70e6df;padding-right:3px;
- width:9ch;animation:publisherTypewrite 1.7s steps(9,end) infinite alternate,
+ width:9ch;animation:publisherTypewrite 6.4s linear infinite,
  publisherCaret .78s step-end infinite;
  text-shadow:0 0 9px rgba(112,230,223,.34);
 }
-@keyframes publisherTypewrite{from{width:0}to{width:9ch}}
+@keyframes publisherTypewrite{
+ 0%{width:0;animation-timing-function:steps(9,end)}
+ 26.5625%,73.4375%{width:9ch}
+ 73.4375%{animation-timing-function:steps(9,start)}
+ 100%{width:0}
+}
 @keyframes publisherCaret{50%{border-color:transparent}}
 @media(prefers-reduced-motion:reduce){
  .state-banner .publisher-typewrite{width:auto;animation:none;border-right:0}
