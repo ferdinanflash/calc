@@ -1,20 +1,20 @@
 /* Whiteout Survival 3475 Tools — Service Worker
  * Cache version: bump CACHE_VERSION when you deploy new assets.
  */
-const CACHE_VERSION = 'v39-20261116';
+const CACHE_VERSION = 'v40-20261116';
 const CACHE_NAME = `wos-3475-${CACHE_VERSION}`;
 
 // Core shell + assets needed offline
 const PRECACHE = [
   './',
   './index.html',
-  './style.css?v=26',
+  './style.css?v=27',
   './database.js?v=9',
   './manifest.webmanifest',
   './js/utils.js?v=11',
   './js/modal.js?v=9',
   './js/ui-extras.js?v=1',
-  './js/marvelous-fantasia.js?v=1',
+  './js/marvelous-fantasia.js?v=1',\n  './js/dreamscape-memory.js?v=1',\n  './js/hero-hub.js?v=1',
   './js/main.js?v=9',
   './js/building.js?v=12',
   './js/troops.js?v=10',
