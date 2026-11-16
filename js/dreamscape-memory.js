@@ -74,6 +74,11 @@
   let currentGuideMap='garden-s5';
   const guideRender=()=>{
     const maps=window.DREAMSCAPE_MAP_DATA||[];
+    const sceneSelect=$('dmGuideScene');
+    if(sceneSelect.options.length!==maps.length){
+      sceneSelect.innerHTML=maps.map(m=>'<option value="'+m.id+'">S'+m.season+' · '+m.name+(m.multiplayer?' · Co-op':'')+'</option>').join('');
+    }
+    sceneSelect.value=currentGuideMap;
     const map=maps.find(m=>m.id===currentGuideMap)||maps.find(m=>m.id==='garden-s5');
     if(!map)return;
     const stageSelect=$('dmGuideStage');
@@ -113,7 +118,7 @@
     document.querySelector('.dm-help').hidden=guide;
     $('dmGuideToggle').classList.toggle('active',guide);
     $('dmPlayMode').classList.toggle('active',!guide);
-    if(guide){currentGuideMap=currentScene.startsWith('garden-')?'garden-s5':(legacyScenes[currentScene]?.mapId||currentScene);$('dmGuideScene').value=currentGuideMap;guideRender();}
+    if(guide){currentGuideMap=currentScene.startsWith('garden-')?'garden-s5':(currentScene==='cityhall'?'city-hall-s5':currentScene+'-s5');$('dmGuideScene').value=currentGuideMap;guideRender();}
   };
   const init=()=>{
     if(!$('dmStart')||$('dmStart').dataset.ready)return;
