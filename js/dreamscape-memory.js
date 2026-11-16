@@ -74,6 +74,9 @@
   const guideRender=()=>{
     const scene=legacyScenes[currentScene]||gardenStages[currentScene];
     const data=legacyScenes[currentScene]||{name:gardenStages[currentScene].name,image:gardenStages[currentScene].image,items:['Map','Corn','Feather','Butterfly','Balloon','Camera','Rubber duck','Starfish','Sunflower','Wing','Drifting bottle','Spider web','Scarf','Ball']};
+    const stageCount={'garden-1':5,windmill:12,hangar:12,farmhouse:8,kitchen:10,cityhall:12,hospital:8,bedroom:12,court:12,mine:12}[currentScene]||1;
+    const stageSelect=$('dmGuideStage');if(stageSelect.options.length!==stageCount){stageSelect.innerHTML=Array.from({length:stageCount},(_,i)=>'<option value="'+(i+1)+'">Stage '+(i+1)+'</option>').join('');}
+    if(isGarden()){data.image=gardenStages['garden-'+stageSelect.value]?.image||gardenStages['garden-1'].image;}
     $('dmGuideImage').src=data.image;$('dmGuideImage').alt=data.name+' map';
     const q=($('dmGuideSearch').value||'').trim().toLowerCase();
     const filtered=data.items.filter(x=>x.toLowerCase().includes(q));
@@ -88,12 +91,14 @@
     document.querySelector('.dm-help').hidden=guide;
     $('dmGuideToggle').classList.toggle('active',guide);
     $('dmPlayMode').classList.toggle('active',!guide);
-    if(guide)guideRender();
+    if(guide){$('dmGuideScene').value=currentScene;guideRender();}
   };
   const init=()=>{
     if(!$('dmStart')||$('dmStart').dataset.ready)return;
     $('dmStart').dataset.ready='1';
-    $('dmGuideToggle').addEventListener('click',()=>setMode(true));$('dmPlayMode').addEventListener('click',()=>setMode(false));$('dmGuideSearch').addEventListener('input',guideRender);$('dmStart').addEventListener('click',start);$('dmScene').addEventListener('change',()=>{changeScene();if(!$('dmGuidePanel').hidden)guideRender();});$('dmHint').addEventListener('click',hint);
+    $('dmGuideToggle').addEventListener('click',()=>setMode(true));$('dmPlayMode').addEventListener('click',()=>setMode(false));$('dmGuideSearch').addEventListener('input',guideRender);
+    $('dmGuideScene').addEventListener('change',()=>{$('dmScene').value=$('dmGuideScene').value;changeScene();$('dmGuideStage').innerHTML='';guideRender();});
+    $('dmGuideStage').addEventListener('change',guideRender);$('dmStart').addEventListener('click',start);$('dmScene').addEventListener('change',()=>{changeScene();if(!$('dmGuidePanel').hidden)guideRender();});$('dmHint').addEventListener('click',hint);
     $('dmSceneImage').removeAttribute('tabindex');$('dmSceneImage').removeAttribute('role');$('dmSceneImage').style.cursor='default';
     render();
   };
