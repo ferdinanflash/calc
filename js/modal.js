@@ -33,3 +33,48 @@ document.addEventListener('keydown',e=>{
     document.querySelectorAll('.modal.open').forEach(m=>closeModal(m.id));
   }
 });
+
+
+// Prepare calculator interfaces and their local assets while the app is online.
+// Modals remain closed; this only builds their data-driven contents for offline use.
+function warmCalculatorData(){
+  const tasks = [
+    ['Building', () => initBuilding()],
+    ['Troops', () => renderTroopDB()],
+    ['War Academy', () => initWarAcademy()],
+    ['Chief Charm', () => renderCharmDB()],
+    ['Chief Gear', () => renderGearDB()],
+    ['SvS', () => { loadSVS(); renderSVS(); }],
+    ['RFC', () => initRFC()]
+  ];
+  tasks.forEach(([name, run]) => {
+    try { run(); }
+    catch (error) { console.warn('[Offline] Could not prepare ' + name + ' calculator:', error); }
+  });
+
+  // Include lazy-loaded images in hidden calculators so the service worker can
+  // store them before the user disconnects.
+  if ('serviceWorker' in navigator) {
+    const urls = [...document.querySelectorAll(
+      '.modal img[src], .modal source[src], .modal [data-src]'
+    )].map(el => el.currentSrc || el.src || el.dataset.src)
+      .filter(Boolean);
+    const unique = [...new Set(urls)];
+    const send = () => {
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'CACHE_URLS', urls: unique });
+      } else {
+        navigator.serviceWorker.ready.then(reg => {
+          (reg.active || navigator.serviceWorker.controller)?.postMessage({ type: 'CACHE_URLS', urls: unique });
+        }).catch(() => {});
+      }
+    };
+    send();
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', warmCalculatorData, { once: true });
+} else {
+  warmCalculatorData();
+}
