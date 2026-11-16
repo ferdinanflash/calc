@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=25">
+<link rel="stylesheet" href="style.css?v=26">
 </head>
 <body>
 <div class="wrap">
@@ -81,6 +81,9 @@
       </button>
       <button class="menu-card frosty" onclick="openModal('frostyFortuneModal')">
         <span class="menu-icon"><i class="bi bi-snow2"></i></span><span>Frosty Fortune Simulator</span><small>Open chests, collect Thorns &amp; plan skins</small>
+      </button>
+      <button class="menu-card fantasia" onclick="openModal('marvelousFantasiaModal')">
+        <span class="menu-icon"><i class="bi bi-puzzle-fill"></i></span><span>Marvelous Fantasia</span><small>Match three tiles · layered board practice</small>
       </button>
     </div>
 
@@ -600,6 +603,21 @@
     </div>
   </div>
 
+  <!-- MARVELOUS FANTASIA PRACTICE GAME -->
+  <div class="modal" id="marvelousFantasiaModal" aria-hidden="true">
+    <div class="modal-box modal-xl">
+      <button class="modal-close" onclick="closeModal(&quot;marvelousFantasiaModal&quot;)">×</button>
+      <div class="modal-title"><i class="bi bi-puzzle-fill"></i> Marvelous Fantasia</div>
+      <div class="modal-sub">Practice the Honor Festival tile-matching mini-game. Clear three identical tiles at a time.</div>
+      <div class="mf-topbar"><div><span>Level</span><strong id="mfLevel">1</strong></div><div><span>Best</span><strong id="mfBest">1</strong></div><button type="button" class="mini-btn secondary" id="mfRestart">Restart</button></div>
+      <div class="mf-game-status" id="mfMessage" role="status" aria-live="polite">Tap any tile that is not covered by another tile.</div>
+      <div class="mf-board-wrap"><div class="mf-board" id="mfBoard" aria-label="Tile board"></div></div>
+      <div class="mf-storage-panel"><div class="mf-storage-heading"><strong>Storage Zone</strong><span id="mfStorageCount">0 / 7</span></div><div class="mf-storage" id="mfStorage" aria-label="Storage slots"></div></div>
+      <div class="mf-tools"><button type="button" class="mini-btn secondary" id="mfWithdraw">↶ Withdraw <b id="mfWithdrawCount">1</b></button><button type="button" class="mini-btn secondary" id="mfReconstruct">⟳ Reconstruct <b id="mfReconstructCount">1</b></button><button type="button" class="mini-btn secondary" id="mfRemove">✦ Remove <b id="mfRemoveCount">1</b></button></div>
+      <div class="mf-help"><strong>How to play</strong><p>Tap an uncovered tile to move it into one of the 7 Storage Zone slots. Three identical tiles clear automatically. Clear the entire board with an empty Storage Zone to advance.</p><p><b>Withdraw</b> returns the last tile placed. <b>Reconstruct</b> shuffles the remaining tiles. <b>Remove</b> moves up to three currently accessible tiles into Storage.</p></div>
+      <div class="source-note">Unofficial fan-made practice game inspired by the Whiteout Survival Honor Festival mini-game. Boards are procedurally generated and do not reproduce the exact in-game layouts. Not affiliated with Century Games.</div>
+    </div>
+  </div>
   <!-- ASCII ART MODAL -->
   <div class="modal" id="asciiModal" aria-hidden="true">
     <div class="modal-box modal-xl">
@@ -728,12 +746,13 @@
 <script defer src="js/mia-fortune.js?v=6"></script>
 <script defer src="js/frosty-fortune.js?v=1"></script>
 <script defer src="js/mergeventure.js?v=1"></script>
+<script defer src="js/marvelous-fantasia.js?v=1"></script>
 <script defer src="js/main.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=32').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=33').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
