@@ -4,7 +4,18 @@
  const $=id=>document.getElementById(id);
  const heroes=[["Hank",15,"Infantry","Legendary"],["Elif",14,"Infantry","Legendary"],["Gisela",13,"Infantry","Legendary"],["Hervor",12,"Infantry","Legendary"],["Eleonora",11,"Infantry","Legendary"],["Gregory",10,"Infantry","Legendary"],["Magnus",9,"Infantry","Legendary"],["Gatot",8,"Infantry","Legendary"],["Edith",7,"Infantry","Legendary"],["Wu Ming",6,"Infantry","Legendary"],["Hector",5,"Infantry","Legendary"],["Ahmose",4,"Infantry","Legendary"],["Logan",3,"Infantry","Legendary"],["Flint",2,"Infantry","Legendary"],["Jeronimo",1,"Infantry","Legendary"],["Natalia",1,"Infantry","Legendary"],["Sergey",0,"Infantry","Epic"],["Eugene",0,"Infantry","Rare"],["Smith",0,"Infantry","Rare"],["Estrella",15,"Lancer","Legendary"],["Dominic",14,"Lancer","Legendary"],["Flora",13,"Lancer","Legendary"],["Karol",12,"Lancer","Legendary"],["Lloyd",11,"Lancer","Legendary"],["Freya",10,"Lancer","Legendary"],["Fred",9,"Lancer","Legendary"],["Sonya",8,"Lancer","Legendary"],["Gordon",7,"Lancer","Legendary"],["Renee",6,"Lancer","Legendary"],["Norah",5,"Lancer","Legendary"],["Reina",4,"Lancer","Legendary"],["Mia",3,"Lancer","Legendary"],["Philly",2,"Lancer","Legendary"],["Molly",1,"Lancer","Legendary"],["Jessie",0,"Lancer","Epic"],["Ling Shuang",0,"Lancer","Epic"],["Patrick",0,"Lancer","Epic"],["Walis Bokan",0,"Lancer","Epic"],["Charlie",0,"Lancer","Rare"],["Viveca",15,"Marksman","Legendary"],["Cara",14,"Marksman","Legendary"],["Vulcanus",13,"Marksman","Legendary"],["Ligeia",12,"Marksman","Legendary"],["Rufus",11,"Marksman","Legendary"],["Blanchette",10,"Marksman","Legendary"],["Xura",9,"Marksman","Legendary"],["Hendrik",8,"Marksman","Legendary"],["Bradley",7,"Marksman","Legendary"],["Wayne",6,"Marksman","Legendary"],["Gwen",5,"Marksman","Legendary"],["Lynn",4,"Marksman","Legendary"],["Greg",3,"Marksman","Legendary"],["Alonso",2,"Marksman","Legendary"],["Zinman",1,"Marksman","Legendary"],["Bahiti",0,"Marksman","Epic"],["Gina",0,"Marksman","Epic"],["Jasser",0,"Marksman","Epic"],["Seo-yoon",0,"Marksman","Epic"],["Cloris",0,"Marksman","Rare"],["Aiden",17,"Infantry","Legendary"],["Jordan",18,"Infantry","Legendary"],["Balor",19,"Infantry","Legendary"],["Bertha",17,"Lancer","Legendary"],["Nikola",18,"Lancer","Legendary"],["Luca",19,"Lancer","Legendary"],["Eleanor",17,"Marksman","Legendary"],["Aisha",18,"Marksman","Legendary"],["Aurora",19,"Marksman","Legendary"],["Seigel",16,"Infantry","Legendary"],["Ursar",16,"Lancer","Legendary"],["Aisling",16,"Marksman","Legendary"]].map(([name,gen,type,rarity])=>({name,gen,type,rarity}));
  const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
- const portrait=h=>'https://wostools.net/images/heroes/'+slug(h.name)+'.webp';
+ const portraitSources={
+  Seigel:'https://gacha-data.com/assets/img/whiteout-survival/50059.webp',
+  Ursar:'https://gacha-data.com/assets/img/whiteout-survival/50060.webp',
+  Aisling:'https://gacha-data.com/assets/img/whiteout-survival/50061.webp',
+  Aiden:'https://gacha-data.com/assets/img/whiteout-survival/50062.webp',
+  Bertha:'https://gacha-data.com/assets/img/whiteout-survival/50063.webp',
+  Eleanor:'https://gacha-data.com/assets/img/whiteout-survival/50064.webp',
+  Jordan:'https://gacha-data.com/assets/img/whiteout-survival/50065.webp',
+  Nikola:'https://gacha-data.com/assets/img/whiteout-survival/50066.webp',
+  Aisha:'https://gacha-data.com/assets/img/whiteout-survival/ds/_roster/hero_bustpic_50067.webp'
+ };
+ const portrait=h=>portraitSources[h.name]||'https://wostools.net/images/heroes/'+slug(h.name)+'.webp';
  const state={selected:null};
  const filtered=()=>{
   const q=$('hhSearch').value.trim().toLowerCase(),g=$('hhGeneration').value,c=$('hhClass').value,r=$('hhRarity').value;
