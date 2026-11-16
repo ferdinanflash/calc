@@ -10,8 +10,8 @@
     cityhall:{name:'City Hall · Season 5',image:'https://wostools.net/images/dreamscape/city-hall-s5-wm.webp',items:'Air drop|Airship|Balloons|Bowknot|Butterfly|Clock|Compass|Diamond|Envelope|Flag garland|Flowers|Globe|Keys|Lightning|Newspaper|Number plate|Pipe|Shield|Spring|Sun|Swan|Camera|Cat|Chandelier|Chimney|Cogwheel|Crack|Crow|Four leaf clover|Giftbox|Goggles|Harp|Ladder|Medal|Motorcycle|Pine tree|Scarf|Searchlight|Star|Tower|Twin swords|Vines|Walking stick|Wrench|8|Scroll|N|Paper windmill'.split('|')},
     hospital:{name:'Hospital · Season 5',image:'https://wostools.net/images/dreamscape/hospital-s5-wm.webp',items:'Apple|Bandage roll|Book|Bucket|Button|Cane|Clock|Comb|Duffle bag|First aid kit|Hanging banner|IV drip|Mirror|Mortar & pestle|Obelisk|Paper bag|Patch|Pipe|Pliers|Scissors|Slippers|Stethoscope|Thermometer|Towel|Weighing scale|Kettle|Clipboard|Bell|Lamp|Coat rack|Test tubes|Flower vase|Tweezers'.split('|')},
     bedroom:{name:'Bedroom · Season 5',image:'https://wostools.net/images/dreamscape/bedroom-s5-wm.webp',items:'Bucket|Calendar|Cheese|Clock|Clothes hanger|Curtain|Diary|Easter egg|Frying pan|Gift box|Gold coins|Guitar|Headwear|Key|Mask|Mouse|Mug|Painting|Plant|Pouch|Rifle|Rope|Rubber ball|Scroll|Snowflake|Spider|Spring|Towel|Vent|Brush|Camera|Candle|Coat|Comb|Glass bottle|Goggles|Hand drum|Hourglass|Lion wall art|Plate|Slippers|Stain|Teddy|Tree|E'.split('|')},
-    court:{name:'Court · Season 5',image:'https://wostools.net/images/dreamscape/court-s5-wm.webp',items:[]},
-    mine:{name:'Mine · Season 5',image:'https://wostools.net/images/dreamscape/mine-s5-wm.webp',items:[]}
+    court:{name:'Court · Season 5',image:'https://wostools.net/images/dreamscape/court-s5-wm.webp',items:'Backpack|Bandage roll|Binoculars|Branch|Cane|Clock|Coat|Compass|Curtain|Dagger|Diamond|Footprints|Globe|Gold coins|Handcuff|Hanging banner|Hourglass|Ink bottle|Key|Ladder|Magnifier|Mask|Paper plane|Photo frame|Pigeon|Wheat|Plant|Pouch|Scroll|Shield|Ship|Shoe|Snowflake|Stamp|Statue|Sun|Sword|Thermometer|Tie|Trophy|Typewriter|Umbrella|Wall light|Water bag|Weighing scale|Wrench|Top hat|Judge’s gavel'.split('|')},
+    mine:{name:'Mine · Season 5',image:'https://wostools.net/images/dreamscape/mine-s5-wm.webp',items:'Arrow sign|Barrel|Broom|Bucket|Canned food|Cart|Chain|Chest|Chimney|Cogwheel|Crystal|Flame|Footprints|Glass bottle|Hammer|Hanging banner|Iron pot|Key|Ladder|Mailbox|Megaphone|Motorcycle|Music note|Oxygen tank|Parcel|Pickaxe|Pipe|Plane|Plant|Pliers|Pouch|Safety helmet|Shovel|Sign post|Ski|Snowman|Spider|Tower|Wheel|Withered branch|Wrench|Icicles|Spider web|6|A|Lamp|Carriage|Birds|Mushroom'.split('|')}
   };
   const gardenStages = {
     'garden-1':{name:'Garden · Stage 1',image:'images/dreamscape/cropped/garden-s5-stage-1.jpg',targets:[['Corn',70,69],['Feather',43,72],['Ball',86,98]]},
@@ -73,7 +73,7 @@
 
   const guideRender=()=>{
     const scene=legacyScenes[currentScene]||gardenStages[currentScene];
-    const data=legacyScenes[currentScene]||{name:gardenStages[currentScene].name,image:gardenStages[currentScene].image,items:gardenStages[currentScene].targets.map(x=>x[0])};
+    const data=legacyScenes[currentScene]||{name:gardenStages[currentScene].name,image:gardenStages[currentScene].image,items:['Map','Corn','Feather','Butterfly','Balloon','Camera','Rubber duck','Starfish','Sunflower','Wing','Drifting bottle','Spider web','Scarf','Ball']};
     $('dmGuideImage').src=data.image;$('dmGuideImage').alt=data.name+' map';
     const q=($('dmGuideSearch').value||'').trim().toLowerCase();
     const filtered=data.items.filter(x=>x.toLowerCase().includes(q));
