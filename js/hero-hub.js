@@ -13,18 +13,18 @@
  const detail=h=>{
   state.selected=h;
   const el=$('hhDetail');el.hidden=false;
-  el.innerHTML='<img src="'+portrait(h)+'" alt="'+h.name+'" onerror="this.style.display=\'none\'"><div><strong>'+h.name+'</strong><p>Generation '+(h.gen||'Classic')+' · '+h.type+' · '+h.rarity+'</p><p>Portrait asset: WoSTools community hero image library.</p></div>';
+  el.innerHTML='<img src="'+portrait(h)+'" alt="'+h.name+'" onerror="this.style.display=\'none\'"><div><strong>'+h.name+'</strong><p>Generation '+(h.gen!==null?'Gen '+h.gen:'Classic')+' · '+h.type+' · '+h.rarity+'</p><p>Portrait asset: WoSTools community hero image library.</p></div>';
   $('hhGrid').querySelectorAll('.hh-card').forEach(x=>x.classList.toggle('active',x.dataset.name===h.name));
  };
  const render=()=>{
   const list=filtered();$('hhCount').textContent=list.length+' / '+heroes.length+' heroes';
-  $('hhGrid').innerHTML=list.map(h=>'<button type="button" class="hh-card" data-name="'+h.name.replace(/"/g,'&quot;')+'"><img loading="lazy" src="'+portrait(h)+'" alt="'+h.name+'" onerror="this.onerror=null;this.style.display=\'none\'"><strong>'+h.name+'</strong><small>'+(h.gen?'Gen '+h.gen:'Classic')+' · '+h.type+'</small></button>').join('');
+  $('hhGrid').innerHTML=list.map(h=>'<button type="button" class="hh-card" data-name="'+h.name.replace(/"/g,'&quot;')+'"><img loading="lazy" src="'+portrait(h)+'" alt="'+h.name+'" onerror="this.onerror=null;this.style.display=\'none\'"><strong>'+h.name+'</strong><small>'+(h.gen!==null?'Gen '+h.gen:'Classic')+' · '+h.type+'</small></button>').join('');
   $('hhGrid').querySelectorAll('.hh-card').forEach(b=>b.addEventListener('click',()=>detail(list.find(h=>h.name===b.dataset.name))));
  };
  const init=()=>{
   if(!$('hhGrid')||$('hhGrid').dataset.ready)return;
   $('hhGrid').dataset.ready='1';
-  const gens=[...new Set(heroes.map(h=>h.gen).filter(Boolean))].sort((a,b)=>b-a);
+  const gens=[...new Set(heroes.map(h=>h.gen).filter(g=>g!==null))].sort((a,b)=>b-a);
   gens.forEach(g=>{const o=document.createElement('option');o.value=String(g);o.textContent='Generation '+g;$('hhGeneration').appendChild(o);});
   ['hhSearch','hhGeneration','hhClass','hhRarity'].forEach(id=>$(id).addEventListener(id==='hhSearch'?'input':'change',render));
   render();
