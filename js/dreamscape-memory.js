@@ -32,9 +32,9 @@
     else finish(true);
   };
   const render=()=>{
-    const total=pool.length+batch.length;
+    const total=state.total;
     $('dmTime').textContent=state.time+'s';
-    $('dmFound').textContent=state.completed+' / '+(state.completed+total);
+    $('dmFound').textContent=state.completed+' / '+total;
     $('dmTargets').innerHTML=batch.map((c,i)=>'<div class="dm-target '+(state.found.has(c.n)?'done':'')+'">'+(state.found.has(c.n)?'✓ ':'')+c.item+'</div>').join('')||'<p class="dm-muted">Press Start to show the targets.</p>';
     const hasCoords=(currentMap().coords||[]).length>0;
     $('dmChoiceTitle').textContent=hasCoords?'Tap the object directly on the map':'Tap the matching number on the reference map';
