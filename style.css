@@ -703,6 +703,11 @@ body.modal-open .ui-bottom-nav{opacity:.35;pointer-events:none;}
 .dm-map-stage{position:relative;width:100%;line-height:0}
 .dm-map-stage>img{display:block;width:100%;height:auto;object-fit:contain;user-select:none;-webkit-user-drag:none}
 .dm-map-hotspots{position:absolute;inset:0;pointer-events:none}
+.dm-tap-pulse{position:absolute;z-index:5;width:30px;height:30px;border:3px solid #fff;border-radius:50%;background:rgba(56,189,248,.42);box-shadow:0 0 0 3px rgba(14,165,233,.45),0 0 18px rgba(56,189,248,.9);pointer-events:none;transform:translate(-50%,-50%) scale(.35);animation:dmTapPulse .65s ease-out forwards}
+.dm-tap-pulse:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#fff}
+@keyframes dmTapPulse{0%{opacity:1;transform:translate(-50%,-50%) scale(.35)}65%{opacity:.9}100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}}
+@media(prefers-reduced-motion:reduce){.dm-tap-pulse{animation-duration:.25s}}
+
 .dm-hotspot{position:absolute;transform:translate(-50%,-50%);width:10%;height:10%;min-width:34px;min-height:34px;border:2px solid transparent;border-radius:50%;background:transparent;pointer-events:auto;cursor:pointer;touch-action:manipulation}
 .dm-hotspot:hover,.dm-hotspot:focus-visible{border-color:rgba(56,189,248,.95);background:rgba(56,189,248,.14);outline:0;box-shadow:0 0 0 3px rgba(56,189,248,.16)}
 .dm-play-panel{padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
