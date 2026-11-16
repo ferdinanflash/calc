@@ -14,31 +14,45 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="stylesheet" href="style.css?v=34">
 </head>
 <body>
 <div class="wrap">
-  <header class="top">
-    <div class="brand-tile"><i class="bi bi-snow"></i></div>
-    <div>
-      <h1>Whiteout Survival Calculator</h1>
-      <div class="sub">All calculators &amp; simulators in one menu.</div>
+  <header class="top" id="homeTop">
+    <div class="brand-tile"><i class="bi bi-snow2"></i></div>
+    <div class="top-brand-copy">
+      <div class="top-eyebrow"><span class="status-dot"></span> 3475 COMMAND CENTER</div>
+      <h1>Whiteout Survival Tools</h1>
+      <div class="sub">Your all-in-one strategy workspace.</div>
     </div>
+    <div class="top-mark" aria-hidden="true"><i class="bi bi-stars"></i></div>
   </header>
 
+  <section class="home-search" aria-label="Find a tool">
+    <div class="home-search-box"><i class="bi bi-search"></i><input id="uiToolSearch" type="search" placeholder="Search calculators, events, games..." autocomplete="off" oninput="uiFilterTools(this.value)"><kbd>⌕</kbd></div>
+    <div class="home-search-hint"><i class="bi bi-lightning-charge-fill"></i> Find the right tool in seconds</div>
+  </section>
+
+  <nav class="home-categories" aria-label="Menu categories">
+    <a href="#calculators"><i class="bi bi-calculator"></i> Calculators</a>
+    <a href="#events"><i class="bi bi-trophy"></i> Events</a>
+    <a href="#simulators"><i class="bi bi-controller"></i> Games</a>
+    <a href="#extras"><i class="bi bi-grid"></i> Extras</a>
+  </nav>
+
   <section class="ui-home-extras">
-    <div class="ui-home-block">
-      <h2 class="menu-group"><i class="bi bi-star-fill"></i> Favorites</h2>
+    <div class="ui-home-block" id="homeFavorites">
+      <h2 class="menu-group"><i class="bi bi-star-fill"></i> Favorites <span class="home-section-note">Pinned tools</span></h2>
       <div id="uiFavGrid" class="ui-chip-row"></div>
     </div>
-    <div class="ui-home-block">
-      <h2 class="menu-group"><i class="bi bi-clock-history"></i> Recent</h2>
+    <div class="ui-home-block" id="homeRecent">
+      <h2 class="menu-group"><i class="bi bi-clock-history"></i> Recent <span class="home-section-note">Recently opened</span></h2>
       <div id="uiRecentGrid" class="ui-chip-row"></div>
     </div>
   </section>
 
-  <section class="main-menu">
-    <h2 class="menu-group"><i class="bi bi-calculator"></i> Calculators</h2>
+  <section class="main-menu" id="allTools">
+    <h2 class="menu-group" id="calculators"><i class="bi bi-calculator"></i> Calculators <span class="home-section-note">Plan your growth</span></h2>
     <div class="menu-grid">
       <button class="menu-card building" onclick="openModal('buildingModal')">
         <span class="menu-icon"><i class="bi bi-building-gear"></i></span><span>Building Calculator</span><small>Resources, time &amp; upgrades</small>
@@ -60,7 +74,7 @@
       </button>
     </div>
 
-    <h2 class="menu-group"><i class="bi bi-controller"></i> Events &amp; Simulators</h2>
+    <h2 class="menu-group" id="events"><i class="bi bi-trophy"></i> Events <span class="home-section-note">Prepare &amp; simulate</span></h2>
     <div class="menu-grid">
       <button class="menu-card svs" onclick="openModal('svsModal')">
         <span class="menu-icon"><i class="bi bi-trophy-fill"></i></span><span>SvS Calculator</span><small>5-day Prep Phase & points</small>
@@ -73,7 +87,7 @@
       </button>
     </div>
 
-    <h2 class="menu-group"><i class="bi bi-dice-5-fill"></i> Simulators</h2>
+    <h2 class="menu-group" id="simulators"><i class="bi bi-controller"></i> Games &amp; Simulators</h2>
     <div class="menu-grid">
       <button class="menu-card mergeventure" onclick="openModal('mergeventureModal')"><span class="menu-icon"><i class="bi bi-grid-3x3-gap-fill"></i></span><span>Mergeventure Planner</span><small>Merge Pieces, clear fog &amp; plan Merge Energy</small></button>
       <button class="menu-card mia" onclick="openModal('miaFortuneModal')">
@@ -93,7 +107,7 @@
       </button>
     </div>
 
-    <h2 class="menu-group"><i class="bi bi-chat-square-text"></i> Extras</h2>
+    <h2 class="menu-group" id="extras"><i class="bi bi-grid"></i> Extras</h2>
     <div class="menu-grid">
       <button class="menu-card ascii" onclick="openModal('asciiModal')">
         <span class="menu-icon"><i class="bi bi-braces-asterisk"></i></span><span>ASCII Art</span><small>Copy art for World Chat</small>
@@ -781,12 +795,12 @@
   <footer>Created By : ACĒ</footer>
 </div>
 
-<nav class="ui-bottom-nav" id="uiBottomNav" aria-label="Quick tools">
+<nav class="ui-bottom-nav" id="uiBottomNav" aria-label="Main navigation">
+  <button type="button" onclick="uiScrollTo('homeTop')"><i class="bi bi-house-door-fill"></i><span>Home</span></button>
+  <button type="button" onclick="uiScrollTo('homeFavorites')"><i class="bi bi-star-fill"></i><span>Favorites</span></button>
+  <button type="button" onclick="uiScrollTo('homeRecent')"><i class="bi bi-clock-history"></i><span>Recent</span></button>
+  <button type="button" onclick="uiScrollTo('allTools')"><i class="bi bi-grid-fill"></i><span>All Tools</span></button>
   <button type="button" onclick="openModal('buildingModal')"><i class="bi bi-building-gear"></i><span>Build</span></button>
-  <button type="button" onclick="openModal('troopsModal')"><i class="bi bi-people-fill"></i><span>Troops</span></button>
-  <button type="button" onclick="openModal('warAcademyModal')"><i class="bi bi-mortarboard-fill"></i><span>War</span></button>
-  <button type="button" onclick="openModal('chiefGearModal')"><i class="bi bi-shield-fill"></i><span>Gear</span></button>
-  <button type="button" onclick="openModal('asciiModal')"><i class="bi bi-palette-fill"></i><span>ASCII</span></button>
 </nav>
 
 <script defer src="database.js?v=9"></script>
@@ -804,7 +818,7 @@
 <script defer src="js/ascii-art.js?v=12"></script>
 <script defer src="js/ascii-share.js?v=2"></script>
 <script defer src="js/ascii-editor.js?v=3"></script>
-<script defer src="js/ui-extras.js?v=1"></script>
+<script defer src="js/ui-extras.js?v=2"></script>
 <script defer src="js/halloween-candy.js?v=1"></script>
 <script defer src="js/mia-fortune.js?v=6"></script>
 <script defer src="js/frosty-fortune.js?v=1"></script>
@@ -818,7 +832,7 @@
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=40').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=41').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
