@@ -12,7 +12,7 @@
   Bertha:'https://gacha-data.com/assets/img/whiteout-survival/50063.webp',
   Eleanor:'https://gacha-data.com/assets/img/whiteout-survival/50064.webp',
   Jordan:'https://gacha-data.com/assets/img/whiteout-survival/50065.webp',
-  Nikola:'https://gacha-data.com/assets/img/whiteout-survival/50066.webp',
+  Nikola:'https://encrypted-tbn0.gstatic.com/images?q=ANd9GcTdk2_jCI1_mDIZdmxzLENjJzT_kUhmEzxDB01sod0EI-s1bZQZcxi9czc&s=10',
   Aisha:'https://gacha-data.com/assets/img/whiteout-survival/ds/_roster/hero_bustpic_50067.webp'
  };
  const portrait=h=>portraitSources[h.name]||'https://wostools.net/images/heroes/'+slug(h.name)+'.webp';
@@ -24,7 +24,7 @@
  const detail=h=>{
   state.selected=h;
   const el=$('hhDetail');el.hidden=false;
-  el.innerHTML='<img src="'+portrait(h)+'" alt="'+h.name+'" onerror="this.style.display=\'none\'"><div><strong>'+h.name+'</strong><p>Generation '+(h.gen!==null?'Gen '+h.gen:'Classic')+' · '+h.type+' · '+h.rarity+'</p><p>Portrait asset: WoSTools community hero image library.</p></div>';
+  el.innerHTML='<img src="'+portrait(h)+'" alt="'+h.name+'" onerror="this.style.display=\'none\'"><div><strong>'+h.name+'</strong><p>Generation '+(h.gen!==null?'Gen '+h.gen:'Classic')+' · '+h.type+' · '+h.rarity+'</p><p>Portrait from community image sources.</p></div>';
   $('hhGrid').querySelectorAll('.hh-card').forEach(x=>x.classList.toggle('active',x.dataset.name===h.name));
  };
  const render=()=>{
