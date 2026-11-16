@@ -745,6 +745,9 @@ body.modal-open .ui-bottom-nav{opacity:.35;pointer-events:none;}
 .dm-guide-item{width:100%;border:0;text-align:left;color:inherit;cursor:pointer}
 .dm-guide-item.selected{outline:2px solid var(--accent,#3b82f6)}
 .dm-guide-toolbar select{max-width:100%}
+.dm-guide-toolbar{flex-wrap:wrap;min-width:0}
+#dmGuideCount{display:block;flex:1 1 100%;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;word-break:normal;line-height:1.35;text-align:left}
+@media(max-width:700px){.dm-guide-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:8px}.dm-guide-toolbar label{min-width:0}.dm-guide-toolbar label select,.dm-guide-toolbar label input{box-sizing:border-box;min-width:0;max-width:100%}#dmGuideCount{grid-column:1/-1}}
 
 /* Dreamscape guide: item numbers available in the selected stage */
 .dm-guide-item.stage-active span{background:#16a34a;color:#fff;box-shadow:0 0 0 1px rgba(22,163,74,.35)}
