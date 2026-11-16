@@ -1054,3 +1054,31 @@ a{color:#8de9ed}
  .state-banner .state-publisher em{font-size:.55rem}
 }
 @media(max-width:360px){.state-banner .state-publisher{display:none}}
+
+
+/* STATE 3475 — subtle animated aurora shine */
+.state-banner{isolation:isolate}
+.state-banner .aurora-sky:after{
+ content:"";position:absolute;z-index:0;top:-45%;left:-55%;width:34%;height:190%;
+ transform:rotate(24deg);pointer-events:none;
+ background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.025) 25%,rgba(179,249,255,.17) 48%,rgba(255,255,255,.07) 58%,transparent 100%);
+ filter:blur(7px);animation:stateBannerShine 7.5s ease-in-out infinite;
+}
+.state-banner:before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:linear-gradient(112deg,transparent 25%,rgba(135,221,255,.045) 48%,transparent 70%);
+ background-size:220% 100%;animation:stateBannerGlow 9s ease-in-out infinite;
+}
+@keyframes stateBannerShine{
+ 0%,12%{left:-55%;opacity:0}
+ 20%{opacity:.85}
+ 52%{left:125%;opacity:.65}
+ 62%,100%{left:125%;opacity:0}
+}
+@keyframes stateBannerGlow{
+ 0%,100%{background-position:100% 0}
+ 50%{background-position:0 0}
+}
+@media(prefers-reduced-motion:reduce){
+ .state-banner .aurora-sky:after,.state-banner:before{animation:none}
+}
