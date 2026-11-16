@@ -2,13 +2,6 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const gardenTargets = {
-    1:[['Corn',70,69],['Feather',43,72],['Ball',86,98]],
-    2:[['Butterfly',97,58],['Rubber duck',28,74],['Corn',67,70]],
-    3:[['Butterfly',97,58],['Starfish',18,61],['Rubber duck',28,74]],
-    4:[['Spider web',80,27]],
-    5:[['Scarf',70,70]]
-  };
   const data = () => window.DREAMSCAPE_MAP_DATA || [];
   let mapId='garden-s5', stageNo=1, pool=[], batch=[], currentImage='';
   const state={time:60,found:new Set(),running:false,timer:null,completed:0,total:0,hints:0};
@@ -18,7 +11,6 @@
   const status=(s,k='')=>{const el=$('dmStatus');if(el){el.textContent=s;el.className='dm-status'+(k?' '+k:'');}};
   const stopTimer=()=>{if(state.timer)clearInterval(state.timer);state.timer=null;};
   const stageObjects=()=>{
-    if(isGarden()&&gardenTargets[stageNo]) return gardenTargets[stageNo].map((t,i)=>({n:i+1,item:t[0],x:t[1]/100,y:t[2]/100,w:.055,h:.055,rot:0}));
     const m=currentMap();
     const eligible=(m.coords||[]).filter(c=>c.stages?.includes(stageNo));
     return eligible.length?eligible:((m.coords||[]).length?(m.coords||[]):(m.items||[]).map((item,i)=>({n:i+1,item})));
