@@ -57,7 +57,8 @@
   const start=()=>{
     stopTimer();state.completed=0;state.found=new Set();state.running=true;
     const objects=stageObjects();
-    if(!objects.length){state.running=false;status('This map has no object coordinates yet. Use Map Guide to view the map.','bad');return;}
+    if(!objects.length){state.running=false;status('No objects are listed for this map yet.','bad');return;}
+    state.total=objects.length;
     pool=shuffle(objects.map(c=>({...c})));pickBatch();
     state.timer=setInterval(()=>{state.time--;if(state.time<=0){state.time=0;finish(false);}else render();},1000);
   };
