@@ -1128,3 +1128,18 @@ a{color:#8de9ed}
              0 0 28px color-mix(in srgb,var(--c,#8b7cff) 62%,transparent);
 }
 @media(prefers-reduced-motion:reduce){.menu-card .menu-icon{transition:none}}
+
+
+/* Typewriter reveal for the State 3475 publisher signature */
+.state-banner .publisher-typewrite{
+ display:inline-block;max-width:100%;overflow:hidden;white-space:nowrap;
+ vertical-align:bottom;border-right:2px solid #70e6df;padding-right:3px;
+ width:9ch;animation:publisherTypewrite 1.7s steps(9,end) both,
+ publisherCaret .78s step-end infinite;
+ text-shadow:0 0 9px rgba(112,230,223,.34);
+}
+@keyframes publisherTypewrite{from{width:0}to{width:9ch}}
+@keyframes publisherCaret{50%{border-color:transparent}}
+@media(prefers-reduced-motion:reduce){
+ .state-banner .publisher-typewrite{width:auto;animation:none;border-right:0}
+}
