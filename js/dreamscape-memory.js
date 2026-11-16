@@ -22,7 +22,7 @@
   };
   const finish=(won)=>{
     state.running=false;if(state.timer)clearInterval(state.timer);state.timer=null;
-    render();status(won?'Scene cleared! You found all 14 objects.':'Time is up! Press Start to try again.',won?'good':'bad');
+    render();status(won?'Scene cleared! You found all '+items.length+' objects.':'Time is up! Press Start to try again.',won?'good':'bad');
   };
   const nextRound=()=>{
     if(state.found.size===items.length){finish(true);return;}
