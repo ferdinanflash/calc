@@ -1154,3 +1154,14 @@ a{color:#8de9ed}
 @media(prefers-reduced-motion:reduce){
  .state-banner .publisher-typewrite{width:auto;animation:none;border-right:0}
 }
+
+
+/* Pause background motion while any modal or form overlay is open.
+   Keep the active modal contents usable and let its own entrance fade finish. */
+body.modal-open .wrap :not(.modal):not(.modal *){
+  animation-play-state:paused !important;
+}
+body.modal-open .wrap :not(.modal):not(.modal *)::before,
+body.modal-open .wrap :not(.modal):not(.modal *)::after{
+  animation-play-state:paused !important;
+}
