@@ -12,7 +12,7 @@
   Bertha:'https://gacha-data.com/assets/img/whiteout-survival/50063.webp',
   Eleanor:'https://gacha-data.com/assets/img/whiteout-survival/50064.webp',
   Jordan:'https://gacha-data.com/assets/img/whiteout-survival/50065.webp',
-  Nikola:'https://encrypted-tbn0.gstatic.com/images?q=ANd9GcTdk2_jCI1_mDIZdmxzLENjJzT_kUhmEzxDB01sod0EI-s1bZQZcxi9czc&s=10',
+  Nikola:'https://raw.githubusercontent.com/ferdinanflash/calc/refs/heads/main/images/%E8%8B%B1%E9%9B%84%E5%A4%B4%E5%83%8Ficon%EF%BC%8818%E4%BB%A3%E7%9F%9B%E5%85%B5%EF%BC%89.png',
   Aisha:'https://gacha-data.com/assets/img/whiteout-survival/ds/_roster/hero_bustpic_50067.webp'
  };
  const portrait=h=>portraitSources[h.name]||'https://wostools.net/images/heroes/'+slug(h.name)+'.webp';
