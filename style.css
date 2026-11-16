@@ -703,7 +703,7 @@ body.modal-open .ui-bottom-nav{opacity:.35;pointer-events:none;}
 .dm-map-stage{position:relative;width:100%;line-height:0}
 .dm-map-stage>img{display:block;width:100%;height:auto;object-fit:contain;user-select:none;-webkit-user-drag:none}
 .dm-map-hotspots{position:absolute;inset:0;pointer-events:none}
-.dm-hotspot{position:absolute;transform:translate(-50%,-50%);width:12%;height:12%;min-width:34px;min-height:34px;border:2px solid transparent;border-radius:50%;background:transparent;pointer-events:auto;cursor:pointer;touch-action:manipulation}
+.dm-hotspot{position:absolute;transform:translate(-50%,-50%);width:10%;height:10%;min-width:34px;min-height:34px;border:2px solid transparent;border-radius:50%;background:transparent;pointer-events:auto;cursor:pointer;touch-action:manipulation}
 .dm-hotspot:hover,.dm-hotspot:focus-visible{border-color:rgba(56,189,248,.95);background:rgba(56,189,248,.14);outline:0;box-shadow:0 0 0 3px rgba(56,189,248,.16)}
 .dm-play-panel{padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
 .dm-target-title,.dm-choice-title{font-size:.8rem;font-weight:800;margin-bottom:8px}
