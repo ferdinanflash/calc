@@ -811,14 +811,14 @@
 <script defer src="js/mergeventure.js?v=1"></script>
 <script defer src="js/marvelous-fantasia.js?v=1"></script>
 <script defer src="js/dreamscape-data.js?v=1"></script>
-<script defer src="js/dreamscape-memory.js?v=6"></script>
+<script defer src="js/dreamscape-memory.js?v=7"></script>
 <script defer src="js/hero-hub.js?v=3"></script>
 <script defer src="js/main.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=39').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=40').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
