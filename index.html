@@ -9,23 +9,27 @@
 <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0b7cff">
+<meta name="theme-color" content="#171715">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="3475 Tools">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="style.css?v=34">
+<link rel="stylesheet" href="style.css?v=35">
 </head>
 <body>
 <div class="wrap">
-  <header class="top" id="homeTop">
-    <div class="brand-tile"><i class="bi bi-snow2"></i></div>
-    <div class="top-brand-copy">
-      <div class="top-eyebrow"><span class="status-dot"></span> 3475 COMMAND CENTER</div>
-      <h1>Whiteout Survival Tools</h1>
-      <div class="sub">Your all-in-one strategy workspace.</div>
+  <header class="top calc-masthead" id="homeTop">
+    <div class="masthead-topline"><span>FIELD OPERATIONS / 3475</span><span class="masthead-live"><i></i> SYSTEM ONLINE</span></div>
+    <div class="masthead-main">
+      <div class="brand-tile"><span> C<span class="brand-slash">/</span> </span></div>
+      <div class="top-brand-copy">
+        <div class="top-eyebrow">WHITEOUT SURVIVAL TOOLKIT</div>
+        <h1>CALC<span class="masthead-period">.</span></h1>
+        <div class="sub">Plan smarter. Move faster. Control the grind.</div>
+      </div>
+      <div class="masthead-index" aria-hidden="true"><b>3475</b><span>PLAYER<br>UTILITY DIVISION</span></div>
     </div>
-    <div class="top-mark" aria-hidden="true"><i class="bi bi-stars"></i></div>
+    <div class="masthead-rule"><span>STRATEGY / SIMULATION / INTELLIGENCE</span><span>EST. FOR SURVIVORS</span></div>
   </header>
 
   <section class="home-search" aria-label="Find a tool">
@@ -832,7 +836,7 @@
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=41').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=42').then(function (reg) {
       // Optional: prompt when new SW waiting
       reg.addEventListener('updatefound', function () {
         var nw = reg.installing;
