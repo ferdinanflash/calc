@@ -631,7 +631,20 @@
       <div class="modal-title"><i class="bi bi-binoculars-fill"></i> Dreamscape Memory</div>
       <div class="modal-sub">Garden · Season 5 — find each requested object by tapping it directly on the scene.</div>
       <div class="dm-modebar"><button type="button" class="mini-btn secondary" id="dmPlayMode">▶ Play</button><button type="button" class="mini-btn secondary" id="dmGuideToggle">🗺️ Map Guide</button></div>
-      <div id="dmGuidePanel" class="dm-guide-panel" hidden><div class="dm-guide-toolbar"><label>Scene<select id="dmGuideScene"><option value="garden-1">Garden</option><option value="windmill">Windmill</option><option value="hangar">Hangar</option><option value="farmhouse">Farmhouse</option><option value="kitchen">Kitchen</option><option value="cityhall">City Hall</option><option value="hospital">Hospital</option><option value="bedroom">Bedroom</option><option value="court">Court</option><option value="mine">Mine</option></select></label><label>Stage<select id="dmGuideStage"></select></label><label>Search item<input id="dmGuideSearch" type="search" placeholder="Search item name..."></label><span id="dmGuideCount"></span></div><div class="dm-guide-layout"><div class="dm-guide-map"><img id="dmGuideImage" src="" alt="Dreamscape map guide"></div><div class="dm-guide-items" id="dmGuideItems"></div></div><p class="dm-guide-note">Map reference and complete item catalogue. Exact item markers are being verified; this guide does not place guessed coordinates.</p></div>
+      <div id="dmGuidePanel" class="dm-guide-panel" hidden>
+        <div class="dm-guide-toolbar">
+          <label>Map<select id="dmGuideScene"></select></label>
+          <label>Stage<select id="dmGuideStage"></select></label>
+          <label>Search item<input id="dmGuideSearch" type="search" placeholder="Search item name..."></label>
+          <span id="dmGuideCount"></span>
+        </div>
+        <div id="dmGuideMapTitle" class="dm-guide-map-title">Garden · Season 5</div>
+        <div class="dm-guide-layout">
+          <div class="dm-guide-map"><div id="dmGuideMapSize" class="dm-guide-map-size"><img id="dmGuideImage" src="" alt="Dreamscape map guide"><div id="dmGuideOverlay" class="dm-guide-overlay"></div></div></div>
+          <div class="dm-guide-items" id="dmGuideItems"></div>
+        </div>
+        <p class="dm-guide-note">Markers show the original object hit areas, including size and rotation. Select a stage to see the objects present there.</p>
+      </div>
       <div class="dm-toolbar">
         <label>Stage<select id="dmScene">
           <option value="garden-1">Garden · Stage 1</option><option value="garden-2">Garden · Stage 2</option><option value="garden-3">Garden · Stage 3</option><option value="garden-4">Garden · Stage 4</option><option value="garden-5">Garden · Stage 5</option>
@@ -799,7 +812,8 @@
 <script defer src="js/frosty-fortune.js?v=1"></script>
 <script defer src="js/mergeventure.js?v=1"></script>
 <script defer src="js/marvelous-fantasia.js?v=1"></script>
-<script defer src="js/dreamscape-memory.js?v=4"></script>
+<script defer src="js/dreamscape-data.js?v=1"></script>
+<script defer src="js/dreamscape-memory.js?v=5"></script>
 <script defer src="js/hero-hub.js?v=3"></script>
 <script defer src="js/main.js?v=9"></script>
 
