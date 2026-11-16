@@ -20,7 +20,7 @@
   const stageObjects=()=>{
     if(isGarden()&&gardenTargets[stageNo]) return gardenTargets[stageNo].map((t,i)=>({n:i+1,item:t[0],x:t[1]/100,y:t[2]/100,w:.055,h:.055,rot:0}));
     const m=currentMap();
-    const eligible=(m.coords||[]).filter(c=>!c.stages?.length||c.stages.includes(stageNo));
+    const eligible=(m.coords||[]).filter(c=>c.stages?.includes(stageNo));
     return eligible.length?eligible:((m.coords||[]).length?(m.coords||[]):(m.items||[]).map((item,i)=>({n:i+1,item})));
   };
   const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;};
@@ -103,9 +103,9 @@
     $('dmGuideImage').src=assetUrl(imageUrl);$('dmGuideImage').alt=map.name+' · Stage '+stage;
     $('dmGuideMapSize').style.aspectRatio=(map.width||523)+' / '+(map.height||858);
     const q=($('dmGuideSearch').value||'').trim().toLowerCase();
-    const visible=(map.coords||[]).filter(c=>(!c.stages.length||c.stages.includes(stage))&&(!q||c.item.toLowerCase().includes(q)));
+    const visible=(map.coords||[]).filter(c=>c.stages.includes(stage)&&(!q||c.item.toLowerCase().includes(q)));
     $('dmGuideOverlay').innerHTML=visible.map(c=>{const title=String(c.n).padStart(2,'0')+' · '+c.item;return '<button type="button" class="dm-guide-marker stage-active" data-item="'+c.n+'" title="'+title.replace(/"/g,'&quot;')+'" aria-label="'+title.replace(/"/g,'&quot;')+'" style="left:'+(c.x*100)+'%;top:'+(c.y*100)+'%;width:'+(c.w*100)+'%;height:'+(c.h*100)+'%;transform:translate(-50%,-50%) rotate('+c.rot+'deg)"><span>'+c.n+'</span></button>';}).join('');
-    const stageItems=new Set((map.coords||[]).filter(c=>!c.stages.length||c.stages.includes(stage)).map(c=>c.n));
+    const stageItems=new Set((map.coords||[]).filter(c=>c.stages.includes(stage)).map(c=>c.n));
     const filtered=map.items.map((name,i)=>({name,n:i+1,active:stageItems.has(i+1)})).filter(x=>!q||x.name.toLowerCase().includes(q));
     $('dmGuideCount').textContent=filtered.length+' / '+map.items.length+' items · '+visible.length+' markers on stage';
     $('dmGuideItems').innerHTML=filtered.map(x=>'<button type="button" class="dm-guide-item'+(x.active?' stage-active':'')+'" data-item="'+x.n+'"><span>'+String(x.n).padStart(2,'0')+'</span>'+x.name+'</button>').join('')||'<p class="dm-muted">No matching items.</p>';
