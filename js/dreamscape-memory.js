@@ -11,7 +11,7 @@
   };
   const data = () => window.DREAMSCAPE_MAP_DATA || [];
   let mapId='garden-s5', stageNo=1, pool=[], batch=[], currentImage='';
-  const state={time:60,found:new Set(),running:false,timer:null,completed:0,hints:0};
+  const state={time:60,found:new Set(),running:false,timer:null,completed:0,total:0,hints:0};
   const currentMap=()=>data().find(m=>m.id===mapId)||data()[0];
   const isGarden=()=>mapId==='garden-s5';
   const assetUrl=p=>p?(p.startsWith('http')?p:'https://wostools.net'+p):'';
@@ -21,7 +21,7 @@
     if(isGarden()&&gardenTargets[stageNo]) return gardenTargets[stageNo].map((t,i)=>({n:i+1,item:t[0],x:t[1]/100,y:t[2]/100,w:.055,h:.055,rot:0}));
     const m=currentMap();
     const eligible=(m.coords||[]).filter(c=>!c.stages?.length||c.stages.includes(stageNo));
-    return eligible.length?eligible:(m.coords||[]);
+    return eligible.length?eligible:((m.coords||[]).length?(m.coords||[]):(m.items||[]).map((item,i)=>({n:i+1,item})));
   };
   const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;};
   const pickBatch=()=>{
