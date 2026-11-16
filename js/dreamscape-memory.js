@@ -14,7 +14,7 @@
   const state={time:60,found:new Set(),running:false,timer:null,completed:0,total:0,hints:0};
   const currentMap=()=>data().find(m=>m.id===mapId)||data()[0];
   const isGarden=()=>mapId==='garden-s5';
-  const assetUrl=p=>p?(p.startsWith('http')?p:'https://wostools.net'+p):'';
+  const assetUrl=p=>p?(p.startsWith('http')?p:(p==='/images/dreamscape/windmill.webp'?'./images/dreamscape/windmill.webp':'https://wostools.net'+p)):'';
   const status=(s,k='')=>{const el=$('dmStatus');if(el){el.textContent=s;el.className='dm-status'+(k?' '+k:'');}};
   const stopTimer=()=>{if(state.timer)clearInterval(state.timer);state.timer=null;};
   const stageObjects=()=>{
@@ -105,9 +105,10 @@
     const q=($('dmGuideSearch').value||'').trim().toLowerCase();
     const visible=(map.coords||[]).filter(c=>(!c.stages.length||c.stages.includes(stage))&&(!q||c.item.toLowerCase().includes(q)));
     $('dmGuideOverlay').innerHTML=visible.map(c=>{const title=String(c.n).padStart(2,'0')+' · '+c.item;return '<button type="button" class="dm-guide-marker" data-item="'+c.n+'" title="'+title.replace(/"/g,'&quot;')+'" aria-label="'+title.replace(/"/g,'&quot;')+'" style="left:'+(c.x*100)+'%;top:'+(c.y*100)+'%;width:'+(c.w*100)+'%;height:'+(c.h*100)+'%;transform:translate(-50%,-50%) rotate('+c.rot+'deg)"><span>'+c.n+'</span></button>';}).join('');
-    const filtered=map.items.map((name,i)=>({name,n:i+1})).filter(x=>!q||x.name.toLowerCase().includes(q));
+    const stageItems=new Set((map.coords||[]).filter(c=>!c.stages.length||c.stages.includes(stage)).map(c=>c.n));
+    const filtered=map.items.map((name,i)=>({name,n:i+1,active:stageItems.has(i+1)})).filter(x=>!q||x.name.toLowerCase().includes(q));
     $('dmGuideCount').textContent=filtered.length+' / '+map.items.length+' items · '+visible.length+' markers on stage';
-    $('dmGuideItems').innerHTML=filtered.map(x=>'<button type="button" class="dm-guide-item" data-item="'+x.n+'"><span>'+String(x.n).padStart(2,'0')+'</span>'+x.name+'</button>').join('')||'<p class="dm-muted">No matching items.</p>';
+    $('dmGuideItems').innerHTML=filtered.map(x=>'<button type="button" class="dm-guide-item'+(x.active?' stage-active':'')+'" data-item="'+x.n+'"><span>'+String(x.n).padStart(2,'0')+'</span>'+x.name+'</button>').join('')||'<p class="dm-muted">No matching items.</p>';
     const selectItem=n=>{ $('dmGuideItems').querySelectorAll('[data-item]').forEach(el=>el.classList.toggle('selected',Number(el.dataset.item)===n));$('dmGuideOverlay').querySelectorAll('[data-item]').forEach(el=>el.classList.toggle('selected',Number(el.dataset.item)===n));};
     $('dmGuideOverlay').querySelectorAll('[data-item]').forEach(el=>el.addEventListener('click',()=>selectItem(Number(el.dataset.item))));
     $('dmGuideItems').querySelectorAll('[data-item]').forEach(el=>el.addEventListener('click',()=>selectItem(Number(el.dataset.item))));
